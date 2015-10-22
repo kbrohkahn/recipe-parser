@@ -749,7 +749,6 @@ instant banana pudding mix
 instant butterscotch pudding mix
 instant chocolate drink mix
 instant chocolate pudding mix
-instant cocoa powder
 instant coconut cream pudding mix
 instant coffee granules
 instant coffee granules dissolved in
@@ -1666,7 +1665,6 @@ whole tomatoes
 whole turkey
 whole turkey neck giblets reserved
 whole vanilla bean
-whole wheat flake cereal
 whole wheat flour
 whole white peppercorns
 whole-kernel corn
