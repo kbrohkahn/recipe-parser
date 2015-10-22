@@ -9,8 +9,10 @@
 9-inch vanilla cookie crumb crust
 acorn squash
 active yeast
+all purpose flour
 all-purpose flour
 allspice
+almond brickle chips
 almond extract
 almond paste
 almond paste crumbled
@@ -88,6 +90,7 @@ barbeque sauce
 barley
 barley flour
 barley malt syrup
+basic cookie mix
 basil
 bay leaf
 bay leaves
@@ -102,12 +105,14 @@ beets boiled
 bing cherries
 biscuit baking mix
 bittersweet chocolate
+bittersweet chocolate bar with almond nougat
 black bean sauce with garlic
 black beans
 black cherry flavored jell-o mix
 black licorice whips
 black olives
 black pepper
+black walnut extract
 black walnuts
 blackberries
 blackberry jell-o
@@ -145,6 +150,7 @@ bottle italian-style salad dressing
 bottle russian-style salad dressing
 bottles sparkling apple cider
 bourbon
+bran flakes cereal
 brazil nuts
 bread crumbs
 bread crumbs seasoned
@@ -257,6 +263,7 @@ champagne
 cheddar cheese
 cheese flavored butter crackers
 cherries
+cherry baking chips
 cherry bry
 cherry cake mix
 cherry flavored jell-o mix
@@ -314,19 +321,25 @@ chocolate bar
 chocolate cake mix
 chocolate cookie crumb crust
 chocolate cookie crumbs
+chocolate covered caramel cies
 chocolate covered creamy mints
 chocolate covered english toffee
 chocolate covered graham cracker cookies
+chocolate covered malted milk balls
 chocolate covered peanuts
+chocolate covered raisins
 chocolate covered thin mints
 chocolate covered toffee
 chocolate covered toffee bars
 chocolate cy bar broken into pieces
+chocolate flavored crispy rice cereal
 chocolate frosting
+chocolate frosting mix
 chocolate fudge frosting
 chocolate fudge topping
 chocolate ice cream
 chocolate mint cies
+chocolate mint wafer cies
 chocolate mousse mix
 chocolate pudding pie filling mix
 chocolate swich cookie crumbs
@@ -335,6 +348,7 @@ chocolate swich cookies with creme filling
 chocolate syrup
 chocolate wafer cookies
 chocolate-coated caramel-peanut nougat cy
+chocolate-covered caramel cies
 chocolate-covered toffee cy bars
 chow mein noodles
 chunky salsa
@@ -384,7 +398,9 @@ cola-flavored carbonated beverage
 colby cheese
 colby longhorn cheese
 color food coloring paste
+colored cy sprinkles
 coloring
+colors of paste food coloring
 compressed yeast
 condensed chicken broth
 condensed chicken rice soup
@@ -429,6 +445,7 @@ cottage cheese
 couscous
 cracked black pepper
 cracked wheat
+craft sticks
 cranberries
 cranberries picked through
 cranberry applesauce
@@ -522,6 +539,7 @@ cy-coated milk chocolate pieces
 dark beer
 dark brown sugar
 dark chocolate cake mix
+dark chocolate chips
 dark chocolate frosting
 dark corn syrup
 dark meat chicken pieces
@@ -530,6 +548,7 @@ dark rum
 dark rye flour
 dark soy sauce
 dark sweet cherries
+dash allspice
 dash cream of tartar
 dash garlic powder
 dash lemon pepper
@@ -558,8 +577,10 @@ drop food coloring
 drop green food coloring
 drop red food coloring
 drop yellow food coloring
+drops food coloring
 drops green food coloring
 drops orange food color
+drops orange food coloring
 drops pepper sauce
 drops peppermint oil
 drops red food coloring
@@ -583,6 +604,7 @@ evaporated skim milk
 extra egg
 extra virgin olive oil
 farfalle pasta
+fat free butter flavored granules
 fat free condensed cream of mushroom soup
 fat free sour cream
 fat free sweetened condensed milk
@@ -590,6 +612,7 @@ fat-free mayonnaise
 fennel seed
 feta cheese
 fettuccine pasta
+fig preserves
 figs
 fillets salmon
 filtered or spring water
@@ -602,6 +625,7 @@ flat leaf parsley
 flax seed
 flaxseed oil
 flour tortillas
+fluid ounce bry
 fluid ounce water
 fontina cheese
 for a 9 inch double crust pie
@@ -624,11 +648,13 @@ french-fried onions
 friendship fruit starter
 frosting
 fructose
+fructose sweetener
 fruit cocktail
 fruit flavored hard cies
 fruit flavored jell-o mix
 fruit juice
 fruit preserves
+fruit preserves any flavor
 fruit punch
 fruitcake crumbs
 fudge topping
@@ -685,6 +711,8 @@ granulated artificial sweetener
 granulated sugar
 grape jam
 grape juice
+grapefruit juice
+grapefruit zest
 grapes
 great northern beans
 greek-style seasoning
@@ -788,6 +816,7 @@ julienned green bell pepper
 julienned red bell pepper
 julienned yellow bell pepper
 julienned zucchini
+jumbo chocolate chips
 kalamata olives
 kalonji
 ketchup
@@ -847,6 +876,7 @@ light cream
 light italian-style salad dressing
 light mayonnaise
 light molasses
+light olive oil
 light rum
 light sesame oil
 light soy sauce
@@ -874,6 +904,7 @@ loaf processed cheese food
 loaf un white bread with crust trimmed
 loaf white bread
 long grain white rice
+long red vine licorice
 long-grain white rice
 louisiana-style sauce
 low fat margarine
@@ -896,6 +927,7 @@ macaroon cookies
 mace
 macintosh apples
 madeira wine
+make ahead cookie mix
 malted milk powder
 mango puree
 mangos
@@ -904,6 +936,7 @@ maple flavored syrup
 maple syrup
 maraschino cherries
 maraschino cherries with stems
+maraschino cherry juice
 marble cake mix
 margarine
 marin orange segments
@@ -927,6 +960,7 @@ medium heads un garlic
 medium potato
 medium tomato
 medium tomatoes
+meringue powder
 merlot wine
 mild cheddar cheese
 milk
@@ -944,6 +978,7 @@ milk scalded
 milk scalded s
 millet
 millet flour
+mini chocolate-coated peanut nougat cy eg: baby ruth tm
 mini cy-coated chocolate pieces
 mini cy-coated chocolates
 mini semi-sweet chocolate chips
@@ -1040,6 +1075,7 @@ oranges
 oranges juiced
 oregano
 ounce active yeast
+ounce almond paste
 ounce almonds
 ounce chile paste
 ounce colored cy sprinkles
@@ -1125,6 +1161,7 @@ pineapple juice concentrate
 pineapple pie filling
 pineapple rings
 pineapple tidbits
+pink decorator sugar
 pink lemonade concentrate
 pinto beans
 piping gel
@@ -1181,6 +1218,7 @@ prepared stuffing
 prepared thai peanut sauce
 prepared yellow cake
 pretzel twists
+pretzels
 prime rib roast
 process cheese sauce
 processed cheese
@@ -1215,6 +1253,7 @@ raspberries
 raspberry flavored jell-o mix
 raspberry flavored liqueur
 raspberry jam
+raspberry jam or jelly
 raspberry preserves
 raspberry salsa
 raspberry vinegar
@@ -1260,6 +1299,7 @@ red wine vinegar
 reduced fat buttermilk baking mix
 reduced fat cream of chicken soup
 reduced fat margarine
+reduced fat peanut butter
 reduced fat sour cream
 reduced fat white cake mix
 reduced fat yellow cake mix
@@ -1359,6 +1399,7 @@ sherry
 shiitake mushrooms
 shiitake mushrooms soaked until soft
 shortening
+shortening  slightly
 shoyu
 shrimp
 shrimp paste
@@ -1422,6 +1463,7 @@ sour cherries
 sour cream
 sour milk
 sour red pie cherries
+sourball hard cies
 sourdough starter
 southern comfort liqueur
 soy flour
@@ -1471,10 +1513,12 @@ sucanat
 sugar
 sugar cookie mix
 sugar free chocolate wafer cookie crumbs
+sugar frosted corn flake cereal
 sugar pumpkin
 sugar snap pea pods
 sugar snap peas
 sugar substitute
+sugar substitute with aspartame
 sultana raisins
 sun- tomatoes
 sunflower seed oil
@@ -1495,6 +1539,7 @@ sweetened condensed milk
 sweetened cranberries
 sweetened flaked coconut
 sweetened strawberries
+sweetened whipped cream
 sweetened- cranberries
 swich bread
 swich rolls split
@@ -1659,6 +1704,7 @@ whole meal rye flour
 whole milk
 whole milk ricotta cheese
 whole or walnuts
+whole orange with peel
 whole peanuts
 whole pecans
 whole skinless boneless chicken breasts
