@@ -6,34 +6,36 @@ from nltk.tokenize import sent_tokenize
 from socket import error as SocketError
 
 # list of measurement units, prefix (space), and suffixes (space and plurals) for parsing ingredient
-measurementUnits = [ "teaspoon", "tablespoon", "cup", "package", "can", "jar", "clove", "pinch", "pound", 
-		"container", "ounce", "square", "cake", "bar", "envelope", "pint", "quart", "bottle", "gallon", 
-		"bunch", "dash", "drop", "fillet", "head", "sprig", "stalk", "leaf", "leaves", "loaf", "loaves", "slice" ]
-measurementSuffixes = [ " ", "s ", "es "]
+measurementUnits = ['teaspoon', 'tablespoon', 'stalk', 'square', 'sprig', 'slice', 'recipe', 'quart', 'pound',
+		'pint', 'pinch', 'package', 'ounce', 'loaves', 'loaf', 'leaves', 'leaf', 'jar', 'head', 'gallon',
+		'fluid ounce', 'fillet', 'envelope', 'drop', 'dash', 'cup', 'container', 'clove', 'can or bottle',
+		'can', 'bunch', 'box', 'bottle', 'bar']
+measurementSuffixes = [' ', 's ', 'es ']
 
 # list of adjectives and adverbs used to describe ingredients
-ingredientAdverbs = [ "very ", "coarsely ", "finely ", "thinly ", "lightly ", "freshly ", "stiffly ", "well ", 
-		"well-", "un", "super ", "roughly ", ""]
-ingredientAdjectives = [ "halved", "crumbled", "diced", "scalded", "chopped", "ground", "crushed", "refrigerated",
-		 "roasted", "lukewarm", "warmed", "light", "heavy", "warm", "hot", "cooled", "cool", "cold", "thawed", 
-		 "drained", "shredded", "mashed", "melted", "boiling", "dried", "beaten", "grated", "chilled", "fresh", 
-		 "frozen", "cubed", "toasted", "lean", "jumbo", "large", "small", "ripe", "minced", "dry", "peeled", 
-		 "cored", "seeded", "deseeded", "rinsed", "sifted", "pitted", "quartered", "stemmed", "packed", "cooked", 
-		 "strained", "strong", "weak", "pureed", "creamed", "fine", "firm", "slivered", "blanched", "juiced", 
-		 "washed", "trimmed", "soaked overnight", "to cover", "at room temperature", "room temperature", 
-		 "with juice reserved", "juice reserved", "or as needed", "with juice", 
-		 "deboned", "boned", "hardened", "hard", "softened", "soft"]
+ingredientAdverbs = ['well-', 'well ', 'very ', 'un', 'thinly ', 'super ', 'stiffly ', 'roughly ',
+		'lightly ', 'freshly ', 'finely ', 'coarsely ', '']
+ingredientAdjectives = ['with juice reserved', 'with juice', 'weak', 'washed', 'warmed', 'warm', 'trimmed',
+		'toasted', 'to cover', 'thinly', 'thick', 'thawed', 'strong', 'strained', 'stemmed', 'softened', 'soft',
+		'soaked overnight', 'small', 'slivered', 'skinless', 'sifted', 'shredded', 'seeded', 'scalded',
+		'room temperature', 'roasted', 'ripe', 'rinsed', 'refrigerated', 'quartered', 'pureed',
+		'pitted', 'peeled', 'packed', 'or as needed', 'minced', 'melted', 'mashed', 'lukewarm',
+		'light', 'lean', 'large', 'jumbo', 'juiced', 'juice reserved', 'hot', 'heavy', 'hardened',
+		'hard', 'halved', 'ground', 'grated', 'frozen', 'fresh', 'firm', 'fine', 'dry', 'dried',
+		'drained', 'diced', 'deseeded', 'deboned', 'cubed', 'crumbled', 'creamed',
+		'cored', 'cooled', 'cool', 'cooked', 'cold', 'chopped', 'chilled', 'boned', 'boiling',
+		'blanched', 'beaten', 'at room temperature']
 
-dividingPrepBeginnings = [ "divided", "separated", "split", "sliced", "cut", "torn", "broken" ]
-dividingPrepEndings = [ "diagonally", "lengthwise", "strips", "pieces", "crumbs", "chunks", "cubes", 
-		"rounds", "slices", "cubes", "lengths", "rings", "halves", "thirds", "fourths", "eighths", 
-		"florets", "parts", "squares", "triangles" ]
+dividingPrepBeginnings = ['broken', 'crushed', 'cut', 'divided', 'separated', 'sliced', 'split', 'torn']
+dividingPrepEndings = ['chunks', 'crumbs', 'cubes', 'cubes', 'diagonally', 'eighths', 'florets',
+		 'fourths', 'halves', 'lengths', 'lengthwise', 'parts', 'pieces', 'rings', 'rounds',
+		 'slices', 'squares', 'strips', 'thirds', 'triangles']
 
 def main():
 	jsonFile = open("recipes.json", "w+")
 	jsonFile.truncate()
 
-	parenthesesRegex = re.compile(r"\([^)]*\)")
+	parenthesesRegex = re.compile(r"\([^()]*\)")
 	allIngredients = set()
 
 	# for some reason recipes start at id=6663
@@ -61,11 +63,13 @@ def main():
 
 				# move parentheses to description
 				parentheses = parenthesesRegex.search(ingredientString)
-				if parentheses:
+				while parentheses:
 					searchString = parentheses.group()
 					ingredientString = ingredientString.replace(searchString, "")
 					ingredientDescriptions.append(searchString)
 
+					# find next parentheses
+					parentheses = parenthesesRegex.search(ingredientString)
 
 				# replace additional fractions with decimals
 				ingredientString = ingredientString.replace(" 1/2", ".5")
@@ -194,37 +198,36 @@ def main():
 
 
 def parseIngredient(ingredient):
-	# find first occurring measurement unit, then split text into array containing "ingredient", "amount", and "unit"
-	# ie "1 tablespoon white sugar" -> ["white sugar", "1", "tablespoon"]
-	for measurementUnit in measurementUnits:
-		if measurementUnit in ingredient:
-			for suffix in measurementSuffixes:
-				index = ingredient.find(measurementUnit + suffix)
-				if index > -1:
-
-					return {"ingredient": ingredient[index+len(measurementUnit + suffix):],
-							"amount": getFloatValue(ingredient[:index]),
-							"unit": measurementUnit}
-
 	# check if not ingredient, but separator
 	# ie "For Bread:"
 	if ingredient.find("For ") == 0 or (len(ingredient) > 0 and ingredient[-1:] == ":"):
 		return None
 
-	if " to taste" in ingredient:
-		return {"ingredient": ingredient, "amount": 0, "unit": "to taste" }
+	# find first occurring measurement unit, then split text into array containing "ingredient", "amount", and "unit"
+	# ie "1 tablespoon white sugar" -> ["white sugar", "1", "tablespoon"]
+	for measurementUnit in measurementUnits:
+		if measurementUnit in ingredient:
+			for suffix in measurementSuffixes:
+				searchString = " " + measurementUnit + suffix
+				index = ingredient.find(searchString)
+				if index > -1:
+					return {"ingredient": ingredient[index+len(searchString):],
+							"amount": getFloatValue(ingredient[:index]),
+							"unit": measurementUnit}
 
-	# no measurement unit found, "unit" is count
-	# ie "1 egg" -> ["egg", "1", "count"]
-	ingredient = ingredient.split(" ", 1)
-	try:
+	if ingredient[0].isdigit():
+		# no measurement unit found, "unit" is count
+		# ie "1 egg" -> ["egg", "1", "count"]
+		ingredient = ingredient.split(" ", 1)
 		return {"ingredient": ingredient[1],
 				"amount": getFloatValue(ingredient[0]),
 				"unit": "count" }
-	except IndexError as e:
-		print "\tINDEX ERROR"
-		print ingredient
-		return None
+	else:
+		# no amount for ingredient
+		return {"ingredient": ingredient,
+				"amount": 0,
+				"unit": "unit" }
+
 	
 
 
@@ -235,10 +238,9 @@ def getFloatValue(string):
 
 	try:
 		return eval(string)
-	except ValueError as e:
-		print "\tVALUE ERROR"
-		print string
-		return string
+	except NameError as e:
+		print "\tNAME ERROR: " + string
+		return getFloatValue(string[:string.find("+")])
 
 
 
