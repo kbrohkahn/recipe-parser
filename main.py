@@ -7,7 +7,7 @@ from socket import error as SocketError
 
 # list of measurement units, prefix (space), and suffixes (space and plurals) for parsing ingredient
 measurementUnits = ['teaspoon', 'tablespoon', 'stalk', 'square', 'sprig', 'slice', 'recipe', 'quart', 'pound',
-		'pint', 'pinch', 'package', 'ounce', 'loaves', 'loaf', 'leaves', 'leaf', 'jar', 'head', 'gallon',
+		'pint', 'pinch', 'package', 'ounce', 'loaves', 'leaves', 'jar', 'head', 'gallon',
 		'fluid ounce', 'fillet', 'envelope', 'drop', 'dash', 'cup', 'container', 'clove', 'can or bottle',
 		'can', 'bunch', 'box', 'bottle', 'bar']
 measurementSuffixes = [' ', 's ', 'es ']
@@ -15,11 +15,11 @@ measurementSuffixes = [' ', 's ', 'es ']
 # list of adjectives and adverbs used to describe ingredients
 ingredientAdverbs = ['well-', 'well ', 'very ', 'un', 'thinly ', 'super ', 'stiffly ', 'roughly ',
 		'lightly ', 'freshly ', 'finely ', 'coarsely ', '']
-ingredientAdjectives = ['with juice reserved', 'with juice', 'weak', 'washed', 'warmed', 'warm', 'trimmed',
+ingredientAdjectives = ['with juice reserved', 'with juice', 'weak', 'washed', 'warmed', 'lukewarm', 'warm', 'trimmed',
 		'toasted', 'to cover', 'thinly', 'thick', 'thawed', 'strong', 'strained', 'stemmed', 'softened', 'soft',
 		'soaked overnight', 'small', 'slivered', 'skinless', 'sifted', 'shredded', 'seeded', 'scalded',
 		'room temperature', 'roasted', 'ripe', 'rinsed', 'refrigerated', 'quartered', 'pureed',
-		'pitted', 'peeled', 'packed', 'or as needed', 'minced', 'melted', 'mashed', 'lukewarm',
+		'pitted', 'peeled', 'packed', 'or as needed', 'minced', 'melted', 'mashed',
 		'light', 'lean', 'large', 'jumbo', 'juiced', 'juice reserved', 'hot', 'heavy', 'hardened',
 		'hard', 'halved', 'ground', 'grated', 'frozen', 'fresh', 'firm', 'fine', 'dry', 'dried',
 		'drained', 'diced', 'deseeded', 'deboned', 'cubed', 'crumbled', 'creamed',
@@ -75,6 +75,10 @@ def main():
 				ingredientString = ingredientString.replace(" 1/2", ".5")
 				ingredientString = ingredientString.replace(" 1/4", ".25")
 				ingredientString = ingredientString.replace(" 1/8", ".125")
+
+				# replace singulars with annoying plurals
+				ingredientString = ingredientString.replace("loaf", "loaves")
+				ingredientString = ingredientString.replace("leaf", "leaves")
 				ingredient = parseIngredient(ingredientString)
 
 				if (ingredient == None):
@@ -147,12 +151,13 @@ def main():
 				ingredientName = ingredientName.replace("low fat", "low-fat")
 				ingredientName = ingredientName.replace("semisweet", "semi-sweet")
 				ingredientName = ingredientName.replace(" flavored", "-flavored")
+				ingredientName = ingredientName.replace("whole-", "whole ")
 
 				# clean up ingredient name				
 				ingredientName = ingredientName.replace(" and ", "")
-				ingredientName = ingredientName.replace(", ", "")
+				ingredientName = ingredientName.replace(",", "")
 				ingredientName = ingredientName.replace(" - ", "")
-				ingredientName = ingredientName.replace("  ", " ")
+				ingredientName = " ".join(ingredientName.split())
 				ingredientName = ingredientName.strip()
 
 				# check if singular noun (without last letter "s") is in list of all ingredients, if so remove it
@@ -190,8 +195,10 @@ def main():
 
 		except urllib2.HTTPError as e:
 			print "No recipe with id={}".format(recipeId)
+		except urllib2.URLError as e:
+			print "\tURL ERROR"
 		except SocketError as e:
-			print "Socket error"
+			print "\tSOCKET ERROR"
 
 	jsonFile.close()
 
@@ -241,6 +248,10 @@ def getFloatValue(string):
 	except NameError as e:
 		print "\tNAME ERROR: " + string
 		return getFloatValue(string[:string.find("+")])
+	except SyntaxError as e:
+		print "\tSYNTAX ERROR: " + string
+		return string
+
 
 
 
