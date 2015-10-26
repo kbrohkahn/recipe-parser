@@ -5,6 +5,8 @@ from bs4 import BeautifulSoup
 from nltk.tokenize import sent_tokenize
 from socket import error as SocketError
 
+optionalStrings = ['(optional)', 'or to taste', 'or more as needed', 'or as needed', 'as needed']
+
 # list of measurement units, prefix (space), and suffixes (space and plurals) for parsing ingredient
 measurementUnits = ['teaspoon', 'tablespoon', 'cup', 'container', 'packet', 'bag', 'quart', 'pound',
 		'can', 'bottle', 'pint', 'package', 'fluid ounce', 'ounce', 'jar', 'head', 'gallon', 'drop', 'envelope', 'bar',
@@ -14,8 +16,8 @@ measurementUnits = ['teaspoon', 'tablespoon', 'cup', 'container', 'packet', 'bag
 # list of adjectives and adverbs used to describe ingredients
 adverbs = ['well', 'very', 'super']
 prepositions = ['in', 'into']
-descriptionPrefixes = ['un', 'de', 'well-']
-descriptionSuffixes = ['ly', 'less', 'ened', 'ed', '']
+#descriptionPrefixes = ['un', 'de', 'well-']
+#descriptionSuffixes = ['ly', 'less', 'ened', 'ed', '']
 descriptions = ['baked', 'beaten', 'blanched', 'boiled', 'boiling', 'boned', 'breaded', 'brewed', 'chilled',
 		'chopped', 'cleaned', 'cooked', 'cooled', 'cored', 'creamed', 'crumbled', 'cubed', 'deboned',
 		'deseeded', 'diced', 'drained', 'dried', 'grated', 'grilled', 'halved', 'hardened', 'heated',
@@ -32,13 +34,22 @@ nonFirstWordDescriptions = ['creamed', 'whole', 'whipped']
 descriptionsWithPredecessor = ['removed', 'reserved']
 descriptionsWithSuccessor = ['for', 'with']
 
-otherDescriptions = ['soaked overnight', 'to cover', 'at room temperature', 'room temperature']
+#otherDescriptions = ['soaked overnight', 'to cover', 'at room temperature', 'room temperature']
 
-optionalStrings = ['(optional)', 'or to taste', 'or more as needed', 'or as needed', 'as needed']
 
-# dividingPrepEndings = ['lengthwise', 'diagonally', 'chunks', 'crumbs', 'cubes', 'cubes', 'eighths', 'florets',
-		 # 'fourths', 'halves', 'lengths', 'parts', 'pieces', 'rings', 'rounds',
-		 # 'slices', 'squares', 'strips', 'thirds', 'triangles', 'wedges', 'half', 'segments']
+
+# arrays for labeling ingredients (categorized for the purpose of cooking, to tomato is veg, not fruit)
+nonDairyMilk = [ "almond milk", "soy milk", "coconut milk" ]
+dairyIngredients = [ "butter", "cream cheese", "cottage cheese", "sour cream", "cheese", "cream", "milk"]
+cheeses = [ "cheddar cheese", "pepperjack cheese", "pepper jack cheese", "mozzarella cheese", "muenster cheese" ]
+animalProducts = [ "egg", "honey" ]
+meats = [ "pepperoni", "pork", "sausage", "turkey", "chicken" ]
+fishes = [ "salmon" ] 
+nutIngredients = [ "almond extract", "almonds", "walnuts", "peanuts" ]
+alcoholicIngredients = [ "beer", "wine", "rum", "vodka", "white wine", "red wine", "bourbon" ]
+spices = [ "basil", "black pepper", "red pepper", "red pepper flakes", "anise", "caraway", "cardamom", 
+		"cassava", "cayenne", "cinnamon", "fennel", "flax", "garlic", "ginger", "mace", "nutmeg", "oregano",
+		"poppy", "rhubarb", "salt", "chocolate", "sesame", "sunflower", "thyme", "cocoa", "vanilla" ]
 
 def main():
 	jsonFile = open("recipes.json", "w+")
@@ -60,10 +71,13 @@ def main():
 
 			title = soup.find("h1", class_="recipe-summary__h1").text
 			print title
+
 			ingredientObjects = soup.find_all("span", class_="recipe-ingred_txt")
 			directionObjects = soup.find_all("span", class_="recipe-directions__list--item")
+			servingSpan = soup.find("span", class_="servings-count")
+			calorieSpan = soup.find("span", class_="calorie-count")
 
-			# INGREDIENTS
+			# ingredients
 			# 2 spans with "Add all" and 1 empty, always last 3 spans
 			count = len(ingredientObjects) - 3
 			ingredients = []
@@ -113,7 +127,9 @@ def main():
 				while "style" in parsedIngredient:
 					parsedIngredient.remove("style")
 
-				# GET AMOUNT
+				#
+				# get amount
+				#
 				amountString = "0"
 				while len(parsedIngredient) > 0:
 					# get first word
@@ -130,20 +146,24 @@ def main():
 
 				ingredient["amount"] = eval(amountString)
 
-				# GET UNIT
+				#
+				# get unit
+				#
 				unitString = getUnitString(parsedIngredient)
 				if unitString == None:
 					unitString = "Count"
 				else:
 					parsedIngredient.remove(unitString)
-					if parsedIngredient[0] == "or":
+					if len(parsedIngredient) > 1 and parsedIngredient[0] == "or":
 						unitString += " " + parsedIngredient[0] + " " + parsedIngredient[1]
 						del parsedIngredient[0]
 						del parsedIngredient[1]
 
 				ingredient["unit"] = unitString
 
-				# GET DESCRIPTIONS
+				#
+				# get descriptions
+				#
 				index = 0
 				descriptionString = ""
 				while index < len(parsedIngredient):
@@ -162,7 +182,7 @@ def main():
 						wordToDescription = True
 						descriptionPhraseComplete = False
 
-					if not wordToDescription and word in descriptionsWithSuccessor:
+					if not wordToDescription and word in descriptionsWithSuccessor and index + 1 < len(parsedIngredient):
 						# word followed immediately by successor, ie "with pudding"
 						wordToDescription = True
 						del parsedIngredient[index]
@@ -172,7 +192,7 @@ def main():
 
 						word=parsedIngredient[index]
 
-					if not wordToDescription and word in descriptionsWithPredecessor:
+					if not wordToDescription and word in descriptionsWithPredecessor and index > 1:
 						# word followed immediately by successor, ie "pudding reserved"
 						index-=1
 						word=parsedIngredient[index]
@@ -212,7 +232,9 @@ def main():
 					else:
 						index+=1
 
-				# GET INGREDIENT
+				#
+				# get ingredient
+				#
 				ingredientString = " ".join(parsedIngredient)
 
 				# standardize "-" styling
@@ -226,6 +248,7 @@ def main():
 				ingredientString = ingredientString.replace("semisweet", "semi-sweet")
 				ingredientString = ingredientString.replace(" flavored", "-flavored")
 				ingredientString = ingredientString.replace("all purpose", "all-purpose")
+				ingredientString = ingredientString.replace("jell o", "jell-o")
 
 				# check if singular noun (without last letter "s") is in list of all ingredients, if so remove it
 				if ingredientString[:-1] in allIngredients:
@@ -237,10 +260,33 @@ def main():
 					allIngredients.add(ingredientString.lower())
 
 				ingredient["ingredient"] = ingredientString
-				ingredient["labels"] = getLabels(ingredientString)
+
+				#
+				# get labels
+				#
+				labels = []
+				if ingredient in dairyIngredients:
+					labels.append("dairy")
+				if ingredient in meats:
+					labels.append("meat")
+				if ingredient in fishes:
+					labels.append("fish")
+				if ingredient in animalProducts:
+					labels.append("animalProduct")
+				if ingredient in spices:
+					labels.append("spice")
+				if ingredient in nutIngredients:
+					labels.append("nut")
+				if ingredient in alcoholicIngredients:
+					labels.append("alcohol")
+				ingredient["labels"] = labels
+				
 				ingredients.append(ingredient)
 
-			# DIRECTIONS
+			#
+			# get directions
+			#
+
 			# 1 empty span at end
 			count = len(directionObjects) - 1
 			directionsString = directionObjects[0].text
@@ -250,7 +296,9 @@ def main():
 			jsonFile.write(json.dumps({"id": recipeId,
 										"name": title,
 										"ingredients": ingredients, 
-										"directions": sent_tokenize(directionsString)},
+										"directions": sent_tokenize(directionsString),
+										"servings": (servingSpan.contents[0].text if servingSpan else ""),
+										"calories": (calorieSpan.contents[0].text if calorieSpan else "")},
 					sort_keys=True,
 					indent=4,
 					separators=(',', ': ')))
@@ -273,7 +321,6 @@ def main():
 
 
 
-
 def getUnitString(parsedIngredient):
 	unitString = parsedIngredient[0]
 	for measurementUnit in measurementUnits:
@@ -293,44 +340,3 @@ def getUnitString(parsedIngredient):
 				return word
 
 	return None
-
-
-
-# arrays for labeling ingredients (categorized for the purpose of cooking, to tomato is veg, not fruit)
-nonDairyMilk = [ "almond milk", "soy milk", "coconut milk" ]
-dairyIngredients = [ "butter", "cream cheese", "cottage cheese", "sour cream", "cheese", "cream", "milk"]
-cheeses = [ "cheddar cheese", "pepperjack cheese", "pepper jack cheese", "mozzarella cheese", "muenster cheese" ]
-animalProducts = [ "egg", "honey" ]
-meats = [ "pepperoni", "pork", "sausage", "turkey", "chicken" ]
-fishes = [ "salmon" ] 
-nutIngredients = [ "almond extract", "almonds", "walnuts", "peanuts" ]
-alcoholicIngredients = [ "beer", "wine", "rum", "vodka", "white wine", "red wine", "bourbon" ]
-spices = [ "basil", "black pepper", "red pepper", "red pepper flakes", "anise", "caraway", "cardamom", 
-		"cassava", "cayenne", "cinnamon", "fennel", "flax", "garlic", "ginger", "mace", "nutmeg", "oregano",
-		"poppy", "rhubarb", "salt", "chocolate", "sesame", "sunflower", "thyme", "cocoa", "vanilla" ]
-
-def getLabels(ingredient):
-	labels = []
-
-	if ingredient in dairyIngredients:
-		labels.append("dairy")
-
-	if ingredient in meats:
-		labels.append("meat")
-
-	if ingredient in fishes:
-		labels.append("fish")
-
-	if ingredient in animalProducts:
-		labels.append("animalProduct")
-
-	if ingredient in spices:
-		labels.append("spice")
-
-	if ingredient in nutIngredients:
-		labels.append("nut")
-
-	if ingredient in alcoholicIngredients:
-		labels.append("alcohol")
-
-	return labels
