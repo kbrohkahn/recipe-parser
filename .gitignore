@@ -1,4 +1,9 @@
 #ignore output files
 recipes.json
-recipes_working.json
 ingredients.txt
+
+#ignore massive recipe file
+recipes_working.json
+
+#ftp files
+.ftpquota 

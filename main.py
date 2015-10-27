@@ -10,7 +10,7 @@ from socket import error as SocketError
 measurementUnits = ['teaspoon', 'tablespoon', 'cup', 'container', 'packet', 'bag', 'quart', 'pound',
 		'can', 'bottle', 'pint', 'package', 'fluid ounce', 'ounce', 'jar', 'head', 'gallon', 'drop', 'envelope', 'bar',
 		'box', 'pinch', 'dash', 'bunch', 'recipe', 'clove', 'layer', 'slice', 'roll', 'link', 'bulb',
-		'stalk', 'square', 'sprig', 'fillet', 'piece', 'leg', 'thigh', 'cube', 'granule', 'shell', 'strip',
+		'stalk', 'square', 'sprig', 'fillet', 'piece', 'leg', 'thigh', 'cube', 'granule', 'shell', 'strip', 'tray',
 		'leaf', 'leaves', 'loaf', 'loaves', 'half', 'halves']
 
 # list of length units used to ignore preceding digit, ie "1 12 inch pan""
@@ -208,12 +208,12 @@ def main():
 					# search through hyphenated suffixes, ie "fatfree"
 					for hypenatedSuffix in hypenatedSuffixes:
 						if hypenatedSuffix in word:
-							word.replace(hypenatedSuffix, "-" + hypenatedSuffix)
+							word=word.replace(hypenatedSuffix, "-" + hypenatedSuffix)
 					
 					# search through hyphenated suffixes, ie "lowfat"
 					for hypenatedPrefix in hypenatedPrefixes:
 						if word.find(hypenatedPrefix) == 0:
-							word.replace(hypenatedPrefix, hypenatedPrefix + "-")
+							word=word.replace(hypenatedPrefix, hypenatedPrefix + "-")
 
 					# adverb, wait for following adjective
 					if not wordToDescription and word in adverbs:
@@ -274,7 +274,7 @@ def main():
 				# remove "*", add footnote to description
 				if "*" in ingredientString:
 					ingredient["descriptions"].append("* see footnote")
-					ingredientString.replace("*", "")
+					ingredientString = ingredientString.replace("*", "")
 
 				# standardize "-" styling and fix spelling errors
 				ingredientString = ingredientString.replace("- ", "-")
@@ -356,16 +356,18 @@ def main():
 			if recipeId%10 == 0:
 				ingredientsFile = open("ingredients.txt", "w+")
 				ingredientsFile.truncate()
-				for ingredient in sorted(allIngredients):
+				for ingredient in sorted(allIngredients, key=lambda s: s.lower()):
 					ingredientsFile.write(ingredient.encode('ascii', 'ignore') + "\n")
 				ingredientsFile.close()
 
-		except urllib2.HTTPError as e:
+		except urllib2.HTTPError:
 			print "No recipe with id={}".format(recipeId)
-		except urllib2.URLError as e:
+		except urllib2.URLError:
 			print "\tURL ERROR"
-		except SocketError as e:
+		except SocketError:
 			print "\tSOCKET ERROR"
+		except httplib.IncompleteRead:
+			print "\tINCOMPLETE READ"
 
 	jsonFile.close()
 
