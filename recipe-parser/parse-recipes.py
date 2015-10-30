@@ -198,7 +198,7 @@ for recipeId in range(6663, 100000):
 			#
 			unitString = getUnitString(parsedIngredient)
 			if unitString == None:
-				unitString = "Count"
+				unitString = "count"
 			else:
 				parsedIngredient.remove(unitString)
 				if len(parsedIngredient) > 1 and parsedIngredient[0] == "or":
@@ -360,7 +360,18 @@ for recipeId in range(6663, 100000):
 		directionsString = directionObjects[0].text
 		for i in range(1, count):
 			directionsString += " " + directionObjects[i].text
+		
+		directionsArray = sent_tokenize(directionsString)
+		directions = []
+		for i in range(0, len(directionsArray)):
+			direction = {}
+			direction["step"] = i
+			direction["direction"] = directionsArray[i]
+			directions.append(direction)
 
+		#
+		# get footnotes
+		#
 		footnotes = []
 		if footnotesSection:
 			for footnote in footnotesSection.find_all("li"):
@@ -388,7 +399,7 @@ for recipeId in range(6663, 100000):
 		json.dump({"id": recipeId,
 				"name": title,
 				"ingredients": ingredients, 
-				"directions": sent_tokenize(directionsString),
+				"directions": directions,
 				"footnotes": footnotes,
 				"servings": servings,
 				"calories": calories},

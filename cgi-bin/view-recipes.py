@@ -3,134 +3,216 @@ import cgi
 import json
 import sqlite3
 
-
 def htmlHeader():
 	print """Content-type:text/html\n\n
 		<!DOCTYPE html>
 		<html>
 		<head>
-			<title>Recipe Parser</title>
+			<title>View recipes</title>
 			<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		</head>
 		<body>
-			<h1>Recipe Parser</h1>
-		"""
+			<div>
+			<h1>Recipe Parser</h1>"""
 
 def htmlFooter():
-	print """
+	print """</div>
+			<br>
+			<br>
+			<div>
+				All recipes parsed from <a href="http://allrecipes.com/">allrecipes.com</a>
+			</div>
 		</body>
-		</html>
-		"""
+		</html>"""
 
-def printRecipes():
-	# print recipe names
-	print "<h2>Recipes</h2>"
-	print "<select>"
-	for name in recipeNames:
-		print "<option value='%s'>%s</option>" % (name[0].encode('utf-8'), name[0].encode('utf-8'))
-	print "</select>"
-
-	# print ingredients
-	print "<h2>Ingredients</h2>"
-	print "<select>"
-	for ingredient in ingredients:
-		print "<option value='%s'>%s</option>" % (ingredient[0].encode('utf-8'), ingredient[0].encode('utf-8'))
-	print "</select>"
-
-def encode(string):
-	return string.replace("'", "''").encode("utf-8")
-
+# recreate SQLite database from JSON file
 def recreateDatabase():
-	connection = None
-	recipeNames = None
+	allRecipes = []
+	with open("../recipe-parser/recipes.json") as jsonFile:
+		for line in jsonFile:
+			allRecipes.append(json.loads(line))
+
 	try:
 		# open database and get cursor
 		connection = sqlite3.connect('recipes.db')
 		cursor = connection.cursor()
 
-		cursor.executescript("DROP TABLE IF EXISTS Recipes;")
-		cursor.executescript("CREATE TABLE Recipes(Id INT, Name TEXT, Servings INT, Calories INT);")
+		cursor.executescript("""
+			DROP TABLE IF EXISTS Recipes;
+			CREATE TABLE Recipes(Id INT, Name TEXT, Servings INT, Calories INT);
 
-		cursor.executescript("DROP TABLE IF EXISTS Directions;")
-		cursor.executescript("CREATE TABLE Directions(Id INT, RecipeId INT, Direction TEXT);")
+			DROP TABLE IF EXISTS Directions;
+			CREATE TABLE Directions(RecipeId INT, Step INT, Direction TEXT);
 
-		cursor.executescript("DROP TABLE IF EXISTS Footnotes;")
-		cursor.executescript("CREATE TABLE Footnotes(Id INT, RecipeId INT, Footnote TEXT);")
+			DROP TABLE IF EXISTS Footnotes;
+			CREATE TABLE Footnotes(RecipeId INT, Footnote TEXT);
 		
-		cursor.executescript("DROP TABLE IF EXISTS Ingredients;")
-		cursor.executescript("CREATE TABLE Ingredients(Id INT, RecipeId INT, Name TEXT, Amount INT, Unit TEXT);")
+			DROP TABLE IF EXISTS Ingredients;
+			CREATE TABLE Ingredients(Id INT, RecipeId INT, Name TEXT, Amount INT, Unit TEXT);
 		
-		cursor.executescript("DROP TABLE IF EXISTS IngredientDescriptions;")
-		cursor.executescript("CREATE TABLE IngredientDescriptions(Id INT, IngredientId INT, Description TEXT);")
+			DROP TABLE IF EXISTS IngredientDescriptions;
+			CREATE TABLE IngredientDescriptions(IngredientId INT, Description TEXT);
+		""")
 
-		with open("../recipe-parser/recipes.json") as jsonFile:
-			for line in jsonFile:
-				recipe = json.loads(line)
-				if '"' not in recipe["name"]:
-					recipeId = recipe["id"]
-					cursor.executescript("INSERT INTO Recipes VALUES({0}, '{1}', {2}, {3});".format(recipeId, encode(recipe["name"]), recipe["servings"], recipe["calories"]))
+		for recipe in allRecipes:
+			recipeId = recipe["id"]
+			cursor.execute("INSERT INTO Recipes VALUES(?, ?, ?, ?);", (recipeId, recipe["name"], recipe["servings"], recipe["calories"]))
 
-					for i in range(0, len(recipe["directions"])):
-						cursor.executescript("INSERT INTO Directions VALUES({0}, {1}, '{2}');".format(recipeId, recipeId * 100 + i, encode(recipe["directions"][i])))
+			for direction in recipe["directions"]:
+				cursor.execute("INSERT INTO Directions VALUES(?, ?, ?);", (recipeId, direction["step"], direction["direction"]))
 
-					for i in range(0, len(recipe["footnotes"])):
-						cursor.executescript("INSERT INTO Footnotes VALUES({0}, {1}, '{2}');".format(recipeId, recipeId * 100 + i, encode(recipe["footnotes"][i])))
+			for footnote in recipe["footnotes"]:
+				cursor.execute("INSERT INTO Footnotes VALUES(?, ?);", (recipeId, footnote))
 
-					for i in range(0, len(recipe["ingredients"])):
-						ingredient = recipe["ingredients"][i]
-						cursor.executescript("INSERT INTO Ingredients VALUES({0}, {1}, '{2}', {3}, '{4}');".format(recipeId, recipeId * 100 + i, encode(ingredient["ingredient"]), ingredient["amount"], ingredient["unit"]))
+			i = 0
+			for ingredient in recipe["ingredients"]:
+				ingredientId = recipeId * 100 + i
+				cursor.execute("INSERT INTO Ingredients VALUES(?, ?, ?, ?, ?);", (ingredientId, recipeId, ingredient["ingredient"], ingredient["amount"], ingredient["unit"]))
 
-						for i in range(0, len(ingredient["descriptions"])):
-							cursor.executescript("INSERT INTO IngredientDescriptions VALUES({0}, {1}, '{2}');".format(recipeId, recipeId * 100 + i, encode(ingredient["descriptions"][i])))
+				for ingredientDescription in ingredient["descriptions"]:
+					cursor.execute("INSERT INTO IngredientDescriptions VALUES(?, ?);", (ingredientId, ingredientDescription))
+
+				i+=1
 
 		connection.commit()
+		
+		# close connection		
+		connection.close()
+
 	# sqlite error
 	except sqlite3.Error, e:
 		print "Error %s:" % e.args[0]
 
-	# close connection		
-	finally:
-		if connection:
-			connection.close()
+# return recipe object loaded from database
+def loadRecipe(recipeName):
+	# open database and get cursor
+	connection = sqlite3.connect('recipes.db')
+	cursor = connection.cursor()
+
+	cursor.execute("SELECT * FROM Recipes WHERE Name=?", (recipeName,))
+	recipeArray = cursor.fetchone()
+
+	if recipeArray == None:
+		print "<b>Error: recipe not found</b>"
+		return None
+
+	recipe = {}
+	recipe["id"] = recipeArray[0]
+	recipe["name"] = recipeArray[1]
+	recipe["servings"] = recipeArray[2]
+	recipe["calories"] = recipeArray[3]
+	
+	cursor.execute("SELECT Direction FROM Directions WHERE RecipeId=? ORDER BY Step ASC", (recipe["id"],))
+	recipe["directions"] = cursor.fetchall()
+
+	cursor.execute("SELECT Footnote FROM Footnotes WHERE RecipeId=?", (recipe["id"],))
+	recipe["footnotes"] = cursor.fetchall()
+
+	cursor.execute("SELECT * FROM Ingredients WHERE RecipeId=?", (recipe["id"],))
+	ingredientsArray = cursor.fetchall()
+
+	recipe["ingredients"] = []
+	for ingredientItem in ingredientsArray:
+		ingredient = {}
+		ingredient["ingredient"] = ingredientItem[2]
+		ingredient["amount"] = ingredientItem[3]
+		ingredient["unit"] = ingredientItem[4]
+
+		cursor.execute("SELECT Description FROM IngredientDescriptions WHERE IngredientId=?", (ingredientItem[0],))
+		ingredient["descriptions"] = cursor.fetchall()
+
+		recipe["ingredients"].append(ingredient)
+
+	return recipe
+
+# print list of all recipes and ingredients
+def printAllRecipes():
+	# open database and get cursor
+	connection = sqlite3.connect('recipes.db')
+	cursor = connection.cursor()
+
+
+	# get all recipes
+	cursor.execute("SELECT Name FROM Recipes")
+	recipeNames = sorted(cursor.fetchall())
+	
+	# close connection
+	connection.close()
+
+	# print recipe names
+	print """<form method="post" action="view-recipes.py">
+				<div>Select recipe:<select name="recipe">"""
+
+	for name in recipeNames:
+		print "<option value='{0}'{1}>{2}</option>".format(name[0], " selected" if name[0] == selectedRecipe else "", name[0])
+
+	print"""</select>
+			<input type="submit" value="Submit">
+		</div
+	</form>"""
+
+# print single recipe
+def displayRecipe(recipeName):
+	recipe = loadRecipe(recipeName)
+
+	# print recipe, servings, and calories
+	print """
+		<h2>%s</h2>
+		<div>Servings: %s</div>
+		<div>Calories per serving: %s</div>
+		<h4>Ingredients</h4><ul>
+	""" % (recipe["name"], recipe["servings"], recipe["calories"])
+
+	# print list of ingredients
+	for ingredient in recipe["ingredients"]:
+		# print ingredient
+		print "<li>%s</li><ul>" % (ingredient["ingredient"])
+		
+		# print amount and unit if unit exists (is not "count")
+		print "<li>{0:10.2f}".format(ingredient["amount"])
+		if ingredient["unit"] is not "count":
+			print " %s" % (ingredient["unit"])
+		print "</li>"
+
+		# print list of ingredient descriptions
+		for description in ingredient["descriptions"]:
+			print "<li>%s</li>" % (description)
+		print "</ul>"
+	
+	# print ordered list of directions
+	print "</ul><h4>Directions</h4><ol>"
+	for direction in recipe["directions"]:
+		print "<li>%s</li>" % (direction)
+
+	# print list of footnotes
+	print "</ol><h4>Footnotes</h4><ul>"
+	for footnote in recipe["footnotes"]:
+		print "<li>{0}</li>".format(footnote[0])
+	print "</ul>"
+
 
 #main program
 try:
 	htmlHeader()
 
-	connection = None
-	recipeNames = None
 	try:
-		# open database and get cursor
-		connection = sqlite3.connect('recipes.db')
-		cursor = connection.cursor()
+		# TODO only use this when JSON file changes
+		recreateDatabase()
 
-		# recreateDatabase()
+		# get form selection
+		form = cgi.FieldStorage()
+		selectedRecipe = form.getvalue("recipe", "none")
 
-		# get all recipes
-		cursor.execute("SELECT Name FROM Recipes")
-		recipeNames = sorted(cursor.fetchall())
+		printAllRecipes()
 
-		cursor.execute("SELECT Name FROM Ingredients")
-		ingredients = sorted(set(cursor.fetchall()))
+		# if exists, display form selection
+		if selectedRecipe is not "none":
+			displayRecipe(selectedRecipe)
 
-	# sqlite error
+
 	except sqlite3.Error, e:
 		print "Error %s:" % e.args[0]
-
-	# close connection		
-	finally:
-		if connection:
-			connection.close()
-
-	if recipeNames == None:
-		print "<b>Error: unable to load recipes</b>"
-	else:
-		printRecipes()
 
 	htmlFooter()
 except:
 	cgi.print_exception()
-
-
-
-
