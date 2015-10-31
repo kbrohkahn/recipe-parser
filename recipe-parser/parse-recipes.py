@@ -183,7 +183,8 @@ for recipeId in range(6663, 100000):
 
 				# first letter not a digit, so amountString is complete
 				# or next word is length unit, ie "1 12x12 INCH pan"
-				if not firstWord[0].isdigit() or len(parsedIngredient) > 1 and parsedIngredient[1] in lengthUnits:
+				if (not firstWord[0].isdigit() and "%" not in firstWord[0]) or \
+					(len(parsedIngredient) > 1 and parsedIngredient[1] in lengthUnits):
 					break
 
 				# move first word to amountString

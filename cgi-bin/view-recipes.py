@@ -8,12 +8,12 @@ def htmlHeader():
 		<!DOCTYPE html>
 		<html>
 		<head>
-			<title>View recipes</title>
+			<title>Recipe Parser</title>
 			<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		</head>
 		<body>
 			<div>
-			<h1>Recipe Parser</h1>"""
+			<h1>View recipes</h1>"""
 
 def htmlFooter():
 	print """</div>
@@ -141,13 +141,15 @@ def printAllRecipes():
 
 	# print recipe names
 	print """<form method="post" action="view-recipes.py">
-				<div>Select recipe:<select name="recipe">"""
+				<div><select name="recipe">"""
+
 
 	for name in recipeNames:
-		print "<option value='{0}'{1}>{2}</option>".format(name[0], " selected" if name[0] == selectedRecipe else "", name[0])
+		nameString = name[0].encode('utf-8')
+		print "<option value='{0}'{1}>{2}</option>".format(nameString, " selected" if nameString == selectedRecipe else "", nameString)
 
 	print"""</select>
-			<input type="submit" value="Submit">
+			<input type="submit" value="View recipe">
 		</div
 	</form>"""
 
@@ -157,11 +159,12 @@ def displayRecipe(recipeName):
 
 	# print recipe, servings, and calories
 	print """
-		<h2>%s</h2>
+		<br>
 		<div>Servings: %s</div>
 		<div>Calories per serving: %s</div>
+		<div><a target=blank href='http://allrecipes.com/recipe/%d'>View on allrecipes.com</a></div>
 		<h4>Ingredients</h4><ul>
-	""" % (recipe["name"], recipe["servings"], recipe["calories"])
+	""" % (recipe["servings"], recipe["calories"], recipe["id"])
 
 	# print list of ingredients
 	for ingredient in recipe["ingredients"]:
@@ -197,7 +200,7 @@ try:
 
 	try:
 		# TODO only use this when JSON file changes
-		recreateDatabase()
+		# recreateDatabase()
 
 		# get form selection
 		form = cgi.FieldStorage()
