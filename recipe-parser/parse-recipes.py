@@ -20,14 +20,10 @@ def getUnitString(parsedIngredient):
 			if equalIncludingPlurals(word, "cake"):
 				return word
 
-	return None
-
-
+	return ""
 
 def equalIncludingPlurals(string, singularString):
 	return string == singularString or string == singularString + "s" or string == singularString + "es"
-
-
 
 # list of measurement units for parsing ingredient
 measurementUnits = ['teaspoon', 'tablespoon', 'cup', 'container', 'packet', 'bag', 'quart', 'pound',
@@ -72,6 +68,19 @@ descriptionsWithPredecessor = ['removed', 'reserved', 'inch', 'inches', 'old', '
 # strings indicating ingredient as optional
 optionalStrings = ['optional', 'to taste', 'as needed', 'if desired']
 
+# array of types of recipes
+recipeTypes = ['Bagels', 'Biscuits', 'Biscuits', 'Bread', 'Brownies', 'Buns', 'Burritos', 
+		'Cake', 'Calzone', 'Candy', 'Casserole', 'Challah', 'Cheesecake', 'Chicken', 
+		'Coleslaw', 'Cookies', 'Cornbread', 'Crisps', 'Cupcakes', 'Doughnuts', 'Dumplings', 
+		'Frosting', 'Fruitcake', 'Gingerbread', 'Icing', 'Loaf', 'Loaves', 'Macaroons', 'Muffins', 
+		'Mussels', 'Pasta', 'Pie', 'Pizza', 'Pretzels', 'Pudding', 'Relish', 'Roll', 'Salad', 
+		'Sauce', 'Scones', 'Slushies', 'Smoothie', 'Soup', 'Tart', 'Tortilla', 'Turkey', 'Waffles',
+		'Sourdough', 'Pinwheels', 'Biscotti', 'Cookie Mix', 'Snowballs', 'Sandtarts', 'Snaps',
+		'Pancakes', 'Bars', 'Squares', 'Balls', 'Brittle', 'Wafers', 'Chews', 'Crinkles',
+		'Macaroni and Cheese', 'Mac and Cheese', 'Spaghetti', 'Ziti', 'Lasagna', 'Alfredo',
+		'Linguine', 'Manicotti', 'Marzetti', 'Crust', 'Pastry', 'Empanadas', 'Thumbprints',
+		'Eggs', 'Fudge']
+
 # arrays for labeling ingredients (categorized for the purpose of cooking, to tomato is veg, not fruit)
 nonDairyMilk = [ "almond milk", "soy milk", "coconut milk" ]
 dairyIngredients = [ "butter", "cream cheese", "cottage cheese", "sour cream", "cheese", "cream", "milk"]
@@ -85,7 +94,6 @@ spices = [ "basil", "black pepper", "red pepper", "red pepper flakes", "anise", 
 		"cassava", "cayenne", "cinnamon", "fennel", "flax", "garlic", "ginger", "mace", "nutmeg", "oregano",
 		"poppy", "rhubarb", "salt", "chocolate", "sesame", "sunflower", "thyme", "cocoa", "vanilla" ]
 
-
 # main function
 jsonFile = open("recipes.json", "w+")
 jsonFile.truncate()
@@ -95,7 +103,7 @@ parenthesesRegex = re.compile(r"\([^()]*\)")
 allIngredients = set()
 
 # for some reason recipes start at id=6663
-for recipeId in range(6663, 100000):
+for recipeId in range(6663, 16385):
 	# ignore religion cakes messing up ingredient list
 	if recipeId == 7678 or recipeId == 8266:
 		continue
@@ -104,8 +112,24 @@ for recipeId in range(6663, 100000):
 		page = urllib2.urlopen("http://allrecipes.com/recipe/{}".format(recipeId)).read()
 		soup = BeautifulSoup(page, "html.parser")
 
+		#
+		# get recipe name
+		#
 		title = soup.find("h1", class_="recipe-summary__h1").text
-		print title
+		title = title.replace("Linguini", "Linguine")
+
+		#
+		# get recipe type
+		#
+		recipeType = None
+		for searchString in recipeTypes:
+			if searchString in title:
+				recipeType = searchString
+				break
+
+		if recipeType == None:
+			recipeType = "Various"
+			print "Unknown: " + title
 
 		ingredientObjects = soup.find_all("span", class_="recipe-ingred_txt")
 		directionObjects = soup.find_all("span", class_="recipe-directions__list--item")
@@ -171,8 +195,6 @@ for recipeId in range(6663, 100000):
 					parsedIngredient = parsedIngredient[:splitIndex]
 					break
 
-
-
 			#
 			# get amount
 			#
@@ -198,9 +220,7 @@ for recipeId in range(6663, 100000):
 			# get unit
 			#
 			unitString = getUnitString(parsedIngredient)
-			if unitString == None:
-				unitString = "count"
-			else:
+			if unitString is not "":
 				parsedIngredient.remove(unitString)
 				if len(parsedIngredient) > 1 and parsedIngredient[0] == "or":
 					unitString += " " + parsedIngredient[0] + " " + parsedIngredient[1]
@@ -396,9 +416,9 @@ for recipeId in range(6663, 100000):
 		else:
 			calories = 0
 
-
 		json.dump({"id": recipeId,
 				"name": title,
+				"type": recipeType,
 				"ingredients": ingredients, 
 				"directions": directions,
 				"footnotes": footnotes,

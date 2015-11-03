@@ -1,0 +1,11 @@
+body { margin: 0 8px;}
+
+@media (min-width: 768px) {
+	.form-inline .form-group { margin-right: 8px; }
+	.form-inline #recipeSelectGroup .form-control { width: 475px; }
+	.form-inline #recipeTypeSelectGroup .form-control { width: 125px; }
+}
+
+@media (max-width: 767px) {
+	.form-inline .btn {width: 100%;}
+}
