@@ -19,15 +19,33 @@ def htmlHeader():
 			<script src="../assets/js/main.js" type="text/javascript"></script>
 		</head>
 		<body>
-			<div>
-			<h1>View recipes</h1>"""
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-12">
+						<form method="post" action="view-recipes.py" id="recipe-search-form">
+							<div class="form-group">
+								<label for="recipe-input-group">Enter recipe name</label>
+								<div class="input-group" id="recipe-input-group">
+									<input type="text" class="form-control" id="recipe-input" name="recipe-input" placeholder="Search for..." value="{0}">
+									<span class="input-group-btn">
+										<button class="btn btn-default" type="submit">Search</button>
+									</span>
+								</div>
+							</div>
+							<div class="form-group hidden">
+								<input type="text" class="form-control" id="recipe-selection" name="recipe-selection" value="">
+							</div>
+						</form>
+					</div>
+				</div>
+			""".format(searchResult)
 
 def htmlFooter():
-	print """</div>
-			<br>
-			<br>
-			<div>
-				All recipes parsed from <a href="http://allrecipes.com/">allrecipes.com</a>
+	print """	<div class="row">
+					<div class="col-xs-12 text-center">
+						All recipes parsed from <a href="http://allrecipes.com/">allrecipes.com</a>
+					</div>
+				</div>
 			</div>
 		</body>
 		</html>"""
@@ -46,24 +64,30 @@ def recreateDatabase():
 
 		cursor.executescript("""
 			DROP TABLE IF EXISTS Recipes;
-			CREATE TABLE Recipes(Id INT, Name TEXT, Type TEXT, Servings INT, Calories INT);
+			CREATE TABLE Recipes(Id INT, Name TEXT, Servings INT, Calories INT);
 
 			DROP TABLE IF EXISTS Directions;
 			CREATE TABLE Directions(RecipeId INT, Step INT, Direction TEXT);
 
 			DROP TABLE IF EXISTS Footnotes;
 			CREATE TABLE Footnotes(RecipeId INT, Footnote TEXT);
+
+			DROP TABLE IF EXISTS Labels;
+			CREATE TABLE Labels(RecipeId INT, Label TEXT);
 		
 			DROP TABLE IF EXISTS Ingredients;
 			CREATE TABLE Ingredients(Id INT, RecipeId INT, Name TEXT, Amount INT, Unit TEXT);
 		
 			DROP TABLE IF EXISTS IngredientDescriptions;
 			CREATE TABLE IngredientDescriptions(IngredientId INT, Description TEXT);
+
+			DROP TABLE IF EXISTS IngredientLabels;
+			CREATE TABLE IngredientLabels(IngredientId INT, Label TEXT);
 		""")
 
 		for recipe in allRecipes:
 			recipeId = recipe["id"]
-			cursor.execute("INSERT INTO Recipes VALUES(?, ?, ?, ?, ?);", (recipeId, recipe["name"], recipe["type"], recipe["servings"], recipe["calories"]))
+			cursor.execute("INSERT INTO Recipes VALUES(?, ?, ?, ?);", (recipeId, recipe["name"], recipe["servings"], recipe["calories"]))
 
 			for direction in recipe["directions"]:
 				cursor.execute("INSERT INTO Directions VALUES(?, ?, ?);", (recipeId, direction["step"], direction["direction"]))
@@ -71,24 +95,80 @@ def recreateDatabase():
 			for footnote in recipe["footnotes"]:
 				cursor.execute("INSERT INTO Footnotes VALUES(?, ?);", (recipeId, footnote))
 
+			for label in recipe["labels"]:
+				cursor.execute("INSERT INTO Labels VALUES(?, ?);", (recipeId, label))
+
 			i=0
 			for ingredient in recipe["ingredients"]:
 				ingredientId = recipeId * 100 + i
-				cursor.execute("INSERT INTO Ingredients VALUES(?, ?, ?, ?, ?);", (ingredientId, recipeId, ingredient["ingredient"], ingredient["amount"], ingredient["unit"]))
+				cursor.execute("INSERT INTO Ingredients VALUES(?, ?, ?, ?, ?);", (ingredientId, recipeId, ingredient["ingredient"],\
+					ingredient["amount"], ingredient["unit"]))
 
 				for ingredientDescription in ingredient["descriptions"]:
 					cursor.execute("INSERT INTO IngredientDescriptions VALUES(?, ?);", (ingredientId, ingredientDescription))
 
+				for ingredientLabel in ingredient["labels"]:
+					cursor.execute("INSERT INTO IngredientLabels VALUES(?, ?);", (ingredientId, ingredientLabel))
+
 				i+=1
 
+		# commit and close connection		
 		connection.commit()
-		
-		# close connection		
 		connection.close()
 
 	# sqlite error
 	except sqlite3.Error, e:
 		print "Error %s:" % e.args[0]
+
+
+
+# print list of all recipes and ingredients
+def displaySearchResults(string):
+	# split search string into words
+	words = string.split(" ")
+
+	# remove "", caused by extra spaces
+	while "" in words:
+		words.remove("")
+
+	# get query "WHERE" clause for each word
+	searchString = ""
+	for word in words:
+		searchString += "Name Like '%{0}%' AND ".format(word)
+
+	# open database and get cursor
+	connection = sqlite3.connect('recipes.db')
+	cursor = connection.cursor()
+
+	# perform query and get recipes
+	cursor.execute("SELECT Name FROM Recipes WHERE {0} COLLATE NOCASE ORDER BY Name ASC".format(searchString[0:-5]))
+	allRecipes = cursor.fetchall()
+
+	# close connection
+	connection.close()
+
+
+	# print recipe names
+	print """
+	<div class="row">
+		<div class="col-xs-12">
+			<h1>Recipes containing "{0}"</h1>
+			<table class="table table-striped">""".format(searchResult)
+
+	for recipeName in allRecipes:
+		recipeName = recipeName[0].encode('utf-8');
+		print """
+				<tr>
+					<td class="center-vertical">{0}</td>
+					<td class="text-right"><button class="btn btn-default" onclick="viewRecipe('{1}')">View Recipe</button></td>
+				</tr>""".format(recipeName, recipeName)
+
+	print """
+			</table>
+		</div>
+	</div>"""
+
+
 
 # return recipe object loaded from database
 def loadRecipe(recipeName):
@@ -100,21 +180,22 @@ def loadRecipe(recipeName):
 	recipeArray = cursor.fetchone()
 
 	if recipeArray == None:
-		print "<b>Error: recipe not found</b>"
 		return None
 
 	recipe = {}
 	recipe["id"] = recipeArray[0]
 	recipe["name"] = recipeArray[1]
-	recipe["type"] = recipeArray[2]
-	recipe["servings"] = recipeArray[3]
-	recipe["calories"] = recipeArray[4]
+	recipe["servings"] = recipeArray[2]
+	recipe["calories"] = recipeArray[3]
 	
 	cursor.execute("SELECT Direction FROM Directions WHERE RecipeId=? ORDER BY Step ASC", (recipe["id"],))
 	recipe["directions"] = cursor.fetchall()
 
 	cursor.execute("SELECT Footnote FROM Footnotes WHERE RecipeId=?", (recipe["id"],))
 	recipe["footnotes"] = cursor.fetchall()
+
+	cursor.execute("SELECT Label FROM Labels WHERE RecipeId=?", (recipe["id"],))
+	recipe["labels"] = cursor.fetchall()
 
 	cursor.execute("SELECT * FROM Ingredients WHERE RecipeId=? ORDER BY Name ASC", (recipe["id"],))
 	ingredientsArray = cursor.fetchall()
@@ -127,49 +208,17 @@ def loadRecipe(recipeName):
 		ingredient["unit"] = ingredientItem[4]
 
 		cursor.execute("SELECT Description FROM IngredientDescriptions WHERE IngredientId=?", (ingredientItem[0],))
-		ingredient["descriptions"] = cursor.fetchall()
+		data = cursor.fetchall()
+		ingredient["descriptions"]=[elt[0] for elt in data]
+
+
+		cursor.execute("SELECT Label FROM IngredientLabels WHERE IngredientId=?", (ingredientItem[0],))
+		data = cursor.fetchall()
+		ingredient["labels"]=[elt[0] for elt in data]
 
 		recipe["ingredients"].append(ingredient)
 
 	return recipe
-
-# print list of all recipes and ingredients
-def printAllRecipes():
-	# open database and get cursor
-	connection = sqlite3.connect('recipes.db')
-	cursor = connection.cursor()
-
-	# print recipe names
-	print '<form method="post" class="form-inline" action="view-recipes.py"><div class="form-group" id="recipeTypeSelectGroup"><select class="form-control" name="type" id="recipeTypeSelect" onchange="selectType(this.value)">'
-
-	# get all recipes
-	cursor.execute("SELECT Type FROM Recipes")
-	allTypes = sorted(set(cursor.fetchall()))
-
-	for recipeType in allTypes:
-		typeString = recipeType[0]
-		print "<option value='{0}'{1}>{2}</option>".format(typeString, " selected" if typeString == selectedType else "", typeString)
-
-	print '</select></div><input name="recipe" value="{0}" id="recipeInput" style="display: none"><div class="form-group" id="recipeSelectGroup">'.format(selectedType)
-
-	for recipeType in allTypes:
-		typeString = recipeType[0]
-
-		print '<select class="form-control" id="{0}Select" onchange="changeSelectedRecipe(this.value)" style="display: none">'.format(typeString)
-	
-		cursor.execute("SELECT Name FROM Recipes WHERE Type=? ORDER BY Name ASC", (typeString,))
-		recipesOfType = cursor.fetchall()
-
-		for recipe in recipesOfType:
-			nameString = recipe[0].encode('utf-8')
-			print "<option value='{0}'{1}>{2}</option>".format(nameString, " selected" if nameString == selectedRecipe else "", nameString)
-
-		print '</select>'
-
-	print '</div><div class="form-group"><button class="btn btn-primary" type="submit">View recipe</button></div></form>'
-
-	# close connection
-	connection.close()
 
 
 
@@ -178,40 +227,44 @@ def displayRecipe(recipeName):
 	recipe = loadRecipe(recipeName)
 
 	if recipe is None:
+		print "<b>Error: recipe not found</b>"
 		return
 
 	# print recipe, servings, and calories
 	print """
-		<br>
-		<h2>%s</h2>
-		<div>Servings: %s</div>
-		<div>Calories per serving: %s</div>
-		<div><a target=blank href='http://allrecipes.com/recipe/%d'>View on allrecipes.com</a></div>
-		<h4>Ingredients</h4>
-		<table class="table table-bordered">
-		<tr>
-		<th>Ingredient</th>
-		<th>#</th>
-		<th>Unit</th>
-		<th>Ingredient Description</th>
-		</tr>
-	""" % (recipe["name"], recipe["servings"], recipe["calories"], recipe["id"])
+		<div class="row">
+			<div class="col-xs-12">
+				<h1>%s</h1>
+				<div>Servings: %s</div>
+				<div>Calories per serving: %s</div>
+				<div><a target=blank href='http://allrecipes.com/recipe/%d'>View on allrecipes.com</a></div>
+				<h4>Ingredients</h4>
+				<div class="table-responsive">
+					<table id="ingredients-table" class="table table-striped">
+						<tr>
+							<th>Ingredient</td>
+							<th>#</td>
+							<th>Unit</td>
+							<th>Description</td>
+							<th>Labels</td>
+						</tr>""" % (recipe["name"], recipe["servings"], recipe["calories"], recipe["id"])
 
 	# print list of ingredients
 	for ingredient in recipe["ingredients"]:
-		# print ingredient
-		print "<tr><td>%s</td>" % (ingredient["ingredient"])
-		
-		# print amount and unit if unit exists (is not "count")
-		print "<td>{0:10.2f}</td><td>{1}</td><td>".format(ingredient["amount"], ingredient["unit"])
 
-		# print list of ingredient descriptions
-		for description in ingredient["descriptions"]:
-			print "<span>%s</span>" % (description)
-		print "</td></tr>"
+		# print ingredient
+		print """
+					<tr>
+						<td>{0}</td>
+						<td>{1:10.2f}</td>
+						<td>{2}</td>
+						<td>{3}</td>
+						<td>{4}</td>
+					</tr>""".format(ingredient["ingredient"], ingredient["amount"], ingredient["unit"], \
+						", ".join(ingredient["descriptions"]), ", ".join(ingredient["labels"]))
 	
 	# print ordered list of directions
-	print "</table><h4>Directions</h4><ol>"
+	print "</table></div><h4>Directions</h4><ol>"
 	for direction in recipe["directions"]:
 		print "<li>%s</li>" % (direction)
 
@@ -221,24 +274,28 @@ def displayRecipe(recipeName):
 		print "<li>{0}</li>".format(footnote[0])
 	print "</ul>"
 
+
+
 #main program
 try:
+	form = cgi.FieldStorage()
+
+	searchResult = form.getvalue("recipe-input", "")
+	recipeSelection = form.getvalue("recipe-selection", "")
+
 	htmlHeader()
 
 	try:
 		# TODO only use this when JSON file changes
-		#recreateDatabase()
+		#recreateDatabase()	
 
-		# get form selection
-		form = cgi.FieldStorage()
-		selectedRecipe = form.getvalue("recipe", "")
-		selectedType = form.getvalue("type", "Various")
+		# if exists, display selected recipe
+		if recipeSelection is not "":
+			displayRecipe(recipeSelection)
 
-		printAllRecipes()
-
-		# if exists, display form selection
-		if selectedRecipe is not "":
-			displayRecipe(selectedRecipe)
+		# if exists, display recipe form search results
+		if searchResult is not "":
+			displaySearchResults(searchResult)
 
 	except sqlite3.Error, e:
 		print "Error %s:" % e.args[0]
