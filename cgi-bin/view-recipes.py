@@ -134,7 +134,7 @@ def displaySearchResults(string):
 	# get query "WHERE" clause for each word
 	searchString = ""
 	for word in words:
-		searchString += "Name Like '%{0}%' AND ".format(word)
+		searchString += "Name Like '%{0}%' AND ".format(word.replace("'", "\n"))
 
 	# open database and get cursor
 	connection = sqlite3.connect('recipes.db')
@@ -161,7 +161,7 @@ def displaySearchResults(string):
 				<tr>
 					<td class="center-vertical">{0}</td>
 					<td class="text-right"><button class="btn btn-default" onclick="viewRecipe('{1}')">View Recipe</button></td>
-				</tr>""".format(recipeName, recipeName)
+				</tr>""".format(recipeName, recipeName.replace("'", "\'"))
 
 	print """
 			</table>
@@ -174,11 +174,11 @@ def displaySearchResults(string):
 def loadRecipe(recipeName):
 	# open database and get cursor
 	connection = sqlite3.connect('recipes.db')
+	connection.text_factory = str
 	cursor = connection.cursor()
-
 	cursor.execute("SELECT * FROM Recipes WHERE Name=?", (recipeName,))
-	recipeArray = cursor.fetchone()
 
+	recipeArray = cursor.fetchone()
 	if recipeArray == None:
 		return None
 
@@ -210,7 +210,6 @@ def loadRecipe(recipeName):
 		cursor.execute("SELECT Description FROM IngredientDescriptions WHERE IngredientId=?", (ingredientItem[0],))
 		data = cursor.fetchall()
 		ingredient["descriptions"]=[elt[0] for elt in data]
-
 
 		cursor.execute("SELECT Label FROM IngredientLabels WHERE IngredientId=?", (ingredientItem[0],))
 		data = cursor.fetchall()

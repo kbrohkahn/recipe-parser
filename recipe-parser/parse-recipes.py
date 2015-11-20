@@ -47,22 +47,31 @@ dairyIngredients = ['butter', 'unsalted butter', 'cream cheese', 'cottage cheese
 		'milk', 'buttermilk', 'evaporated milk', 'evaporated skim milk', 'half-and-half cream', 'ghee', 'yogurt']
 cheeses = ['Cheddar cheese', 'Pepper Jack cheese', 'Mozzarella cheese', 'Muenster cheese',
 		'Parmesan cheese', 'Asiago cheese', 'Monterey Jack cheese', 'Parmigiano Reggiano cheese', 'Romano cheese',
-		'Neufchatel cheese']
+		'Neufchatel cheese', 'American cheese', 'sharp Cheddar cheese', 'feta cheese', 'fontina cheese',
+		'goat cheese', 'macaroni cheese', 'mascarpone cheese', 'mild Cheddar cheese', 'milk ricotta cheese',
+		'mozzarella cheese', 'Red Leicester cheese', 'Jarlsberg cheese', 'Locatella cheese', 'Swiss cheese',
+		'blue cheese', 'part skim ricotta cheese', 'provolone cheese', 'ricotta cheese', 'tomato basil feta cheese',
+		'American processed cheese', 'Brie cheese', 'Cheddar Monterey Jack cheese blend', 'Colby cheese',
+		'Colby longhorn cheese', 'Gorgonzola cheese', 'Gruyere cheese']
 cheeseFoods = ['cheese', 'quesadilla', 'quiche', 'lasagna', 'pizza', 'calzone', 'ziti']
 animalProducts = ['eggs', 'egg yolks', 'egg whites', 'honey']
 meats = ['meat', 'pepperoni', 'pork', 'sausage', 'turkey', 'chicken', 'beef', 'lamb', 'pot roast', 'burger',
 		'meatball', 'meatloaf', 'liver', 'corned beef', 'stroganoff', 'lasagna', 'burrito', 'casserole',
-		'beef bouillon']
-seafoods = ['fish', 'salmon', 'shrimp', 'calamari', 'mussel', 'tuna', 'halibut']
+		'beef bouillon', 'Canadian Bacon', 'veal', 'duck', 'wild duck', 'snapper', 'game hens',
+		'Cornish game hens', 'Rock Cornish hens']
+seafoods = ['fish', 'salmon', 'shrimp', 'calamari', 'mussel', 'tuna', 'halibut', 'trout', 'albacore',
+		'halibut', 'swordfish', 'anchovy', 'cod', 'flounder', 'mahi mahi', 'sea bass', 'shark', 'clams',
+		'oysters']
 mainProteins = ['beans', 'seeds', 'nuts', 'tofu']
-fruits = ['fruit', 'apples', 'fruit salad', 'fruitcake', 'smoothie', 'slushie', 'peaches', 
-		'apple', 'pineapple', 'bananas', 'apricots', 'blueberries', 'grapes', 'lemons', 'strawberries'
-		'currants', 'cherries', 'coconut', 'raisins', 'golden raisins', 'apple butter', 'applesauce']
-vegetables = ['mushroom', 'coleslaw', 'slaw', 'salad', 'veggie', 'pumpkin', 'turnip', 'tomato', 'potato',
-		'olive', 'pizza', 'calzone', 'onion', 'bell peppers', 'corn', 'carrots',
-		'corn kernels', 'cornmeal', 'broccoli', 'onions', 'bell peppers', 'dates',
-		'kalamata olives', 'olives', 'chives', 'jalapeno peppers', 'lentils',
-		'dill pickle', 'zucchinis']
+fruits = ['fruit', 'fruit salad', 'fruitcake', 'smoothie', 'slushie', 'apples', 'peaches', 'pears',
+		'apple', 'pineapple', 'bananas', 'apricots', 'prunes', 'grapes', 'lemons', 'watermelon'
+		'currants', 'cherries', 'coconut', 'raisins', 'golden raisins', 'apple butter', 'applesauce'
+		'lemon', 'oranges']
+vegetables = ['mushroom', 'coleslaw', 'slaw', 'salad', 'veggie', 'pumpkin', 'turnip', 'tomatoes', 'potato',
+		'olive', 'pizza', 'calzone', 'onion', 'bell peppers', 'corn', 'carrots', 'peas', 'radishes',
+		'corn kernels', 'cornmeal', 'broccoli', 'onions', 'bell peppers', 'dates', 'dill pickle', 
+		'kalamata olives', 'olives', 'chives', 'jalapeno peppers', 'lentils','zucchinis', 'avocados',
+		'artichokes', 'asparagus', 'mushrooms']
 breakfasts = ['crepes', 'pancakes', 'waffles', 'bagels', 'quiche', 'french toast', 'doughnuts', 'muffins',
 		'eggs']
 pastas = ['noodle', 'linguine', 'pasta', 'spaghetti', 'lasagna', 'macaroni', 'mac and cheese', 'casserole',
@@ -72,18 +81,19 @@ desserts = ['cookie', 'cookie mix', 'cake', 'brownie', 'pie', 'cobbler', 'mousse
 		'gingerbread', 'pastry', 'fudge', 'tarts', 'crinkles', 'chews', 'bars', 'squares', 'twists', 'snaps',
 		'brittles', 'thumbprints', 'splits']
 dips = ['dip', 'hummus', 'guacamole', 'spread']
-sauces = ['dressing', 'marinade', 'sauce', 'chutney', 'vinaigrette', 'relish', 'frosting', 'alfredo', 'icing',
+sauces = ['marinade', 'sauce', 'chutney', 'vinaigrette', 'relish', 'frosting', 'alfredo', 'icing',
 		'hoisin sauce', 'applesauce', 'soy sauce']
 condiments = ['chile oil', 'mustard', 'ketchup', 'Dijon mustard', 'apple butter', 'crunchy peanut butter',
 		'creamy peanut butter']
-soups = ['soup', 'chili', 'chowder', 'stew', 'chicken broth']
+soups = ['chili', 'chowder', 'stew', 'chicken broth']
 breads = ['crackers', 'bread', 'pretzels', 'pinwheel', 'empanada', 'cornbread', 'tortilla', 'buns',
 		'crust', 'dough', 'sourdough', 'rolls', 'pizza', 'calzone', 'bagels', 'biscuits', 'burrito',
 		'french toast', 'doughnut', 'muffin', 'loaf', 'loaves', 'gingerbread', 'crisp', 'challah',
 		'dumpling', 'taco', 'pastry', 'quesadilla', 'tart', 'granola', 'muffins']
 nuts = ['almond extract', 'almonds', 'walnuts', 'peanuts', 'pecans', 'hazelnuts', 'crunchy peanut butter',
 		'creamy peanut butter', 'peanut oil']
-alcoholicIngredients = ['beer', 'wine', 'rum', 'vodka', 'bourbon']
+alcoholicIngredients = ['beer', 'wine', 'rum', 'vodka', 'bourbon', 'whiskey', 'Chinese rice wine', 'rice wine'
+		'vermouth', 'spiced rum']
 spices = ['basil', 'pepper', 'pepper flake', 'anise', 'caraway seed', 'cardamom', 
 		'cassava', 'cayenne pepper', 'cinnamon', 'fennel', 'flax seed', 'garlic', 'garlic powder', 'ginger',
 		'poppy', 'rhubarb', 'salt', 'chocolate', 'sesame', 'sunflower', 'thyme', 'cocoa', 'vanilla',
@@ -95,6 +105,17 @@ bakingIngredients = ['active yeast', 'evaporated milk', 'evaporated skim milk',
 		'margarine', 'eggs']
 cookingFats = ['lard', 'shortening', 'butter', 'puff pastry']
 
+# list of prefixes and suffixes that should be hyphenated
+hypenatedPrefixes = ['non', 'reduced', 'semi', 'low']
+hypenatedSuffixes = ['coated', 'free', 'flavored']
+
+# list of colors used in ingredients
+colors = ['red', 'white', 'black', 'red', 'light', 'dark', 'brown']
+
+# words useless in determining ingredient's label
+uselessInLabels = ['instant', 'canned', 'processed', 'refried', 'fried', 'sweetened', 'unsweetened',
+		'extra', 'sweet', 'condensed', 'seedless']
+
 def getAllLabels(string):
 	labels = []
 	
@@ -102,7 +123,7 @@ def getAllLabels(string):
 		labels.append("non dairy milk")
 	if string in dairyIngredients:
 		labels.append("dairy")
-	if string in cheeses:
+	if "cheese" in string and string in cheeses:
 		labels.append("cheese")
 	if string in cheeseFoods:
 		labels.append("cheese food")
@@ -110,11 +131,16 @@ def getAllLabels(string):
 		labels.append("meat")
 	if string in seafoods:
 		labels.append("seafood")
+	if "fillets" in string or "steaks" in string:
+		for seafood in seafoods:
+			if seafood in string:
+				labels.append("seafood")
+				break
 	# if string in animalProducts:
 	# 	labels.append("animal product")
-	if string in fruits:
+	if string in fruits or "berries" in string and (string != "allspice berries" and string != "wheat berries"):
 		labels.append("fruit")
-	if string in vegetables:
+	if "lettuce" in string or string in vegetables:
 		labels.append("vegetable")
 	if string in spices:
 		labels.append("spice")
@@ -126,11 +152,12 @@ def getAllLabels(string):
 		labels.append("dessert")
 	if string in dips:
 		labels.append("dip")
-	if string in sauces:
+	if "dressing" in string or string in sauces:
 		labels.append("sauce")
 	if string in condiments:
 		labels.append("condiment")
 	if string in soups:
+		labels.append("cooking liquid")
 		labels.append("soup")
 	if string in breads:
 		labels.append("bread")
@@ -156,6 +183,9 @@ def getAllLabels(string):
 		labels.append("flour")
 	elif "sugar" in string:
 		labels.append("sugar")
+	elif "soup" in string:
+		labels.append("soup")
+		labels.append("cooking liquid")
 	elif "jam" in string:
 		labels.append("jam")
 	elif "juice" in string:
@@ -166,6 +196,13 @@ def getAllLabels(string):
 		labels.append("vinegar")
 	elif "yogurt" in string:
 		labels.append("dairy")
+	elif "liquer" in string:
+		labels.append("liquer")
+		labels.append("alcohol")
+	elif "brandy" in string:
+		labels.append("alcohol")
+	elif "cake mix" in string:
+		labels.append("cake mix")
 
 	return labels
 
@@ -180,8 +217,9 @@ descriptions = ['baked', 'beaten', 'blanched', 'boiled', 'boiling', 'boned', 'br
 		'roasted', 'rolled', 'rough', 'scalded', 'scrubbed', 'seasoned', 'seeded', 'segmented', 'separated',
 		'shredded', 'sifted', 'skinless', 'sliced', 'slight', 'slivered', 'small', 'soaked', 'soft', 'softened',
 		'split', 'squeezed', 'stemmed', 'stewed', 'stiff', 'strained', 'strong', 'thawed', 'thick', 'thin', 'tied', 
-		'toasted', 'torn', 'trimmed', 'unwrapped', 'vained', 'warm', 'washed', 'weak', 'zested', 'wedged',
-		'skinned', 'gutted', 'browned']
+		'toasted', 'torn', 'trimmed', 'wrapped', 'vained', 'warm', 'washed', 'weak', 'zested', 'wedged',
+		'skinned', 'gutted', 'browned', 'patted', 'raw', 'flaked', 'deveined', 'shelled', 'shucked', 'crumbs',
+		'halves', 'squares', 'zest', 'peel']
 
 # list of adverbs used before or after description
 adverbs = ['well', 'very', 'super', 'diagonally', 'lengthwise', 'overnight']
@@ -190,18 +228,13 @@ adverbs = ['well', 'very', 'super', 'diagonally', 'lengthwise', 'overnight']
 prepositions = ['as', 'such', 'to', 'for', 'with', 'without', 'if', 'about']
 
 # list of prepositions used after ingredient name and immediately following adjective / participle
-prepositionsWithPrecedingAdjective = ['in', 'into', 'at']
-
-# list of prefixes and suffixes that should be hyphenated
-hypenatedPrefixes = ['non', 'reduced', 'semi', 'low']
-hypenatedSuffixes = ['coated', 'free', 'flavored']
-
-# list of colors used in ingredients
-colors = ['red', 'white', 'black', 'red', 'light', 'dark', 'brown']
-
+prepositionsWithPrecedingAdjective = ['in', 'into', 'at', 'e.g.']
 
 # only used as <something> removed, <something> reserved, <x> inches, <x> old, <some> temperature
-descriptionsWithPredecessor = ['removed', 'reserved', 'inch', 'inches', 'old', 'temperature']
+descriptionsWithPredecessor = ['removed', 'reserved', 'inch', 'inches', 'old', 'temperature', 'up']
+
+# descriptions that can be removed from ingredient, i.e. candied pineapple chunks
+unnecessaryDescriptions = ['chunks', 'pieces', 'rings', 'spears']
 
 
 
@@ -211,7 +244,11 @@ jsonFile.truncate()
 
 parenthesesRegex = re.compile(r"\([^()]*\)")
 
-allIngredients = set()
+# load list of all ingredients
+allIngredientsFile = open("allIngredients.txt", "r")
+allIngredients = allIngredientsFile.readlines()
+allIngredientsFile.close()
+
 unlabeledIngredients = set()
 unlabeledRecipes = set()
 
@@ -407,6 +444,18 @@ for recipeId in range(6663, 16385):
 			if len(parsedIngredient) > 1 and parsedIngredient[len(parsedIngredient) - 1] == "or":
 				del parsedIngredient[len(parsedIngredient) - 1]
 
+			# move various nouns to description
+			if "powder" in parsedIngredient and \
+					("coffee" in parsedIngredient or \
+					"espresso" in parsedIngredient or \
+					"tea" in parsedIngredient):
+				parsedIngredient.remove("powder")
+				ingredient["descriptions"].append("unbrewed")
+
+			for word in unnecessaryDescriptions:
+				if word in parsedIngredient:
+					parsedIngredient.remove(word)
+
 			#
 			# get ingredient
 			#
@@ -417,25 +466,44 @@ for recipeId in range(6663, 16385):
 				ingredient["descriptions"].append("* see footnote")
 				ingredientString = ingredientString.replace("*", "")
 
-			# standardize "-" styling and fix spelling errors
+			# standardize "-" styling
 			ingredientString = ingredientString.replace("- ", "-")
 			ingredientString = ingredientString.replace(" -", "-")
 			ingredientString = ingredientString.replace("Jell O", "Jell-O")
 			ingredientString = ingredientString.replace("half half", "half-and-half")
+
+			# fix spelling errors
 			ingredientString = ingredientString.replace("linguini", "linguine")
+			ingredientString = ingredientString.replace("filets", "fillets")
+			ingredientString = ingredientString.replace("chile", "chili")
+			ingredientString = ingredientString.replace("chilies", "chilis")
+			ingredientString = ingredientString.replace("Salt", "salt")
 			ingredientString = ingredientString.replace("pepperjack", "Pepper Jack")
 			ingredientString = ingredientString.replace("Pepper jack", "Pepper Jack")
 
-			# if singular noun (without last letter "s") is in list of all ingredients, remove it
+			# standardize ingredient styling
+			ingredientString = ingredientString.replace("dressing mix", "dressing")
+			ingredientString = ingredientString.replace("salad dressing", "dressing")
+			ingredientString = ingredientString.replace("bourbon whiskey", "bourbon")
+			ingredientString = ingredientString.replace("pudding mix", "pudding")
+
+			# check if allIngredients has singular or plural noun ("s")
 			if ingredientString[:-1] in allIngredients:
 				allIngredients.remove(ingredientString[:-1])
-			
-			# if plural of ingredientString is in list, make string plural
-			if ingredientString + "s" in allIngredients:
+				allIngredients.append(ingredientString)
+			elif ingredientString + "s" in allIngredients:
 				ingredientString += "s"
-			# else add ingredient name to list of all ingredients
-			else:
-				allIngredients.add(ingredientString)
+
+			# check if allIngredients has singular or plural noun ("es")
+			elif ingredientString[:-2] in allIngredients:
+				allIngredients.remove(ingredientString[:-2])
+				allIngredients.append(ingredientString)
+			elif ingredientString + "es" in allIngredients:
+				ingredientString += "es"
+			
+			# allIngredients has neither different singular nor plural
+			elif ingredientString not in allIngredients:
+				allIngredients.append(ingredientString)
 
 			ingredient["ingredient"] = ingredientString
 
@@ -444,8 +512,9 @@ for recipeId in range(6663, 16385):
 			#
 
 			# remove words useless in labelling ingredient
-			ingredientString = ingredientString.replace("instant ", "")
-			ingredientString = ingredientString.replace("canned ", "")
+			for uselessInLabel in uselessInLabels:
+				if uselessInLabel + " " in ingredientString:
+					ingredientString = ingredientString.replace(uselessInLabel + " ", "")
 
 			# remove hyphenated prefixes
 			for hypenatedPrefix in hypenatedPrefixes:
@@ -568,6 +637,12 @@ for recipeId in range(6663, 16385):
 				unlabeledIngredientsFile.write("{0}\n".format(string.encode('utf-8')))
 			unlabeledIngredientsFile.close()
 
+			allIngredientsFile = open("allIngredients.txt", "w+")
+			allIngredientsFile.truncate()
+			for string in sorted(allIngredients):
+				allIngredientsFile.write("{0}\n".format(string.encode('utf-8')))
+			allIngredientsFile.close()
+		
 			print recipeId
 
 	except urllib2.HTTPError:
