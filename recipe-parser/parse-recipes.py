@@ -640,7 +640,7 @@ for recipeId in range(6663, 16385):
 			allIngredientsFile = open("allIngredients.txt", "w+")
 			allIngredientsFile.truncate()
 			for string in sorted(allIngredients):
-				allIngredientsFile.write("{0}\n".format(string.encode('utf-8')))
+				allIngredientsFile.write("{0}\n".format(string.encode('ascii', 'ignore')))
 			allIngredientsFile.close()
 		
 			print recipeId
