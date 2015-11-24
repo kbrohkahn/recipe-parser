@@ -3,5 +3,12 @@ function viewRecipe(recipeName) {
 	$("#recipe-search-form").submit()
 }
 
-$(document).ready(function() {
-});
+function viewAndTransformRecipe(recipeName) {
+	// get transformation value
+	var transformationSelect = document.getElementById("transformation-select");
+	var transformation = transformationSelect.options[transformationSelect.selectedIndex].value;
+
+	$("#transformation").val(transformation)
+	$("#recipe-selection").val(recipeName)
+	$("#recipe-search-form").submit()
+}

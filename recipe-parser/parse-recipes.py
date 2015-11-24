@@ -45,7 +45,7 @@ def equalIncludingPlurals(string, singularString):
 nonDairyMilks = ['almond milk', 'soy milk', 'coconut milk']
 dairyIngredients = ['butter', 'unsalted butter', 'cream cheese', 'cottage cheese', 'sour cream', 'cheese', 'cream',
 		'milk', 'buttermilk', 'evaporated milk', 'evaporated skim milk', 'half-and-half cream', 'ghee', 'yogurt']
-cheeses = ['Cheddar cheese', 'Pepper Jack cheese', 'Mozzarella cheese', 'Muenster cheese',
+cheeses = ['cheese', 'Cheddar cheese', 'Pepper Jack cheese', 'Mozzarella cheese', 'Muenster cheese',
 		'Parmesan cheese', 'Asiago cheese', 'Monterey Jack cheese', 'Parmigiano Reggiano cheese', 'Romano cheese',
 		'Neufchatel cheese', 'American cheese', 'sharp Cheddar cheese', 'feta cheese', 'fontina cheese',
 		'goat cheese', 'macaroni cheese', 'mascarpone cheese', 'mild Cheddar cheese', 'milk ricotta cheese',
@@ -53,25 +53,23 @@ cheeses = ['Cheddar cheese', 'Pepper Jack cheese', 'Mozzarella cheese', 'Muenste
 		'blue cheese', 'part skim ricotta cheese', 'provolone cheese', 'ricotta cheese', 'tomato basil feta cheese',
 		'American processed cheese', 'Brie cheese', 'Cheddar Monterey Jack cheese blend', 'Colby cheese',
 		'Colby longhorn cheese', 'Gorgonzola cheese', 'Gruyere cheese']
-cheeseFoods = ['cheese', 'quesadilla', 'quiche', 'lasagna', 'pizza', 'calzone', 'ziti']
-animalProducts = ['eggs', 'egg yolks', 'egg whites', 'honey']
-meats = ['meat', 'pepperoni', 'pork', 'sausage', 'turkey', 'chicken', 'beef', 'lamb', 'pot roast', 'burger',
+cheeseFoods = ['quesadilla', 'quiche', 'lasagna', 'pizza', 'calzone', 'ziti']
+meats = ['meat', 'pepperoni', 'pork', 'sausage', 'beef', 'lamb', 'pot roast', 'burger', 'Canadian Bacon', 'veal',
 		'meatball', 'meatloaf', 'liver', 'corned beef', 'stroganoff', 'lasagna', 'burrito', 'casserole',
-		'beef bouillon', 'Canadian Bacon', 'veal', 'duck', 'wild duck', 'snapper', 'game hens',
-		'Cornish game hens', 'Rock Cornish hens']
-seafoods = ['fish', 'salmon', 'shrimp', 'calamari', 'mussel', 'tuna', 'halibut', 'trout', 'albacore',
-		'halibut', 'swordfish', 'anchovy', 'cod', 'flounder', 'mahi mahi', 'sea bass', 'shark', 'clams',
-		'oysters']
-mainProteins = ['beans', 'seeds', 'nuts', 'tofu']
+		'beef bouillon']
+poultry = ['turkey', 'chicken', 'chickens', 'duck', 'wild duck', 'game hens', 'Cornish game hens', 'Rock Cornish hens']
+seafoods = ['fish', 'salmon', 'shrimp', 'calamari', 'mussel', 'tuna', 'halibut', 'trout', 'albacore', 'squid',
+		'halibut', 'swordfish', 'anchovy', 'cod', 'flounder', 'mahi mahi', 'sea bass', 'shark', 'clams']
+mainProteins = ['beans', 'seeds', 'nuts', 'tofu', 'whey powder']
 fruits = ['fruit', 'fruit salad', 'fruitcake', 'smoothie', 'slushie', 'apples', 'peaches', 'pears',
-		'apple', 'pineapple', 'bananas', 'apricots', 'prunes', 'grapes', 'lemons', 'watermelon'
-		'currants', 'cherries', 'coconut', 'raisins', 'golden raisins', 'apple butter', 'applesauce'
+		'apple', 'pineapple', 'bananas', 'apricots', 'prunes', 'grapes', 'lemons', 'watermelon',
+		'currants', 'cherries', 'coconut', 'raisins', 'golden raisins', 'apple butter', 'applesauce',
 		'lemon', 'oranges']
 vegetables = ['mushroom', 'coleslaw', 'slaw', 'salad', 'veggie', 'pumpkin', 'turnip', 'tomatoes', 'potato',
 		'olive', 'pizza', 'calzone', 'onion', 'bell peppers', 'corn', 'carrots', 'peas', 'radishes',
 		'corn kernels', 'cornmeal', 'broccoli', 'onions', 'bell peppers', 'dates', 'dill pickle', 
 		'kalamata olives', 'olives', 'chives', 'jalapeno peppers', 'lentils','zucchinis', 'avocados',
-		'artichokes', 'asparagus', 'mushrooms']
+		'artichokes', 'asparagus', 'mushrooms', 'yams', 'squash']
 breakfasts = ['crepes', 'pancakes', 'waffles', 'bagels', 'quiche', 'french toast', 'doughnuts', 'muffins',
 		'eggs']
 pastas = ['noodle', 'linguine', 'pasta', 'spaghetti', 'lasagna', 'macaroni', 'mac and cheese', 'casserole',
@@ -80,6 +78,7 @@ desserts = ['cookie', 'cookie mix', 'cake', 'brownie', 'pie', 'cobbler', 'mousse
 		'scone', 'cupcake', 'pudding', 'snowball', 'candy', 'cheesecake', 'wafer', 'macaroon', 'fruitcake',
 		'gingerbread', 'pastry', 'fudge', 'tarts', 'crinkles', 'chews', 'bars', 'squares', 'twists', 'snaps',
 		'brittles', 'thumbprints', 'splits']
+sugars = ['peppermint', 'honey']
 dips = ['dip', 'hummus', 'guacamole', 'spread']
 sauces = ['marinade', 'sauce', 'chutney', 'vinaigrette', 'relish', 'frosting', 'alfredo', 'icing',
 		'hoisin sauce', 'applesauce', 'soy sauce']
@@ -114,7 +113,7 @@ colors = ['red', 'white', 'black', 'red', 'light', 'dark', 'brown']
 
 # words useless in determining ingredient's label
 uselessInLabels = ['instant', 'canned', 'processed', 'refried', 'fried', 'sweetened', 'unsweetened',
-		'extra', 'sweet', 'condensed', 'seedless']
+		'extra', 'sweet', 'condensed', 'seedless', 'extract', 'spread', 'boneless', 'topping']
 
 def getAllLabels(string):
 	labels = []
@@ -129,6 +128,12 @@ def getAllLabels(string):
 		labels.append("cheese food")
 	if string in meats:
 		labels.append("meat")
+	if "steaks" in string:
+		for meat in meats:
+			if meat in string:
+				labels.append("meat")
+	if string in poultry:
+		labels.append("poultry")
 	if string in seafoods:
 		labels.append("seafood")
 	if "fillets" in string or "steaks" in string:
@@ -136,8 +141,6 @@ def getAllLabels(string):
 			if seafood in string:
 				labels.append("seafood")
 				break
-	# if string in animalProducts:
-	# 	labels.append("animal product")
 	if string in fruits or "berries" in string and (string != "allspice berries" and string != "wheat berries"):
 		labels.append("fruit")
 	if "lettuce" in string or string in vegetables:
@@ -173,6 +176,8 @@ def getAllLabels(string):
 		labels.append("cooking fat")
 	if string in bakingIngredients:
 		labels.append("baking ingredient")
+	if string in sugars or "gumdrops" in string:
+		labels.append("sugar")
 
 	if len(labels) > 0:
 		return labels

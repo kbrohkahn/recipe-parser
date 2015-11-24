@@ -3,6 +3,9 @@ import cgi
 import json
 import sqlite3
 
+#
+# print HTML header and beginning of HTML body
+#
 def htmlHeader():
 	print """Content-type:text/html\n\n
 		<!DOCTYPE html>
@@ -23,23 +26,27 @@ def htmlHeader():
 				<div class="row">
 					<div class="col-xs-12">
 						<form method="post" action="view-recipes.py" id="recipe-search-form">
-							<div class="form-group">
-								<label for="recipe-input-group">Enter recipe name</label>
-								<div class="input-group" id="recipe-input-group">
-									<input type="text" class="form-control" id="recipe-input" name="recipe-input" placeholder="Search for..." value="{0}">
-									<span class="input-group-btn">
-										<button class="btn btn-default" type="submit">Search</button>
-									</span>
-								</div>
+							<h4>Search for recipe</h4>
+							<div class="input-group" id="recipe-input-group">
+								<input type="text" class="form-control" id="recipe-input" name="recipe-input" value="{0}">
+								<span class="input-group-btn">
+									<button class="btn btn-default" type="submit">Search</button>
+								</span>
 							</div>
-							<div class="form-group hidden">
-								<input type="text" class="form-control" id="recipe-selection" name="recipe-selection" value="">
+							<div class="hidden">
+								<input type="text" id="recipe-selection" name="recipe-selection" value="">
+								<input type="text" id="transformation" name="transformation" value="">
 							</div>
 						</form>
 					</div>
 				</div>
 			""".format(searchResult)
 
+
+
+#
+# print HTML footer row and close BODY and HTML tags
+#
 def htmlFooter():
 	print """	<div class="row">
 					<div class="col-xs-12 text-center">
@@ -50,7 +57,11 @@ def htmlFooter():
 		</body>
 		</html>"""
 
+
+
+#
 # recreate SQLite database from JSON file
+#
 def recreateDatabase():
 	allRecipes = []
 	with open("../recipe-parser/recipes.json") as jsonFile:
@@ -122,7 +133,9 @@ def recreateDatabase():
 
 
 
+#
 # print list of all recipes and ingredients
+#
 def displaySearchResults(string):
 	# split search string into words
 	words = string.split(" ")
@@ -147,30 +160,30 @@ def displaySearchResults(string):
 	# close connection
 	connection.close()
 
-
 	# print recipe names
-	print """
-	<div class="row">
-		<div class="col-xs-12">
-			<h1>Recipes containing "{0}"</h1>
-			<table class="table table-striped">""".format(searchResult)
+	print """	<div class="row">
+					<div class="col-xs-12">
+						<h1>Recipes containing "{0}"</h1>
+						<table class="table table-striped">""".format(searchResult)
 
 	for recipeName in allRecipes:
 		recipeName = recipeName[0].encode('utf-8');
 		print """
 				<tr>
 					<td class="center-vertical">{0}</td>
-					<td class="text-right"><button class="btn btn-default" onclick="viewRecipe('{1}')">View Recipe</button></td>
-				</tr>""".format(recipeName, recipeName.replace("'", "\'"))
+					<td class="text-right">
+						<button class="btn btn-default" onclick="viewRecipe('{1}')">View Recipe</button>
+					</td>
+				</tr>""".format(recipeName, recipeName.replace("'", "\\'"))
+	print """	</table>
+			</div>
+		</div>"""
 
-	print """
-			</table>
-		</div>
-	</div>"""
 
 
-
+#
 # return recipe object loaded from database
+#
 def loadRecipe(recipeName):
 	# open database and get cursor
 	connection = sqlite3.connect('recipes.db')
@@ -221,39 +234,34 @@ def loadRecipe(recipeName):
 
 
 
+#
 # print single recipe
-def displayRecipe(recipeName):
-	recipe = loadRecipe(recipeName)
-
-	if recipe is None:
-		print "<b>Error: recipe not found</b>"
-		return
-
+#
+def displayRecipe(recipe):
 	# print recipe, servings, and calories
 	print """
-		<div class="row">
-			<div class="col-xs-12">
-				<h1>%s</h1>
-				<div>Servings: %s</div>
-				<div>Calories per serving: %s</div>
-				<div><a target=blank href='http://allrecipes.com/recipe/%d'>View on allrecipes.com</a></div>
-				<h4>Ingredients</h4>
-				<div class="table-responsive">
-					<table id="ingredients-table" class="table table-striped">
-						<tr>
-							<th>Ingredient</td>
-							<th>#</td>
-							<th>Unit</td>
-							<th>Description</td>
-							<th>Labels</td>
-						</tr>""" % (recipe["name"], recipe["servings"], recipe["calories"], recipe["id"])
+			<div class="row">
+				<div class="col-xs-12">
+					<h1>%s</h1>
+					<div>Servings: %s</div>
+					<div>Calories per serving: %s</div>
+					<div><a target=blank href='http://allrecipes.com/recipe/%d'>View on allrecipes.com</a></div>
+					<h2>Ingredients</h2>
+					<div class="table-responsive">
+						<table id="ingredients-table" class="table table-striped">
+							<tr>
+								<th>Ingredient</td>
+								<th>#</td>
+								<th>Unit</td>
+								<th>Description</td>
+								<th>Labels</td>
+							</tr>""" % (recipe["name"], recipe["servings"], recipe["calories"], recipe["id"])
 
 	# print list of ingredients
 	for ingredient in recipe["ingredients"]:
 
 		# print ingredient
-		print """
-					<tr>
+		print """	<tr>
 						<td>{0}</td>
 						<td>{1:10.2f}</td>
 						<td>{2}</td>
@@ -263,15 +271,84 @@ def displayRecipe(recipeName):
 						", ".join(ingredient["descriptions"]), ", ".join(ingredient["labels"]))
 	
 	# print ordered list of directions
-	print "</table></div><h4>Directions</h4><ol>"
+	print "</table></div><h2>Directions</h2><ol>"
 	for direction in recipe["directions"]:
 		print "<li>%s</li>" % (direction)
+	print "</ol>"
 
-	# print list of footnotes
-	print "</ol><h4>Footnotes</h4><ul>"
-	for footnote in recipe["footnotes"]:
-		print "<li>{0}</li>".format(footnote[0])
-	print "</ul>"
+	# iff there is at least one footnote, print list of footnotes
+	if len(recipe["footnotes"]) > 0:
+		print "<h2>Footnotes</h2><ul>"
+		for footnote in recipe["footnotes"]:
+			print "<li>{0}</li>".format(footnote[0])
+		print "</ul>"
+
+	# recipe transformations
+	print """
+			<h2>Transform Recipe</h2>
+			<div class="input-group" id="recipe-input-group">
+				<select class="form-control" id="transformation-select" name="transformation-select">
+			"""
+
+	transformations = ['American', 'French', 'Italian', 'Vegan', 'Vegetarian']
+	for transformation in transformations:
+		print "<option>{0}</option>".format(transformation)
+
+	print """	</select>
+				<span class="input-group-btn">
+					<button class="btn btn-default" onclick="viewAndTransformRecipe('{0}')">Transform</button>
+				</span>
+			</div>""".format(recipe["name"].replace("'", "\\'"))
+
+
+
+#
+# function for transforming recipe
+#
+def transformRecipe(recipe, transformation):
+	if transformation == "Vegetarian" or transformation == "Vegan":
+		decreasedProteins = 0.0
+		for ingredient in recipe["ingredients"]:
+			meatSubstituted = False
+			originalIngredient = ingredient["ingredient"]
+
+			if "poulty" in ingredient["labels"]:
+				meatSubstituted = True
+				ingredient["ingredient"] = "tofu"
+			elif "meat" in ingredient["labels"]:
+				meatSubstituted = True
+				ingredient["ingredient"] = "meatty mushrooms"
+			elif "fish" in ingredient["labels"]:
+				meatSubstituted = True
+				ingredient["ingredient"] = "walnuts"
+		
+			if meatSubstituted:
+				decreasedProteins += 1
+				ingredient["amount"] /= 2.0
+				ingredient["labels"] = ["main protein"]
+
+				for direction in recipe["directions"]:
+					direction = direction[0].replace(originalIngredient, ingredient["ingredient"])
+
+		if decreasedProteins > 0:
+			vegetableMultiplier = 1 + decreasedProteins / 4.0
+			for ingredient in recipe["ingredients"]:
+				if "vegetable" in ingredient["labels"]:
+					ingredient["amount"] *= vegetableMultiplier
+
+	if transformation == "Vegan":
+		for ingredient in recipe["ingredients"]:
+			animalProductSubstituted = False
+			originalIngredient = ingredient["ingredient"]
+
+			if ingredient["ingredient"] == "honey":
+				ingredient["ingredient"] = "syrup"
+			elif ingredient["ingredient"] == "eggs":
+				ingredient["ingredient"] = "soy yogurt"
+				ingredient["amount"] /= 4.0
+				ingredient["unit"] = "cups"
+
+	return recipe
 
 
 
@@ -281,6 +358,7 @@ try:
 
 	searchResult = form.getvalue("recipe-input", "")
 	recipeSelection = form.getvalue("recipe-selection", "")
+	transformation = form.getvalue("transformation", "")
 
 	htmlHeader()
 
@@ -288,9 +366,18 @@ try:
 		# TODO only use this when JSON file changes
 		#recreateDatabase()	
 
-		# if exists, display selected recipe
+		# if recipe selected, load selected recipe
 		if recipeSelection is not "":
-			displayRecipe(recipeSelection)
+			recipe = loadRecipe(recipeSelection)
+
+
+			if recipe is None:
+				print "<b>Error: recipe not found</b>"
+			else:
+				if transformation is not "":
+					recipe = transformRecipe(recipe, transformation)
+			
+				displayRecipe(recipe)
 
 		# if exists, display recipe form search results
 		if searchResult is not "":
