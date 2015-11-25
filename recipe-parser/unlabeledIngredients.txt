@@ -1,4 +1,1 @@
-b''
-b'cracked wheat'
-b'molasses'
-b'sweet potatoes'
+egg

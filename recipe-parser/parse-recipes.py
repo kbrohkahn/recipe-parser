@@ -598,7 +598,7 @@ for recipeId in range(6663, 16385):
 		if len(allLabels) == 0:
 			unlabeledRecipes.add(title)
 
-		json.dump({"id": recipeId,
+		json.dumps({"id": recipeId,
 				"name": title,
 				"ingredients": ingredients, 
 				"directions": directions,
@@ -613,19 +613,19 @@ for recipeId in range(6663, 16385):
 			unlabeledRecipeFile = open("unlabeledRecipes.txt", "w+")
 			unlabeledRecipeFile.truncate()
 			for string in sorted(unlabeledRecipes):
-				unlabeledRecipeFile.write("{0}\n".format(string.encode('utf-8')))
+				unlabeledRecipeFile.write("{0}\n".format(string.decode(encoding="utf-8", errors="ignore")))
 			unlabeledRecipeFile.close()
 
 			unlabeledIngredientsFile = open("unlabeledIngredients.txt", "w+")
 			unlabeledIngredientsFile.truncate()
 			for string in sorted(unlabeledIngredients):
-				unlabeledIngredientsFile.write("{0}\n".format(string.encode('utf-8')))
+				unlabeledIngredientsFile.write("{0}\n".format(string.decode(encoding="utf-8", errors="ignore")))
 			unlabeledIngredientsFile.close()
 
 			allIngredientsFile = open("allIngredients.txt", "w+")
 			allIngredientsFile.truncate()
 			for string in sorted(allIngredients):
-				allIngredientsFile.write("{0}\n".format(string.encode('ascii', 'ignore')))
+				allIngredientsFile.write("{0}\n".format(string.decode(encoding="utf-8", errors="ignore")))
 			allIngredientsFile.close()
 		
 			print(recipeId)

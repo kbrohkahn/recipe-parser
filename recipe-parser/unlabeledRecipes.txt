@@ -1,7 +1,3 @@
-b"Dee's Health Bread"
-b"Mom's Yeast Rolls"
-b'Pumpkin Bread I'
-b'Strawberry Bread I'
-b'Sun Dried Tomato and Asiago Cheese Bread'
-b'Sweet Potato Bread I'
-b"The Best Corn Bread You'll Ever Eat"
+Dilly Bread
+Pumpkin Bread I
+The Best Corn Bread You'll Ever Eat
