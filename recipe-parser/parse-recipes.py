@@ -38,6 +38,10 @@ def getUnitStringArray(parsedIngredient):
 # checks whether the first argument is the same word as a plural string, checking plurals
 #
 def equalCheckingPlurals(string, pluralString):
+	if len(pluralString) < 3:
+		print("Bad plural: {0}".format(pluralString))
+		return None
+
 	# only check plurals if first 3 letters match
 	if string[0] != pluralString[0]:
 		return None
@@ -73,7 +77,7 @@ def inCheckingPlurals(string, pluralList):
 
 # arrays for labeling ingredients and recipes (categorized for the purpose of cooking, to tomato is veg, not fruit)
 nonDairyMilks = ['almond','soy','coconut']
-dairyIngredients = ['butter','cream','cottage','cheese','milk','buttermilk','ghee','yogurt']
+dairyIngredients = ['butter','cream','cottage','cheese','milk','buttermilk','ghee','yogurt','eggnog']
 cheeseFoods = ['quesadillas','quiche','lasagna','pizzas','calzones','ziti']
 meats = ['meats','pepperonis','porks','sausages','beefs','lambs','pot roast','burgers','bacon','veal',
 		'meatballs','meatloaves','livers','stroganoff','lasagna','burritos','casserole']
@@ -95,20 +99,20 @@ pastas = ['noodles','linguine','pasta','spaghetti','lasagnas','macaroni','mac','
 desserts = ['cookies','cakes','brownies','pies','cobblers','mousses','puffs','biscottis','wafers','splits',
 		'scones','cupcakes','puddings','snowballs','candys','cheesecakes','wafers','macaroons','fruitcakes',
 		'gingerbreads','pastrys','fudges','tarts','crinkles','chews','bars','squares','twists','snaps',
-		'brittles','thumbprints']
+		'brittles','thumbprints', 'babka']
 sugars = ['peppermints','honey','fructose','sugar','gumdrops','molasses','syrup','maple','sucanat',
 		'sprinkles','Jell-O®','marrons glaces']
 dips = ['dips','hummus','guacamole','spreads']
 sauces = ['marinade','sauce','dressing','chutney','vinaigrette','relish','frosting','alfredo','icing',
-		'applesauce','mustard','ketchup','butter','jam','marjoram']
+		'applesauce','mustard','ketchup','butter','jam','marjoram','mayonnaise']
 soups = ['chili','chowder','stew','broth','soup']
 breads = ['crackers','breads','pretzels','pinwheels','empanadas','cornbreads','tortillas','buns','stuffings',
 		'crusts','doughs','sourdoughs','rolls','pizzas','calzones','bagels','biscuits','burritos','muffins',
 		'toast','doughnuts','muffins','loafs','loaves','gingerbreads','crisps','challahs','tarts',
-		'dumplings','tacos','pastrys','quesadillas']
+		'dumplings','tacos','pastrys','quesadillas','ciabatta']
 nuts = ['nuts','macadamia','almonds','walnuts','peanuts','pecans','hazelnuts','peanuts']
 alcoholicIngredients = ['beer','wine','rum','vodka','bourbon','whiskey','brandy','vermouth','sherry',
-		'liquer']
+		'liquer','eggnog']
 spices = ['basil','pepper','anise','caraway','cardamom','cassava','cayenne','cinnamon','fennel','flax',
 		'garlic','ginger','poppy','rhubarb','salt','chocolate','sesame','sunflower','thyme','paprika',
 		'cocoa','vanilla','mace','nutmeg','oregano','cumin','fennel','dill','salt','allspice','anise',
@@ -118,7 +122,7 @@ wheats = ['granola','oats','wheat','bran','barley','cereal']
 cookingLiquids = ['water','oil','vinegar','milk']
 bakingIngredients = ['baking','yeast','margarine','butter','eggs','flour']
 cookingFats = ['lard','shortening','butter','puff','gelatin']
-drinks = ['coffee','tea']
+drinks = ['coffee','tea','espresso','milk','eggnog']
 
 def getAllLabels(parsedIngredient):
 	labels = set()
@@ -209,7 +213,8 @@ descriptions = ['baked', 'beaten', 'blanched', 'boiled', 'boiling', 'boned', 'br
 		'halves', 'squares', 'zest', 'peel']
 
 # list of adverbs used before or after description
-adverbs = ['well', 'very', 'super', 'diagonally', 'lengthwise', 'overnight']
+precedingAdverbs = ['well', 'very', 'super']
+succeedingAdverbs = ['diagonally', 'lengthwise', 'overnight']
 
 # list of prepositions used after ingredient name
 prepositions = ['as', 'such', 'to', 'for', 'with', 'without', 'if', 'about']
@@ -232,17 +237,19 @@ hypenatedSuffixes = ['coated', 'free', 'flavored']
 #
 # main function
 #
-jsonFile = open("recipes.json", "w+")
+jsonFile = open("recipes.json", "w")
 jsonFile.truncate()
 
 parenthesesRegex = re.compile(r"\([^()]*\)")
 
 # load list of all ingredients
 allIngredientsFile = open("allIngredients.txt", "r")
-allIngredients = allIngredientsFile.readlines()
+allIngredients = allIngredientsFile.read().split("\n")
 allIngredientsFile.close()
 
-allIngredients = set(allIngredients)
+while ("") in allIngredients:
+	allIngredients.remove("")
+
 unlabeledIngredients = set()
 unlabeledRecipes = set()
 
@@ -279,7 +286,10 @@ for recipeId in range(6663, 16385):
 		#
 		# get labels
 		#
-		allLabels = getAllLabels(title.lower().split(" "))
+		parsedTitle = title.lower().split(" ");
+		while "" in parsedTitle:
+			parsedTitle.remove("")
+		allLabels = getAllLabels(parsedTitle)
 
 		if len(allLabels) == 0:
 			unlabeledRecipes.add(title)
@@ -312,21 +322,13 @@ for recipeId in range(6663, 16385):
 				ingredient["descriptions"].append(searchString[1:-1])
 
 			# remove "," and "-" then split ingredient into words
-			ingredientString = ingredientString.replace(","," ")
+			ingredientString = ingredientString.replace(","," and ")
 			ingredientString = ingredientString.replace("-"," ")
 			parsedIngredient = ingredientString.split(" ")
 
 			# remove "", caused by extra spaces
 			while "" in parsedIngredient:
-				parsedIngredient.remove("")
-			
-			# remove "and"
-			while "and" in parsedIngredient:
-				parsedIngredient.remove("and")
-			
-			# remove "style"
-			while "style" in parsedIngredient:
-				parsedIngredient.remove("style")
+				parsedIngredient.remove("")		
 
 			# move prepositions to description
 			splitIndex=-1
@@ -388,78 +390,60 @@ for recipeId in range(6663, 16385):
 			# get descriptions
 			#
 			index = 0
-			descriptionString = " "
 			while index < len(parsedIngredient):
-				wordToDescription = False
-				descriptionPhraseComplete = True
+				descriptionString = ""
 				word = parsedIngredient[index]
 
 				# search through descriptions (adjectives)
-				for description in descriptions:
-					if description in word:
-						wordToDescription = True
-						break
+				if word in descriptions:
+					# check previous word
+					if index > 0:
+						previousWord = parsedIngredient[index - 1]
+						if previousWord in precedingAdverbs or previousWord[-2:] == "ly":
+							descriptionString = previousWord + " " + word
+							parsedIngredient.remove(previousWord)
 
-				# search through hyphenated suffixes, ie "fatfree"
+					# check next word
+					elif index + 1 < len(parsedIngredient):
+						nextWord = parsedIngredient[index + 1]
+						if nextWord in succeedingAdverbs or nextWord[-2:] == "ly":
+							descriptionString = word + " " + nextWord
+							parsedIngredient.remove(nextWord)
+
+					# only word in description
+					if descriptionString == "":
+						descriptionString = word
+
+				# word not in descriptions, check if description with predecessor
+				elif index > 0:
+					previousWord = parsedIngredient[index - 1]
+					if previousWord in descriptionsWithPredecessor:
+						descriptionString = previousWord + " " + word
+						parsedIngredient.remove(index - 1)
+				
+				# either add description string to descriptions or check next word
+				if descriptionString == "":
+					index+=1
+				else:
+					ingredient["descriptions"].append(descriptionString)
+					parsedIngredient.remove(word)
+			# remove "and"
+			while "and" in parsedIngredient:
+				parsedIngredient.remove("and")
+
+			# remove "style"
+			while "style" in parsedIngredient:
+				parsedIngredient.remove("style")
+
+			# replace hyphenated prefixes and suffixes
+			for word in parsedIngredient:
 				for hypenatedSuffix in hypenatedSuffixes:
 					if hypenatedSuffix in word:
 						word=word.replace(hypenatedSuffix, "-" + hypenatedSuffix)
 				
-				# search through hyphenated suffixes, ie "lowfat"
 				for hypenatedPrefix in hypenatedPrefixes:
 					if word.find(hypenatedPrefix) == 0:
 						word=word.replace(hypenatedPrefix, hypenatedPrefix + "-")
-
-				# adverb, wait for following adjective
-				if not wordToDescription and word in adverbs:
-					wordToDescription = True
-					descriptionPhraseComplete = False
-
-				# word followed immediately by successor, ie "pudding reserved"
-				if not wordToDescription and word in descriptionsWithPredecessor and index > 1:
-					index-=1
-					word=parsedIngredient[index]
-
-					wordToDescription = True
-					
-					descriptionString += " " + word
-					del parsedIngredient[index]
-					word=parsedIngredient[index]
-
-				# word is not always description, sometimes part of ingredient
-				if not wordToDescription and ((word == "whole" and "wheat" not in parsedIngredient) or \
-						(word == "creamed" and "cheese" not in parsedIngredient) or \
-						(word == "whipped" and "cream" not in parsedIngredient and "topping" not in parsedIngredient)):
-					wordToDescription = True
-
-				# next word is adverb
-				if wordToDescription and index + 1 < len(parsedIngredient) and parsedIngredient[index + 1] in adverbs:
-					descriptionPhraseComplete = False
-
-				# adjective ends in "ly", so used as adverb
-				if wordToDescription and len(descriptionString) > 2 and descriptionString[-2:] == "ly":
-					descriptionPhraseComplete = False
-
-				# append word to description string
-				if wordToDescription:
-					descriptionString += " " + word
-					del parsedIngredient[index]
-					
-					# description phrase complete, add to list
-					if descriptionPhraseComplete:
-						ingredient["descriptions"].append(descriptionString[1:])
-						descriptionString = " "
-
-				# word part of ingredient, set modified word and increment index
-				else:
-					parsedIngredient[index] = word
-					index+=1
-
-			if len(descriptionString) > 1:
-				ingredient["descriptions"].append(descriptionString[1:])
-
-			if len(parsedIngredient) > 1 and parsedIngredient[len(parsedIngredient) - 1] == "or":
-				del parsedIngredient[len(parsedIngredient) - 1]
 
 			# move various nouns to description
 			if "powder" in parsedIngredient and \
@@ -513,7 +497,7 @@ for recipeId in range(6663, 16385):
 			if pluralString:
 				ingredientString = pluralString
 			else:
-				allIngredients.add(ingredientString)
+				allIngredients.append(ingredientString)
 
 
 			ingredient["ingredient"] = ingredientString
@@ -593,19 +577,19 @@ for recipeId in range(6663, 16385):
 		jsonFile.write("\n")
 
 		if recipeId % 10 == 0:
-			unlabeledRecipeFile = open("unlabeledRecipes.txt", "w+")
+			unlabeledRecipeFile = open("unlabeledRecipes.txt", "w")
 			unlabeledRecipeFile.truncate()
 			for string in sorted(unlabeledRecipes):
 				unlabeledRecipeFile.write("{0}\n".format(string))
 			unlabeledRecipeFile.close()
 
-			unlabeledIngredientsFile = open("unlabeledIngredients.txt", "w+")
+			unlabeledIngredientsFile = open("unlabeledIngredients.txt", "w")
 			unlabeledIngredientsFile.truncate()
 			for string in sorted(unlabeledIngredients):
 				unlabeledIngredientsFile.write("{0}\n".format(string))
 			unlabeledIngredientsFile.close()
 
-			allIngredientsFile = open("allIngredients.txt", "w+")
+			allIngredientsFile = open("allIngredients.txt", "w")
 			allIngredientsFile.truncate()
 			for string in sorted(allIngredients):
 				allIngredientsFile.write("{0}\n".format(string))
