@@ -9,155 +9,178 @@ from socket import error as SocketError
 
 
 # list of measurement units for parsing ingredient
-measurementUnits = ['teaspoon','tablespoon','cup','container','packet','bag','quart','pound','can','bottle',
-		'pint','package','fluid ounce','ounce','jar','head','gallon','drop','envelope','bar','box','pinch',
-		'dash','bunch','recipe','clove','layer','slice','roll','link','bulb','stalk','square','sprig',
-		'fillet','piece','leg','thigh','cube','granule','shell','strip','tray','leaf','loaf','half']
+measurementUnits = ['teaspoons','tablespoons','cups','containers','packets','bags','quarts','pounds','cans','bottles',
+		'pints','packages','fluid ounces','ounces','jars','heads','gallons','drops','envelopes','bars','boxs','pinchs',
+		'dashs','bunchs','recipes','cloves','layers','slices','rolls','links','bulbs','stalks','squares','sprigs',
+		'fillets','pieces','legs','thighs','cubes','granules','shells','strips','trays','leaves','loaves','halves']
 
 # strings indicating ingredient as optional
 optionalStrings = ['optional', 'to taste', 'as needed', 'if desired']
 
-def getUnitString(parsedIngredient):
+def getUnitStringArray(parsedIngredient):
 	# check words for unit
 	for word in parsedIngredient:
-		for measurementUnit in measurementUnits:
-			if equalIncludingPlurals(word, measurementUnit):
-				return word
+		pluralUnit = inCheckingPlurals(word, measurementUnits)
+		if pluralUnit:
+			return [word, pluralUnit]
 
 	# check for "cake" as unit, but only if "yeast" somewhere in ingredient
 	if "yeast" in parsedIngredient:
 		for word in parsedIngredient:
-			if equalIncludingPlurals(word, "cake"):
-				return word
+			if equalCheckingPlurals(word, "cakes"):
+				return [word, "cakes"]
 
-	return ""
+	return None
 
 
 
 #
-# checks whether the first string is the same word as the second string while checking plurals
+# checks whether the first argument is the same word as a plural string, checking plurals
 #
-def equalIncludingPlurals(string, singularString):
-	return string == singularString or \
-			string == singularString + "s" or \
-			string == singularString + "es" or \
-			string == singularString[:-1] + "ies" or \
-			string == singularString[:-1] + "ves"
+def equalCheckingPlurals(string, pluralString):
+	# only check plurals if first 3 letters match
+	if string[0] != pluralString[0]:
+		return None
+
+	if len(string) > 1 and string[1] != pluralString[1]:
+		return None
+
+	if len(string) > 2 and string[2] != pluralString[2]:
+		return None
+
+	if string == pluralString or \
+			string + "s" == pluralString or \
+			string + "es" == pluralString or \
+			string[:-1] + "ies" == pluralString or \
+			string[:-1] + "ves" == pluralString:
+		return pluralString
+	else:
+		return None
 
 
 
-# #
-# # l
-# #
-# def inIncludingPlurals(string, array):
-# 	for singularString in array:
-# 		if equalIncludingPlurals(string, singularString):
-# 			return True
-# 	return False	
+#
+# checks whether the first argument matches a string in a list of plurals, checking plurals
+#
+def inCheckingPlurals(string, pluralList):
+	for pluralString in pluralList:
+		if equalCheckingPlurals(string, pluralString):
+			return pluralString
+
+	return None
 
 
 
 # arrays for labeling ingredients and recipes (categorized for the purpose of cooking, to tomato is veg, not fruit)
 nonDairyMilks = ['almond','soy','coconut']
 dairyIngredients = ['butter','cream','cottage','cheese','milk','buttermilk','ghee','yogurt']
-cheeseFoods = ['quesadilla','quiche','lasagna','pizza','calzone','ziti']
-meats = ['meat','pepperoni','pork','sausage','beef','lamb','pot roast','burger','bacon','veal',
-		'meatball','meatloaf','liver','stroganoff','lasagna','burrito','casserole']
-poultry = ['turkey','chicken','chickens','duck','hens']
-seafoods = ['fish','salmon','shrimp','calamari','mussel','tuna','halibut','trout','albacore','squid',
-		'halibut','swordfish','anchovy','cod','flounder','mahi','bass','shark','clams']
+cheeseFoods = ['quesadillas','quiche','lasagna','pizzas','calzones','ziti']
+meats = ['meats','pepperonis','porks','sausages','beefs','lambs','pot roast','burgers','bacon','veal',
+		'meatballs','meatloaves','livers','stroganoff','lasagna','burritos','casserole']
+poultry = ['turkeys','chickens','ducks','hens']
+seafoods = ['fishes','salmons','shrimps','calamaris','mussels','tunas','halibuts','trouts','albacores',
+		'squids','swordfishes','anchovies','cods','flounders','mahi','basses','sharks','clams']
 mainProteins = ['beans','seeds','nuts','tofu','whey']
-fruits = ['fruit','fruitcake','smoothie','slushie','apples','peaches','pears','tangerine','cranberry',
-		'apple','pineapple','bananas','apricots','prunes','grapes','lemons','watermelon','blueberry',
-		'currants','cherry','cherry','coconut','raisins','applesauce','lemon','oranges','raspberry',
-		'strawberry','blackberry']
-vegetables = ['lettuce','mushroom','coleslaw','slaw','veggie','pumpkin','turnip','tomatoes','potato',
-		'olive','pizza','calzone','onion','peppers','corn','carrots','peas','radishes','celery',
-		'cornmeal','broccoli','onions','dates','pickle','olives','chives','lentils','taro','zucchinis',
-		'avocados','artichokes','asparagus','mushrooms','yams','squash']
-breakfasts = ['crepes','pancakes','waffles','bagels','quiche','toast','doughnuts','muffins','eggs']
-pastas = ['noodle','linguine','pasta','spaghetti','lasagna','macaroni','mac','casserole','fettuccine',
+fruits = ['fruits','fruitcakes','smoothies','slushies','peaches','pears','tangerines','cranberries',
+		'apples','pineapples','bananas','apricots','prunes','grapes','lemons','watermelons','blueberries',
+		'currants','cherries','coconuts','raisins','applesauce','lemons','oranges','raspberries','mangos',
+		'strawberries','blackberries','citrons','persimmon','citrus']
+vegetables = ['lettuce','mushrooms','coleslaw','slaws','veggies','pumpkins','turnips','tomatoes','potatoes',
+		'olives','pizzas','calzones','onions','peppers','corn','carrots','peas','radishes','celery',
+		'cornmeals','broccoli','onions','dates','pickles','chives','lentils','taros','zucchinis',
+		'avocados','artichokes','asparagus','mushrooms','yams','squash','parsley','spinach']
+breakfasts = ['crepes','pancakes','waffles','bagels','quiches','toast','doughnuts','muffins','eggs']
+pastas = ['noodles','linguine','pasta','spaghetti','lasagnas','macaroni','mac','casseroles','fettuccine',
 		'manicotti','ziti']
-desserts = ['cookie','cake','brownie','pie','cobbler','mousse','puff','biscotti','wafer','splits',
-		'scone','cupcake','pudding','snowball','candy','cheesecake','wafer','macaroon','fruitcake',
-		'gingerbread','pastry','fudge','tarts','crinkles','chews','bars','squares','twists','snaps',
+desserts = ['cookies','cakes','brownies','pies','cobblers','mousses','puffs','biscottis','wafers','splits',
+		'scones','cupcakes','puddings','snowballs','candys','cheesecakes','wafers','macaroons','fruitcakes',
+		'gingerbreads','pastrys','fudges','tarts','crinkles','chews','bars','squares','twists','snaps',
 		'brittles','thumbprints']
-sugars = ['peppermint','honey','fructose','sugar','gumdrops','sucanat']
-dips = ['dip','hummus','guacamole','spread']
+sugars = ['peppermints','honey','fructose','sugar','gumdrops','molasses','syrup','maple','sucanat',
+		'sprinkles','Jell-O®','marrons glaces']
+dips = ['dips','hummus','guacamole','spreads']
 sauces = ['marinade','sauce','dressing','chutney','vinaigrette','relish','frosting','alfredo','icing',
-		'applesauce','mustard','ketchup','butter','jam']
+		'applesauce','mustard','ketchup','butter','jam','marjoram']
 soups = ['chili','chowder','stew','broth','soup']
-breads = ['crackers','bread','pretzels','pinwheel','empanada','cornbread','tortilla','buns','stuffing',
-		'crust','dough','sourdough','rolls','pizza','calzone','bagels','biscuits','burrito','muffins',
-		'toast','doughnut','muffin','loaf','loaves','gingerbread','crisp','challah','tart','granola',
-		'dumpling','taco','pastry','quesadilla']
-nuts = ['almonds','walnuts','peanuts','pecans','hazelnuts','peanut']
-alcoholicIngredients = ['beer','wine','rum','vodka','bourbon','whiskey','wine','brandy','vermouth']
+breads = ['crackers','breads','pretzels','pinwheels','empanadas','cornbreads','tortillas','buns','stuffings',
+		'crusts','doughs','sourdoughs','rolls','pizzas','calzones','bagels','biscuits','burritos','muffins',
+		'toast','doughnuts','muffins','loafs','loaves','gingerbreads','crisps','challahs','tarts',
+		'dumplings','tacos','pastrys','quesadillas']
+nuts = ['nuts','macadamia','almonds','walnuts','peanuts','pecans','hazelnuts','peanuts']
+alcoholicIngredients = ['beer','wine','rum','vodka','bourbon','whiskey','brandy','vermouth','sherry',
+		'liquer']
 spices = ['basil','pepper','anise','caraway','cardamom','cassava','cayenne','cinnamon','fennel','flax',
-		'garlic','ginger','chili','poppy','rhubarb','salt','chocolate','sesame','sunflower','thyme',
+		'garlic','ginger','poppy','rhubarb','salt','chocolate','sesame','sunflower','thyme','paprika',
 		'cocoa','vanilla','mace','nutmeg','oregano','cumin','fennel','dill','salt','allspice','anise',
-		'kalonji','arrowroot']
-spicy = ['jalapeno','jalapenos','Dijon','chili','chile']
+		'kalonji','arrowroot','rosemary']
+spicy = ['jalapeno','Dijon','chile']
+wheats = ['granola','oats','wheat','bran','barley','cereal']
 cookingLiquids = ['water','oil','vinegar','milk']
 bakingIngredients = ['baking','yeast','margarine','butter','eggs','flour']
-cookingFats = ['lard','shortening','butter','puff']
+cookingFats = ['lard','shortening','butter','puff','gelatin']
+drinks = ['coffee','tea']
 
 def getAllLabels(parsedIngredient):
 	labels = set()
 	
 	for string in parsedIngredient:
-		if string in nonDairyMilks:
+		if inCheckingPlurals(string, nonDairyMilks):
 			labels.add("non dairy milk")
-		if string in dairyIngredients:
+		if inCheckingPlurals(string, dairyIngredients):
 			labels.add("dairy")
 		if "cheese" == string and "cream" not in parsedIngredient:
 			labels.add("cheese")
-		if string in cheeseFoods:
+		if inCheckingPlurals(string, cheeseFoods):
 			labels.add("cheese food")
-		if string in meats:
+		if inCheckingPlurals(string, meats):
 			labels.add("meat")
-		if string in poultry:
+		if inCheckingPlurals(string, poultry):
 			labels.add("poultry")
-		if string in seafoods:
+		if inCheckingPlurals(string, seafoods):
 			labels.add("seafood")
-		if string in fruits:
+		if inCheckingPlurals(string, fruits):
 			labels.add("fruit")
-		if string in vegetables:
+		if inCheckingPlurals(string, vegetables):
 			labels.add("vegetable")
-		if string in spices:
+		if inCheckingPlurals(string, spices):
 			labels.add("spice")
-		if string in breakfasts:
+		if inCheckingPlurals(string, breakfasts):
 			labels.add("breakfast")
-		if string in pastas:
+		if inCheckingPlurals(string, pastas):
 			labels.add("pasta")
-		if string in desserts:
+		if inCheckingPlurals(string, desserts):
 			labels.add("dessert")
-		if string in dips:
+		if inCheckingPlurals(string, dips):
 			labels.add("dip")
-		if string in sauces:
+		if inCheckingPlurals(string, sauces):
 			labels.add("sauce")
-		if string in soups:
+		if inCheckingPlurals(string, soups):
 			labels.add("cooking liquid")
 			labels.add("soup")
-		if string in breads:
+		if inCheckingPlurals(string, breads):
 			labels.add("bread")
-		if string in alcoholicIngredients:
+		if inCheckingPlurals(string, alcoholicIngredients):
 			labels.add("alcohol")
-		if string in spices:
+		if inCheckingPlurals(string, spices):
 			labels.add("spice")
-		if string in nuts:
+		if inCheckingPlurals(string, nuts):
 			labels.add("nut")
-		if string in cookingLiquids:
+		if inCheckingPlurals(string, cookingLiquids):
 			labels.add("cooking liquid")
-		if string in cookingFats:
+		if inCheckingPlurals(string, cookingFats):
 			labels.add("cooking fat")
-		if string in bakingIngredients:
+		if inCheckingPlurals(string, bakingIngredients):
 			labels.add("baking ingredient")
-		if string in sugars:
+		if inCheckingPlurals(string, sugars):
 			labels.add("sugar")
-		if string == "mix":
+		if inCheckingPlurals(string, wheats):
+			labels.add("wheat")
+		if inCheckingPlurals(string, drinks):
+			labels.add("drink")
+		
+		if equalCheckingPlurals(string, "mixes"):
 			labels.add("mix")
-		elif "juice" in string:
+		if equalCheckingPlurals(string, "juices"):
 			labels.add("juice")
 
 	if "milk" in parsedIngredient:
@@ -219,6 +242,7 @@ allIngredientsFile = open("allIngredients.txt", "r")
 allIngredients = allIngredientsFile.readlines()
 allIngredientsFile.close()
 
+allIngredients = set(allIngredients)
 unlabeledIngredients = set()
 unlabeledRecipes = set()
 
@@ -252,9 +276,18 @@ for recipeId in range(6663, 16385):
 		calorieSpan = soup.find("span", class_="calorie-count")
 		footnotesSection = soup.find("section", class_="recipe-footnotes")
 
+		#
+		# get labels
+		#
+		allLabels = getAllLabels(title.lower().split(" "))
+
+		if len(allLabels) == 0:
+			unlabeledRecipes.add(title)
+
+		#
 		# ingredients
-		# 2 spans with "Add all" and 1 empty, always last 3 spans
-		count = len(ingredientObjects) - 3
+		#
+		count = len(ingredientObjects) - 3 # 2 spans with "Add all" and 1 empty
 		ingredients = []
 		for i in range(0, count):
 			ingredientString = ingredientObjects[i].text
@@ -334,9 +367,11 @@ for recipeId in range(6663, 16385):
 			#
 			# get unit
 			#
-			unitString = getUnitString(parsedIngredient)
-			if unitString is not "":
-				parsedIngredient.remove(unitString)
+			unitStringArray = getUnitStringArray(parsedIngredient)
+			unitString = ""
+			if unitStringArray:
+				parsedIngredient.remove(unitStringArray[0])
+				unitString = unitStringArray[1]
 				if len(parsedIngredient) > 1 and parsedIngredient[0] == "or":
 					unitString += " " + parsedIngredient[0] + " " + parsedIngredient[1]
 					del parsedIngredient[0]
@@ -469,65 +504,28 @@ for recipeId in range(6663, 16385):
 			ingredientString = ingredientString.replace("bourbon whiskey", "bourbon")
 			ingredientString = ingredientString.replace("pudding mix", "pudding")
 
-			# check if allIngredients has singular or plural noun ("s")
-			if ingredientString[:-1] in allIngredients:
-				allIngredients.remove(ingredientString[:-1])
-				allIngredients.append(ingredientString)
-			elif ingredientString + "s" in allIngredients:
-				ingredientString += "s"
 
-			# check if allIngredients has singular or plural noun ("es")
-			elif ingredientString[:-2] in allIngredients:
-				allIngredients.remove(ingredientString[:-2])
-				allIngredients.append(ingredientString)
-			elif ingredientString + "es" in allIngredients:
-				ingredientString += "es"
-			
-			# allIngredients has neither different singular nor plural
-			elif ingredientString not in allIngredients:
-				allIngredients.append(ingredientString)
+			if ingredientString == "":
+				print("Bad ingredient string: {0}".format(ingredientObjects[i].text))
+				ingredientString = ingredientObjects[i].text
+
+			pluralString = inCheckingPlurals(ingredientString, allIngredients)
+			if pluralString:
+				ingredientString = pluralString
+			else:
+				allIngredients.add(ingredientString)
+
 
 			ingredient["ingredient"] = ingredientString
 
 			#
 			# get labels
 			#
-
-			# # re-parse ingredient
-			# parsedIngredient = ingredientString.split(" ")
-
-			# # remove words useless in labelling ingredient
-			# for uselessInLabel in uselessInLabels:
-			# 	if uselessInLabel in parsedIngredient:
-			# 		parsedIngredient.remove(uselessInLabel)
-
-			# # remove hyphenated prefixes
-			# for hypenatedPrefix in hypenatedPrefixes:
-			# 	index = ingredientString.find(hypenatedPrefix)
-			# 	if index > -1:
-			# 		endIndex = ingredientString.find(" ", index)
-			# 		if endIndex > -1:
-			# 			searchString = ingredientString[0:endIndex+1]
-			# 			ingredientString = ingredientString.replace(searchString, "")
-
-			# # remove hyphenated suffixes
-			# for hypenatedSuffix in hypenatedSuffixes:
-			# 	index = ingredientString.find(hypenatedSuffix)
-			# 	if index > -1:
-			# 		endIndex = ingredientString.find(" ", index)
-			# 		if endIndex > -1:
-			# 			searchString = ingredientString[0:endIndex+1]
-			# 			ingredientString = ingredientString.replace(searchString, "")
-
-			# # remove colors
-			# for color in colors:
-			# 	if color in parsedIngredient:
-			# 		parsedIngredient.remove(color)
-
+			ingredientString = ingredientString.replace("-flavored", "")
 			ingredient["labels"] = getAllLabels(ingredientString.split(" "))
 
 			if len(ingredient["labels"]) == 0:
-				unlabeledIngredients.add(ingredientString)
+				unlabeledIngredients.add(ingredient["ingredient"])
 
 			#
 			# get whether optional
@@ -543,9 +541,7 @@ for recipeId in range(6663, 16385):
 		#
 		# get directions
 		#
-
-		# 1 empty span at end
-		count = len(directionObjects) - 1
+		count = len(directionObjects) - 1 # 1 empty span at end
 		directionsString = directionObjects[0].text
 		for i in range(1, count):
 			directionsString += " " + directionObjects[i].text
@@ -585,47 +581,34 @@ for recipeId in range(6663, 16385):
 			calories = 0
 
 
-		#
-		# get labels
-		#
-		titleArray = title.lower().split(" ")
-		allLabels = []
-		for searchString in titleArray:
-			resultArray = getAllLabels(searchString)
-			for label in resultArray:
-				allLabels.append(label)
 
-		if len(allLabels) == 0:
-			unlabeledRecipes.add(title)
-
-		json.dumps({"id": recipeId,
+		jsonFile.write(json.dumps({"id": recipeId,
 				"name": title,
 				"ingredients": ingredients, 
 				"directions": directions,
 				"footnotes": footnotes,
 				"labels": allLabels,
 				"servings": servings,
-				"calories": calories},
-				jsonFile)
+				"calories": calories}))
 		jsonFile.write("\n")
 
 		if recipeId % 10 == 0:
 			unlabeledRecipeFile = open("unlabeledRecipes.txt", "w+")
 			unlabeledRecipeFile.truncate()
 			for string in sorted(unlabeledRecipes):
-				unlabeledRecipeFile.write("{0}\n".format(string.decode(encoding="utf-8", errors="ignore")))
+				unlabeledRecipeFile.write("{0}\n".format(string))
 			unlabeledRecipeFile.close()
 
 			unlabeledIngredientsFile = open("unlabeledIngredients.txt", "w+")
 			unlabeledIngredientsFile.truncate()
 			for string in sorted(unlabeledIngredients):
-				unlabeledIngredientsFile.write("{0}\n".format(string.decode(encoding="utf-8", errors="ignore")))
+				unlabeledIngredientsFile.write("{0}\n".format(string))
 			unlabeledIngredientsFile.close()
 
 			allIngredientsFile = open("allIngredients.txt", "w+")
 			allIngredientsFile.truncate()
 			for string in sorted(allIngredients):
-				allIngredientsFile.write("{0}\n".format(string.decode(encoding="utf-8", errors="ignore")))
+				allIngredientsFile.write("{0}\n".format(string))
 			allIngredientsFile.close()
 		
 			print(recipeId)
