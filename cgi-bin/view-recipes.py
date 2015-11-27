@@ -364,7 +364,7 @@ try:
 
 	try:
 		# TODO only use this when JSON file changes
-		#recreateDatabase()	
+		#recreateDatabase()
 
 		# if recipe selected, load selected recipe
 		if recipeSelection is not "":
