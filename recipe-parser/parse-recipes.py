@@ -38,28 +38,25 @@ def getUnitStringArray(parsedIngredient):
 # checks whether the first argument is the same word as a plural string, checking plurals
 #
 def equalCheckingPlurals(string, pluralString):
-	if len(pluralString) < 3:
-		print("Bad plural: {0}".format(pluralString))
-		return None
-
 	# only check plurals if first 3 letters match
 	if string[0] != pluralString[0]:
 		return None
 
-	if len(string) > 1 and string[1] != pluralString[1]:
+	if len(string) > 1 and len(pluralString) > 1 and string[1] != pluralString[1]:
 		return None
 
-	if len(string) > 2 and string[2] != pluralString[2]:
+	if len(string) > 2 and len(pluralString) > 2 and string[2] != pluralString[2]:
 		return None
 
+	# check all possible plurals of string
 	if string == pluralString or \
 			string + "s" == pluralString or \
 			string + "es" == pluralString or \
 			string[:-1] + "ies" == pluralString or \
 			string[:-1] + "ves" == pluralString:
 		return pluralString
-	else:
-		return None
+	
+	return None
 
 
 
@@ -81,7 +78,7 @@ dairyIngredients = ['butter','cream','cottage','cheese','milk','buttermilk','ghe
 cheeseFoods = ['quesadillas','quiche','lasagna','pizzas','calzones','ziti']
 meats = ['meats','pepperonis','porks','sausages','beefs','lambs','pot roast','burgers','bacon','veal',
 		'meatballs','meatloaves','livers','stroganoff','lasagna','burritos','casserole']
-poultry = ['turkeys','chickens','ducks','hens']
+poultry = ['turkeys','chickens','ducks','hens','salami']
 seafoods = ['fishes','salmons','shrimps','calamaris','mussels','tunas','halibuts','trouts','albacores',
 		'squids','swordfishes','anchovies','cods','flounders','mahi','basses','sharks','clams']
 mainProteins = ['beans','seeds','nuts','tofu','whey']
@@ -419,7 +416,7 @@ for recipeId in range(6663, 16385):
 					previousWord = parsedIngredient[index - 1]
 					if previousWord in descriptionsWithPredecessor:
 						descriptionString = previousWord + " " + word
-						parsedIngredient.remove(index - 1)
+						parsedIngredient.remove(previousWord)
 				
 				# either add description string to descriptions or check next word
 				if descriptionString == "":
