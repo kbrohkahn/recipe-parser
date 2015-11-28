@@ -7,7 +7,7 @@ import sqlite3
 # print HTML header and beginning of HTML body
 #
 def htmlHeader():
-	print """Content-type:text/html\n\n
+	print("""Content-type:text/html\n\n
 		<!DOCTYPE html>
 		<html lang="en">
 		<head>
@@ -23,24 +23,73 @@ def htmlHeader():
 		</head>
 		<body>
 			<div class="container-fluid">
-				<div class="row">
-					<div class="col-xs-12">
-						<form method="post" action="view-recipes.py" id="recipe-search-form">
-							<h4>Search for recipe</h4>
-							<div class="input-group" id="recipe-input-group">
-								<input type="text" class="form-control" id="recipe-input" name="recipe-input" value="{0}">
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="submit">Search</button>
-								</span>
+				<form role="form" method="post" action="view-recipes.py" id="recipe-search-form">
+					<h4>Enter ingredients to include:</h4>
+					<div class="row">
+						<div class="col-sm-6 col-md-4 col-lg-3">
+							<div class="input-group">
+								<input type="text" class="form-control" id="include-0" name="include-0" value={0}>
+								<span class="input-group-addon" onclick="clearIngredientToInclude(0)">x</span>
 							</div>
-							<div class="hidden">
-								<input type="text" id="recipe-selection" name="recipe-selection" value="">
-								<input type="text" id="transformation" name="transformation" value="">
+						</div><div class="col-sm-6 col-md-4 col-lg-3">
+							<div class="input-group">
+								<input type="text" class="form-control" id="include-1" name="include-1" value={1}>
+								<span class="input-group-addon" onclick="clearIngredientToInclude(1)">x</span>
 							</div>
-						</form>
+						</div><div class="col-sm-6 col-md-4 col-lg-3">
+							<div class="input-group">
+								<input type="text" class="form-control" id="include-2" name="include-2" value={2}>
+								<span class="input-group-addon" onclick="clearIngredientToInclude(2)">x</span>
+							</div>
+						</div><div class="col-sm-6 col-md-4 col-lg-3">
+							<div class="input-group">
+								<input type="text" class="form-control" id="include-3" name="include-3" value={3}>
+								<span class="input-group-addon" onclick="clearIngredientToInclude(3)">x</span>
+							</div>
+						</div>
 					</div>
-				</div>
-			""".format(searchResult)
+
+					<h4>Enter ingredients to exclude:</h4>
+					<div class="row">
+						<div class="col-sm-6 col-md-4 col-lg-3">
+							<div class="input-group">
+								<input type="text" class="form-control" id="exclude-0" name="exclude-0" value={4}>
+								<span class="input-group-addon" onclick="clearIngredientToExclude(0)">x</span>
+							</div>
+						</div><div class="col-sm-6 col-md-4 col-lg-3">
+							<div class="input-group">
+								<input type="text" class="form-control" id="exclude-1" name="exclude-1" value={5}>
+								<span class="input-group-addon" onclick="clearIngredientToExclude(1)">x</span>
+							</div>
+						</div><div class="col-sm-6 col-md-4 col-lg-3">
+							<div class="input-group">
+								<input type="text" class="form-control" id="exclude-2" name="exclude-2" value={6}>
+								<span class="input-group-addon" onclick="clearIngredientToExclude(2)">x</span>
+							</div>
+						</div><div class="col-sm-6 col-md-4 col-lg-3">
+							<div class="input-group">
+								<input type="text" class="form-control" id="exclude-3" name="exclude-3" value={7}>
+								<span class="input-group-addon" onclick="clearIngredientToExclude(3)">x</span>
+							</div>
+						</div>
+					</div>
+
+					<h4>Enter recipe name:</h4>
+					<div class="input-group">
+						<input type="text" class="form-control" id="recipe-input" name="recipe-input" value="{8}">
+						<span class="input-group-btn">
+							<button class="btn btn-default" type="submit">Search</button>
+						</span>
+					</div>
+		
+					<div class="hidden">
+						<input type="text" id="recipe-selection" name="recipe-selection">
+						<input type="text" id="transformation" name="transformation">
+					</div>
+				</form>
+			""".format(includeIngredients[0], includeIngredients[1], includeIngredients[2], includeIngredients[3], \
+						excludeIngredients[0], excludeIngredients[1], excludeIngredients[2], excludeIngredients[3], \
+						searchResult))
 
 
 
@@ -48,14 +97,14 @@ def htmlHeader():
 # print HTML footer row and close BODY and HTML tags
 #
 def htmlFooter():
-	print """	<div class="row">
+	print("""	<div class="row">
 					<div class="col-xs-12 text-center">
 						All recipes parsed from <a href="http://allrecipes.com/">allrecipes.com</a>
 					</div>
 				</div>
 			</div>
 		</body>
-		</html>"""
+		</html>""")
 
 
 
@@ -128,56 +177,108 @@ def recreateDatabase():
 		connection.close()
 
 	# sqlite error
-	except sqlite3.Error, e:
-		print "Error %s:" % e.args[0]
-
+	except sqlite3.Error as e:
+		print("Error %s:" % e.args[0])
 
 
 #
 # print list of all recipes and ingredients
 #
-def displaySearchResults(string):
-	# split search string into words
-	words = string.split(" ")
+def displaySearchResults():
+	queryWhereClause = ""
+	
+	if searchResult != "":
+		# split search string into words
+		words = searchResult.split(" ")
 
-	# remove "", caused by extra spaces
-	while "" in words:
-		words.remove("")
+		# remove "", caused by extra spaces
+		while "" in words:
+			words.remove("")
 
-	# get query "WHERE" clause for each word
-	searchString = ""
-	for word in words:
-		searchString += "Name Like '%{0}%' AND ".format(word.replace("'", "\n"))
+		# get query "WHERE" clause for each word
+		for word in words:
+			queryWhereClause += "Recipes.Name Like '%{0}%' AND ".format(word.replace("'", "\'"))
+
+	includeIngredientString = "<h4>Containing "
+	for includeIngredient in includeIngredients:
+		if includeIngredient != "":
+			queryWhereClause += "Ingredients.Name LIKE '%{0}%' AND ".format(includeIngredient.replace("'", "\'"))
+			includeIngredientString += includeIngredient + ", "
+
+	excludeIngredientString = "<h4>Without "
+	for excludeIngredient in excludeIngredients:
+		if excludeIngredient != "":
+			queryWhereClause += "Ingredients.Name NOT LIKE '%{0}%' AND ".format(excludeIngredient.replace("'", "\'"))
+			excludeIngredientString += excludeIngredient + ", "
+
+	if queryWhereClause == "":
+		return
 
 	# open database and get cursor
 	connection = sqlite3.connect('recipes.db')
 	cursor = connection.cursor()
 
 	# perform query and get recipes
-	cursor.execute("SELECT Name FROM Recipes WHERE {0} COLLATE NOCASE ORDER BY Name ASC".format(searchString[0:-5]))
+	cursor.execute("""SELECT DISTINCT Recipes.Name FROM Recipes INNER JOIN Ingredients ON Recipes.Id = Ingredients.RecipeId 
+			WHERE {0} COLLATE NOCASE ORDER BY Recipes.Name ASC""".format(queryWhereClause[0:-5]))
 	allRecipes = cursor.fetchall()
 
 	# close connection
 	connection.close()
 
+	# get included ingredients header string
+	index = includeIngredientString.rfind(",", 0, -2) #ignore final comma inserted after final ingredient
+	count = includeIngredientString.count(",") 
+	if count > 2:
+		# insert " and" immediately after last comma
+		includeIngredientString = includeIngredientString[:index+1] + " and" + includeIngredientString[index+1:-2] + "</h4>"
+	elif count == 2:
+		# replace last comma with "and"
+		includeIngredientString = includeIngredientString[:index] + " and" + includeIngredientString[index+1:-2] + "</h4>"
+	elif count == 1:
+		# only one comma, just delete it
+		includeIngredientString = includeIngredientString[:-2] + "</h4>"
+	else:
+		# no commas, so no ingredients and no header
+		includeIngredientString = ""
+
+	# get excluded ingredients header string
+	index = excludeIngredientString.rfind(",", 0, -2) #ignore final comma inserted after final ingredient
+	count = excludeIngredientString.count(",") 
+	if count > 2:
+		# insert " and" immediately after last comma
+		excludeIngredientString = excludeIngredientString[:index+1] + " and" + excludeIngredientString[index+1:-2] + "</h4>"
+	elif count == 2:
+		# replace last comma with "and"
+		excludeIngredientString = excludeIngredientString[:index] + " and" + excludeIngredientString[index+1:-2] + "</h4>"
+	elif count == 1:
+		# only one comma, just delete it
+		excludeIngredientString = excludeIngredientString[:-2] + "</h4>"
+	else:
+		# no commas, so no ingredients and no header
+		excludeIngredientString = ""
+
 	# print recipe names
-	print """	<div class="row">
+	print("""	<div class="row">
 					<div class="col-xs-12">
-						<h1>Recipes containing "{0}"</h1>
-						<table class="table table-striped">""".format(searchResult)
+						<h1>{0} Recipes</h1>
+						{1}
+						{2}
+						<table class="table table-striped">""".format(searchResult.capitalize(), \
+								includeIngredientString, excludeIngredientString))
 
 	for recipeName in allRecipes:
 		recipeName = recipeName[0].encode('utf-8');
-		print """
+		print("""
 				<tr>
 					<td class="center-vertical">{0}</td>
 					<td class="text-right">
 						<button class="btn btn-default" onclick="viewRecipe('{1}')">View Recipe</button>
 					</td>
-				</tr>""".format(recipeName, recipeName.replace("'", "\\'"))
-	print """	</table>
+				</tr>""".format(recipeName, recipeName.replace("'", "\\'")))
+	print("""	</table>
 			</div>
-		</div>"""
+		</div>""")
 
 
 
@@ -239,7 +340,7 @@ def loadRecipe(recipeName):
 #
 def displayRecipe(recipe):
 	# print recipe, servings, and calories
-	print """
+	print("""
 			<div class="row">
 				<div class="col-xs-12">
 					<h1>%s</h1>
@@ -255,50 +356,50 @@ def displayRecipe(recipe):
 								<th>Unit</td>
 								<th>Description</td>
 								<th>Labels</td>
-							</tr>""" % (recipe["name"], recipe["servings"], recipe["calories"], recipe["id"])
+							</tr>""" % (recipe["name"], recipe["servings"], recipe["calories"], recipe["id"]))
 
 	# print list of ingredients
 	for ingredient in recipe["ingredients"]:
 
 		# print ingredient
-		print """	<tr>
+		print("""	<tr>
 						<td>{0}</td>
 						<td>{1:10.2f}</td>
 						<td>{2}</td>
 						<td>{3}</td>
 						<td>{4}</td>
 					</tr>""".format(ingredient["ingredient"], ingredient["amount"], ingredient["unit"], \
-						", ".join(ingredient["descriptions"]), ", ".join(ingredient["labels"]))
+						", ".join(ingredient["descriptions"]), ", ".join(ingredient["labels"])))
 	
 	# print ordered list of directions
-	print "</table></div><h2>Directions</h2><ol>"
+	print("</table></div><h2>Directions</h2><ol>")
 	for direction in recipe["directions"]:
-		print "<li>%s</li>" % (direction)
-	print "</ol>"
+		print("<li>%s</li>" % (direction))
+	print("</ol>")
 
 	# iff there is at least one footnote, print list of footnotes
 	if len(recipe["footnotes"]) > 0:
-		print "<h2>Footnotes</h2><ul>"
+		print("<h2>Footnotes</h2><ul>")
 		for footnote in recipe["footnotes"]:
-			print "<li>{0}</li>".format(footnote[0])
-		print "</ul>"
+			print("<li>{0}</li>".format(footnote[0]))
+		print("</ul>")
 
 	# recipe transformations
-	print """
+	print("""
 			<h2>Transform Recipe</h2>
-			<div class="input-group" id="recipe-input-group">
+			<div class="input-group">
 				<select class="form-control" id="transformation-select" name="transformation-select">
-			"""
+			""")
 
 	transformations = ['American', 'French', 'Italian', 'Vegan', 'Vegetarian']
 	for transformation in transformations:
-		print "<option>{0}</option>".format(transformation)
+		print("<option>{0}</option>".format(transformation))
 
-	print """	</select>
+	print("""	</select>
 				<span class="input-group-btn">
 					<button class="btn btn-default" onclick="viewAndTransformRecipe('{0}')">Transform</button>
 				</span>
-			</div>""".format(recipe["name"].replace("'", "\\'"))
+			</div>""".format(recipe["name"].replace("'", "\\'")))
 
 
 
@@ -360,6 +461,16 @@ try:
 	recipeSelection = form.getvalue("recipe-selection", "")
 	transformation = form.getvalue("transformation", "")
 
+	includeFormNames = ["include-0", "include-1", "include-2", "include-3"]
+	includeIngredients = []
+	for includeFormName in includeFormNames:
+		includeIngredients.append(form.getvalue(includeFormName, ""))
+
+	excludeFormNames = ["exclude-0", "exclude-1", "exclude-2", "exclude-3"]
+	excludeIngredients = []
+	for excludeFormName in excludeFormNames:
+		excludeIngredients.append(form.getvalue(excludeFormName, ""))
+
 	htmlHeader()
 
 	try:
@@ -372,7 +483,7 @@ try:
 
 
 			if recipe is None:
-				print "<b>Error: recipe not found</b>"
+				print("<b>Error: recipe not found</b>")
 			else:
 				if transformation is not "":
 					recipe = transformRecipe(recipe, transformation)
@@ -380,11 +491,10 @@ try:
 				displayRecipe(recipe)
 
 		# if exists, display recipe form search results
-		if searchResult is not "":
-			displaySearchResults(searchResult)
+		displaySearchResults()
 
-	except sqlite3.Error, e:
-		print "Error %s:" % e.args[0]
+	except sqlite3.Error as e:
+		print("Error %s:" % e.args[0])
 
 	htmlFooter()
 except:
