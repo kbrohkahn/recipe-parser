@@ -14,10 +14,17 @@ function viewAndTransformRecipe(recipeName) {
 	$("#recipe-search-form").submit()
 }
 
-function clearIngredientToInclude(index) {
+function clearIncluded(index) {
 	$("#include-" + index).val("")
 }
 
-function clearIngredientToEnclude(index) {
+function clearExcluded(index) {
 	$("#exclude-" + index).val("")
 }
+
+$(document).ready(function() {
+	$("#ingredient-tabs a").click(function (e) {
+		e.preventDefault()
+		$(this).tab("show")
+	})
+});
