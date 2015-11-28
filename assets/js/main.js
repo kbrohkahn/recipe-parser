@@ -15,11 +15,11 @@ function viewAndTransformRecipe(recipeName) {
 }
 
 function clearIncluded(index) {
-	$("#include-" + index).val("")
+	$("#ingredient-include-" + index).val("")
 }
 
 function clearExcluded(index) {
-	$("#exclude-" + index).val("")
+	$("#ingredient-exclude-" + index).val("")
 }
 
 $(document).ready(function() {
