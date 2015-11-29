@@ -7,23 +7,20 @@ import sqlite3
 # print HTML header and beginning of HTML body
 #
 def htmlHeader():
-	ingredientLabelSelectOptions = """
-		<option></option>
-		<option>dairy</option>
-		<option>cheese</option>
-		<option>meat</option>
-		<option>poultry</option>
-		<option>seafood</option>
-	"""
-	
-	recipeLabelSelectOptions = """
-		<option></option>
-		<option>dairy</option>
-		<option>cheese</option>
-		<option>meat</option>
-		<option>poultry</option>
-		<option>seafood</option>
-	"""
+	labelButtons = """
+<div class="input-group-addon">
+	<label for="ingredient-label-0-either">-</label>
+	<input id="ingredient-label-0-either" type="radio" name="" aria-label="Button" value="-">
+</div>
+<div class="input-group-addon">
+	<label for="ingredient-label-0-on">On</label>
+	<input id="ingredient-label-0-on" type="radio" name="" aria-label="Button" value="on">
+</div>
+<div class="input-group-addon">
+	<label for="ingredient-label-0-off">Off</label>
+	<input id="ingredient-label-0-off" type="radio" name="" aria-label="Button" value="off">
+</div>
+"""
 
 	print("""Content-type:text/html\n\n
 <!DOCTYPE html>
@@ -47,14 +44,10 @@ def htmlHeader():
 						role="tab" data-toggle="tab">Include Ingredients</a></li>
 				<li role="presentation"><a href="#ingredients-exclude" aria-controls="ingredients-exclude"
 						role="tab" data-toggle="tab">Excluded Ingredients</a></li>
-				<li role="presentation"><a href="#ingredient-labels-include" aria-controls="ingredient-labels-include"
-						role="tab" data-toggle="tab">Included Ingredient Types</a></li>
-				<li role="presentation"><a href="#ingredient-labels-exclude" aria-controls="ingredient-labels-include"
-						role="tab" data-toggle="tab">Excluded Ingredient Types</a></li>
-				<li role="presentation"><a href="#recipe-labels-include" aria-controls="recipe-labels-include"
-						role="tab" data-toggle="tab">Included Recipe Types</a></li>
-				<li role="presentation"><a href="#recipe-labels-exclude" aria-controls="recipe-labels-include"
-						role="tab" data-toggle="tab">Excluded Recipe Types</a></li>
+				<li role="presentation"><a href="#ingredient-labels" aria-controls="ingredient-labels"
+						role="tab" data-toggle="tab">Toggle Ingredient Types</a></li>
+				<li role="presentation"><a href="#recipe-labels" aria-controls="recipe-labels"
+						role="tab" data-toggle="tab">Toggle Recipe Types</a></li>
 			</ul>
 
 			<div class="tab-content">
@@ -258,98 +251,90 @@ def htmlHeader():
 						</div>
 					</div>
 				</div>
-				<div role="tabpanel" class="tab-pane fade" id="ingredient-labels-include">
+				<div role="tabpanel" class="tab-pane fade" id="ingredient-labels">
 					<div class="row">
-						<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-							<select class="form-control" name="ingredient-labels-include-0">{24}</select>
+						<div class="col-xs-12 col-sm-6 col-md-4">
+							<div class="input-group">
+								<input type="text" class="form-control" disabled aria-describedby="Ingredient label" value="dairy">
+								{24}
+							</div>
 						</div>
-						<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-							<select class="form-control" name="ingredient-labels-include-1">{24}</select>
+						<div class="col-xs-12 col-sm-6 col-md-4">
+							<div class="input-group">
+								<input type="text" class="form-control" disabled aria-describedby="Ingredient label" value="meat">
+								{24}
+							</div>
 						</div>
-						<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-							<select class="form-control" name="ingredient-labels-include-2">{24}</select>
+						<div class="col-xs-12 col-sm-6 col-md-4">
+							<div class="input-group">
+								<input type="text" class="form-control" disabled aria-describedby="Ingredient label" value="poultry">
+								{24}
+							</div>
 						</div>
-						<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-							<select class="form-control" name="ingredient-labels-include-3">{24}</select>
+						<div class="col-xs-12 col-sm-6 col-md-4">
+							<div class="input-group">
+								<input type="text" class="form-control" disabled aria-describedby="Ingredient label" value="seafood">
+								{24}
+							</div>
 						</div>
-						<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-							<select class="form-control" name="ingredient-labels-include-4">{24}</select>
+						<div class="col-xs-12 col-sm-6 col-md-4">
+							<div class="input-group">
+								<input type="text" class="form-control" disabled aria-describedby="Ingredient label" value="fruit">
+								{24}
+							</div>
 						</div>
-						<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-							<select class="form-control" name="ingredient-labels-include-5">{24}</select>
+						<div class="col-xs-12 col-sm-6 col-md-4">
+							<div class="input-group">
+								<input type="text" class="form-control" disabled aria-describedby="Ingredient label" value="vegetable">
+								{24}
+							</div>
 						</div>
 					</div>
 				</div>
-				<div role="tabpanel" class="tab-pane fade" id="ingredient-labels-exclude">
+				<div role="tabpanel" class="tab-pane fade" id="recipe-labels">
 					<div class="row">
-						<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-							<select class="form-control" name="ingredient-labels-exclude-0">{24}</select>
+						<div class="col-xs-12 col-sm-6 col-md-4">
+							<div class="input-group">
+								<input type="text" class="form-control" disabled aria-describedby="Recipe label" value="bread">
+								{24}
+							</div>
 						</div>
-						<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-							<select class="form-control" name="ingredient-labels-exclude-1">{24}</select>
+						<div class="col-xs-12 col-sm-6 col-md-4">
+							<div class="input-group">
+								<input type="text" class="form-control" disabled aria-describedby="Recipe label" value="bread">
+								{24}
+							</div>
 						</div>
-						<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-							<select class="form-control" name="ingredient-labels-exclude-2">{24}</select>
+						<div class="col-xs-12 col-sm-6 col-md-4">
+							<div class="input-group">
+								<input type="text" class="form-control" disabled aria-describedby="Recipe label" value="bread">
+								{24}
+							</div>
 						</div>
-						<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-							<select class="form-control" name="ingredient-labels-exclude-3">{24}</select>
+						<div class="col-xs-12 col-sm-6 col-md-4">
+							<div class="input-group">
+								<input type="text" class="form-control" disabled aria-describedby="Recipe label" value="bread">
+								{24}
+							</div>
 						</div>
-						<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-							<select class="form-control" name="ingredient-labels-exclude-4">{24}</select>
+						<div class="col-xs-12 col-sm-6 col-md-4">
+							<div class="input-group">
+								<input type="text" class="form-control" disabled aria-describedby="Recipe label" value="bread">
+								{24}
+							</div>
 						</div>
-						<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-							<select class="form-control" name="ingredient-labels-exclude-5">{24}</select>
-						</div>
-					</div>
-				</div>
-				<div role="tabpanel" class="tab-pane fade" id="recipe-labels-include">
-					<div class="row">
-						<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-							<select class="form-control" name="recipe-labels-include-0">{25}</select>
-						</div>
-						<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-							<select class="form-control" name="recipe-labels-include-1">{25}</select>
-						</div>
-						<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-							<select class="form-control" name="recipe-labels-include-2">{25}</select>
-						</div>
-						<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-							<select class="form-control" name="recipe-labels-include-3">{25}</select>
-						</div>
-						<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-							<select class="form-control" name="recipe-labels-include-4">{25}</select>
-						</div>
-						<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-							<select class="form-control" name="recipe-labels-include-5">{25}</select>
-						</div>
-					</div>
-				</div>
-				<div role="tabpanel" class="tab-pane fade" id="recipe-labels-exclude">
-					<div class="row">
-						<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-							<select class="form-control" name="recipe-labels-exclude-0">{25}</select>
-						</div>
-						<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-							<select class="form-control" name="recipe-labels-exclude-1">{25}</select>
-						</div>
-						<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-							<select class="form-control" name="recipe-labels-exclude-2">{25}</select>
-						</div>
-						<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-							<select class="form-control" name="recipe-labels-exclude-3">{25}</select>
-						</div>
-						<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-							<select class="form-control" name="recipe-labels-exclude-4">{25}</select>
-						</div>
-						<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-							<select class="form-control" name="recipe-labels-exclude-5">{25}</select>
+						<div class="col-xs-12 col-sm-6 col-md-4">
+							<div class="input-group">
+								<input type="text" class="form-control" disabled aria-describedby="Recipe label" value="bread">
+								{24}
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 			<h4>Enter recipe name:</h4>
 			<div class="input-group">
-				<input type="text" class="form-control" id="recipe-input" name="recipe-input" value="{26}">
+				<input type="text" class="form-control" id="recipe-input" name="recipe-input" value="{25}">
 				<span class="input-group-btn">
 					<button class="btn btn-primary" type="submit">Search</button>
 				</span>
@@ -358,6 +343,7 @@ def htmlHeader():
 			<div class="hidden">
 				<input type="text" id="recipe-selection" name="recipe-selection">
 				<input type="text" id="transformation" name="transformation">
+				
 			</div>
 		</form>
 			""".format(includeIngredients[0], includeIngredients[1], includeIngredients[2], includeIngredients[3], \
@@ -366,7 +352,7 @@ def htmlHeader():
 						excludeIngredients[0], excludeIngredients[1], excludeIngredients[2], excludeIngredients[3], \
 						excludeIngredients[4], excludeIngredients[5], excludeIngredients[6], excludeIngredients[7], \
 						excludeIngredients[8], excludeIngredients[9], excludeIngredients[10], excludeIngredients[11], \
-						ingredientLabelSelectOptions, recipeLabelSelectOptions, searchResult))
+						labelButtons, searchResult))
 
 
 
@@ -460,29 +446,72 @@ def recreateDatabase():
 
 
 
-def formatListOfStringsAsHeader(string):
-	index = string.rfind(",", 0, -2) #ignore final comma inserted after final ingredient
-	count = string.count(",") 
+#
+# if string list is empty, return empty string (i.e. don't add a header), otherwise join strings in list with commas, 
+# possibly add " and" after/instead of final comma, and pad with <h4> tag
+#
+def formatListOfStringsAsHeader(headerString, stringList):
+	count = len(stringList)
+	if count == 0:
+		return ""
+
+	# add list of strings to header string
+	headerString += ", ".join(stringList)
+	
+	# get index of final comma to add " and"
+	index = headerString.rfind(",", 0, -1)
+	
 	if count > 2:
 		# insert " and" immediately after last comma
-		string = string[:index+1] + " and" + string[index+1:-2] + "</h4>"
+		return "<h4" + headerString[:index+1] + " and" + headerString[index+1:-2] + "</h4>"
 	elif count == 2:
-		# replace last comma with "and"
-		string = string[:index] + " and" + string[index+1:-2] + "</h4>"
+		# replace last comma with " and"
+		return "<h4" + headerString[:index] + " and" + headerString[index+1:-2] + "</h4>"
 	elif count == 1:
-		# only one comma, just delete it
-		string = string[:-2] + "</h4>"
-	else:
-		# no commas, so no ingredients and no header
-		string = ""
+		return "<h4" + headerString + "</h4>"
+
+
+
+#
+# return list of strings with all "" and duplicates removed
+#
+def cleanList(stringList):
+	index = 0
+	while index < len(stringList):
+		string = stringList[index]
+		if string == "" or stringList.count(string) > 1:
+			stringList.remove(string)
+		else:
+			index+=1
+
+	return stringList
+
 
 
 #
 # print list of all recipes and ingredients
 #
 def displaySearchResults():
-	queryWhereClause = ""
+	# remove empty strings from inputs
+	includeIngredientsCleaned = cleanList(includeIngredients)
+	excludeIngredientsCleaned = cleanList(excludeIngredients)
+	includeIngredientLabelsCleaned = cleanList(includeIngredientLabels)
+	excludeIngredientLabelsCleaned = cleanList(excludeIngredientLabels)
+	includeRecipeLabelsCleaned = cleanList(includeRecipeLabels)
+	excludeRecipeLabelsCleaned = cleanList(excludeRecipeLabels)
+
+	index = 0
+	while index < len(includeIngredients):
+		if includeIngredients[index] == "":
+			del includeIngredients[index]
+		else:
+			index+=1
+
+	# initiate query string
+	queryString = "SELECT Name FROM Recipes WHERE Id IN (SELECT Id FROM Recipes WHERE "
+	numParentheses = 1
 	
+	# add search input to query string
 	if searchResult != "":
 		# split search string into words
 		words = searchResult.split(" ")
@@ -493,72 +522,79 @@ def displaySearchResults():
 
 		# get query "WHERE" clause for each word
 		for word in words:
-			queryWhereClause += "Recipes.Name Like '%{0}%' AND ".format(word.replace("'", "\'"))
+			queryString += "Name Like '%{0}%' AND ".format(word.replace("'", "\'"))
 
-	includeIngredientString = "<h4>Containing "
-	for includeIngredient in includeIngredients:
-		if includeIngredient != "":
-			queryWhereClause += "Ingredients.Name LIKE '%{0}%' AND ".format(includeIngredient.replace("'", "\'"))
-			includeIngredientString += includeIngredient + ", "
+	queryString += "Id "
 
-	excludeIngredientString = "<h4>Without "
-	for excludeIngredient in excludeIngredients:
-		if excludeIngredient != "":
-			queryWhereClause += "Ingredients.Name NOT LIKE '%{0}%' AND ".format(excludeIngredient.replace("'", "\'"))
-			excludeIngredientString += excludeIngredient + ", "
+	for includeIngredient in includeIngredientsCleaned:
+		queryString += "IN (SELECT RecipeId FROM Ingredients WHERE Name LIKE '%{0}%' AND RecipeId ".format(includeIngredient.replace("'", "\'"))
+		numParentheses+=1
 
-	includeIngredientLabelString = "<h4>Containing ingredient types "
-	for includeIngredientLabel in includeIngredientLabels:
-		if includeIngredientLabel != "":
-			queryWhereClause += "IngredientLabels.Label = '%{0}%' AND ".format(includeIngredientLabel.replace("'", "\'"))
-			includeIngredientLabelString += includeIngredientLabel + ", "
+	for excludeIngredient in excludeIngredientsCleaned:
+		queryString += "NOT IN (SELECT RecipeId FROM Ingredients WHERE Name LIKE '%{0}%' AND RecipeId ".format(excludeIngredient.replace("'", "\'"))
+		numParentheses+=1
 
-	excludeIngredientLabelString = "<h4>Without ingredient types "
+	for includeIngredientLabel in includeIngredientLabelsCleaned:
+		queryString += "IN (SELECT RecipeId FROM Ingredients FULL OUTER JOIN IngredientLabels ON IngredientId = Id \
+				WHERE Label = '{0}' AND RecipeId ".format(includeIngredientLabel)
+		numParentheses+=1
 
+	for excludeIngredientLabel in excludeIngredientLabelsCleaned:
+		queryString += "NOT IN (SELECT RecipeId FROM Ingredients FULL OUTER JOIN IngredientLabels ON IngredientId = Id \
+				WHERE Label = '{0}' AND RecipeId ".format(includeIngredientLabel)
+		numParentheses+=1
 
+	for includeRecipeLabel in includeRecipeLabelsCleaned:
+		queryString += "IN (SELECT RecipeId FROM Labels WHERE Label = '{0}' AND RecipeId ".format(includeRecipeLabel)
+		numParentheses+=1
 
-	while "" in excludeIngredientLabels:
-		excludeIngredientLabels.remove("")
-	
-	if len(excludeIngredientLabels) > 0:
-		excludeIngredientLabelString = ", ".join(excludeIngredientLabelString)
-		queryWhereClause += "IngredientLabels.Label NOT IN '{0}' AND ".format('", "'.join(excludeIngredientLabels))
+	for excludeRecipeLabel in excludeRecipeLabelsCleaned:
+		queryString += "NOT IN (SELECT RecipeId FROM Labels WHERE Label = '{0}' AND RecipeId ".format(excludeRecipeLabel)
+		numParentheses+=1
 
+	# find number of characters to remove from query string based on final characters (no filters at all, " WHERE Id ", or " AND RecipeId ")
+	if numParentheses == 1:
+		if searchResult == "":
+			charsToDelete = 46
+			numParentheses = 0
+		else:
+			charsToDelete = 10
+	else:
+		charsToDelete = 14
 
+	# delete chars from query string and add parentheses and order clause
+	queryString = queryString[:-1 * charsToDelete] + ")" * numParentheses + " ORDER BY Name ASC"
 
-
-	if queryWhereClause == "":
-		return
+	print("<b>{0}</b>".format(queryString))
 
 	# open database and get cursor
 	connection = sqlite3.connect('recipes.db')
 	cursor = connection.cursor()
 
 	# perform query and get recipes
-	cursor.execute("""SELECT DISTINCT Recipes.Name FROM Recipes INNER JOIN Ingredients ON Recipes.Id = Ingredients.RecipeId 
-			WHERE {0} COLLATE NOCASE ORDER BY Recipes.Name ASC""".format(queryWhereClause[0:-5]))
+	cursor.execute(queryString)
 	allRecipes = cursor.fetchall()
 
 	# close connection
 	connection.close()
 
 	# get included ingredients header string
-	includeIngredientString = formatListOfStringsAsHeader(includeIngredientString)
+	includeIngredientString = formatListOfStringsAsHeader("Containing ", includeIngredientsCleaned)
 	
 	# get excluded ingredients header string
-	excludeIngredientString = formatListOfStringsAsHeader(excludeIngredientString)
+	excludeIngredientString = formatListOfStringsAsHeader("Without ", excludeIngredientsCleaned)
 
 	# get included ingredient labels header string
-	includeIngredientLabelString = formatListOfStringsAsHeader(includeIngredientLabelString)
+	includeIngredientLabelString = formatListOfStringsAsHeader("Containing ingredient types ", includeIngredientLabelsCleaned)
 	
 	# get excluded ingredient labels header string
-	excludeIngredientLabelString = formatListOfStringsAsHeader(excludeIngredientLabelString)
+	excludeIngredientLabelString = formatListOfStringsAsHeader("Without ingredient types ", excludeIngredientLabelsCleaned)
 
 	# get included recipe labels header string
-	includeRecipeLabelString = formatListOfStringsAsHeader(includeRecipeLabelString)
+	includeRecipeLabelString = formatListOfStringsAsHeader("Containing recipe types ", includeRecipeLabelsCleaned)
 	
 	# get excluded recipe labels header string
-	excludeRecipeLabelString = formatListOfStringsAsHeader(excludeRecipeLabelString)
+	excludeRecipeLabelString = formatListOfStringsAsHeader("Without recipe types ", excludeRecipeLabelsCleaned)
 
 	# print recipe names
 	print("""	<div class="row">
@@ -566,8 +602,13 @@ def displaySearchResults():
 						<h1>{0} Recipes</h1>
 						{1}
 						{2}
+						{3}
+						{4}
+						{5}
+						{6}
 						<table class="table table-striped">""".format(searchResult.capitalize(), \
-								includeIngredientString, excludeIngredientString))
+								includeIngredientString, excludeIngredientString, includeIngredientLabelString, \
+								excludeIngredientLabelString, includeRecipeLabelString, excludeRecipeLabelString))
 
 	for recipeName in allRecipes:
 		recipeName = recipeName[0].encode('utf-8');
@@ -577,7 +618,7 @@ def displaySearchResults():
 					<td class="text-right">
 						<button class="btn btn-default" onclick="viewRecipe('{1}')">View Recipe</button>
 					</td>
-				</tr>""".format(recipeName, recipeName.replace("'", "\\'")))
+				</tr>""".format(recipeName, recipeName.replace("'", "\'")))
 	print("""	</table>
 			</div>
 		</div>""")
@@ -831,7 +872,9 @@ try:
 		displaySearchResults()
 
 	except sqlite3.Error as e:
-		print("Error %s:" % e.args[0])
+		print("<b>Error %s:</b>" % e.args[0])
+	except TypeError as e:
+		print("<b>Error %s:</b>" % e.args[0])
 
 	htmlFooter()
 except:
