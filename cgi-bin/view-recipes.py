@@ -4,24 +4,122 @@ import json
 import sqlite3
 
 #
+# return HTML string for ingredient
+#
+def getIngredientHTML(index):
+	onSelectionString = ""
+	offSelectionString = ""
+	selectedString = "selected='selected'"
+	if ingredientRadioOn[index]:
+		onSelectionString = selectedString
+	else:
+		offSelectionString = selectedString
+
+	return """
+<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+	<div class="input-group">
+		<div class="input-group-addon">
+			<label for="ingredient-{1}-on">On</label>
+			<input id="ingredient-{1}-on" type="radio" name="ingredient-{1}" aria-label="Button" value="on" {2}>
+		</div>
+		<div class="input-group-addon">
+			<label for="ingredient-{1}-off">Off</label>
+			<input id="ingredient-{1}-off" type="radio" name="ingredient-{1}" aria-label="Button" value="off" {3}>
+		</div>
+		<input type="text" class="form-control" id="ingredient-{1}-string" name="ingredient-{1}-string" value={0}>
+		<span class="input-group-btn">
+			<button class="btn btn-default" type="button" onclick="clearIngredient({1})">X</button>
+		</span>
+	</div>
+</div>
+""".format(ingredientNames[index], index, onSelectionString, offSelectionString)
+
+
+
+# all ingredient labels
+ingredientLabels = ["dairy", "cheese", "meat", "seafood", "poultry"]
+
+#
+# return HTML string for ingredient label
+#
+def getIngredientLabelHTML(index):
+	eitherSelectionString = ""
+	onSelectionString = ""
+	offSelectionString = ""
+	selectedString = "selected='selected'"
+	if ingredientLabelValues[index] == "-":
+		eitherSelectionString = selectedString
+	elif ingredientLabelValues[index] == "on":
+		onSelectionString = selectedString
+	elif ingredientLabelValues[index] == "off":
+		offSelectionString = selectedString
+
+	return """ 
+<div class="col-xs-12 col-sm-6 col-md-4">
+	<div class="input-group">
+		<div class="input-group-addon">
+			<label for="ingredient-label-{0}-either">-</label>
+			<input id="ingredient-label-{0}-either" type="radio" name="ingredient-label-{0}" aria-label="Button" value="-" {2}>
+		</div>
+		<div class="input-group-addon">
+			<label for="ingredient-label-{0}-on">On</label>
+			<input id="ingredient-label-{0}-on" type="radio" name="ingredient-label-{0}" aria-label="Button" value="on" {3}>
+		</div>
+		<div class="input-group-addon">
+			<label for="ingredient-label-{0}-off">Off</label>
+			<input id="ingredient-label-{0}-off" type="radio" name="ingredient-label-{0}" aria-label="Button" value="off" {4}>
+		</div>
+		<input type="text" class="form-control" disabled aria-describedby="{1} ingredient label" value="{1}">
+	</div>
+</div>
+""".format(ingredientLabels[index].replace(" ", "-"), ingredientLabels[index], eitherSelectionString, onSelectionString, offSelectionString)
+
+
+
+# all ingredient labels
+recipeLabels = ["dairy", "cheese", "meat", "seafood", "poultry"]
+
+#
+# return HTML string for recipe label
+#
+def getRecipeLabelHTML(index):
+	eitherSelectionString = ""
+	onSelectionString = ""
+	offSelectionString = ""
+	selectedString = "selected='selected'"
+	if recipeLabelValues[index] == "-":
+		eitherSelectionString = selectedString
+	elif recipeLabelValues[index] == "on":
+		onSelectionString = selectedString
+	elif recipeLabelValues[index] == "off":
+		offSelectionString = selectedString
+
+	return """ 
+<div class="col-xs-12 col-sm-6 col-md-4">
+	<div class="input-group">
+		<div class="input-group-addon">
+			<label for="recipe-label-{0}-either">-</label>
+			<input id="recipe-label-{0}-either" type="radio" name="recipe-label-{0}" aria-label="Button" value="-">
+		</div>
+		<div class="input-group-addon">
+			<label for="recipe-label-{0}-on">On</label>
+			<input id="recipe-label-{0}-on" type="radio" name="recipe-label-{0}" aria-label="Button" value="on">
+		</div>
+		<div class="input-group-addon">
+			<label for="recipe-label-{0}-off">Off</label>
+			<input id="recipe-label-{0}-off" type="radio" name="recipe-label-{0}" aria-label="Button" value="off">
+		</div>
+		<input type="text" class="form-control" disabled aria-describedby="{1} recipe label" value="{1}">
+	</div>
+</div>
+""".format(recipeLabels[index].replace(" ", "-"), recipeLabels[index], eitherSelectionString, onSelectionString, offSelectionString)
+
+
+
+#
 # print HTML header and beginning of HTML body
 #
 def htmlHeader():
-	labelButtons = """
-<div class="input-group-addon">
-	<label for="ingredient-label-0-either">-</label>
-	<input id="ingredient-label-0-either" type="radio" name="" aria-label="Button" value="-">
-</div>
-<div class="input-group-addon">
-	<label for="ingredient-label-0-on">On</label>
-	<input id="ingredient-label-0-on" type="radio" name="" aria-label="Button" value="on">
-</div>
-<div class="input-group-addon">
-	<label for="ingredient-label-0-off">Off</label>
-	<input id="ingredient-label-0-off" type="radio" name="" aria-label="Button" value="off">
-</div>
-"""
-
 	print("""Content-type:text/html\n\n
 <!DOCTYPE html>
 <html lang="en">
@@ -40,319 +138,52 @@ def htmlHeader():
 	<div class="container-fluid">
 		<form role="form" method="post" action="view-recipes.py" id="recipe-search-form">
 			<ul id="ingredient-tabs" class="nav nav-tabs nav-justified" role="tablist">
-				<li role="presentation" class="active"><a href="#ingredients-include" aria-controls="ingredients-include"
-						role="tab" data-toggle="tab">Include Ingredients</a></li>
-				<li role="presentation"><a href="#ingredients-exclude" aria-controls="ingredients-exclude"
-						role="tab" data-toggle="tab">Excluded Ingredients</a></li>
-				<li role="presentation"><a href="#ingredient-labels" aria-controls="ingredient-labels"
-						role="tab" data-toggle="tab">Toggle Ingredient Types</a></li>
-				<li role="presentation"><a href="#recipe-labels" aria-controls="recipe-labels"
-						role="tab" data-toggle="tab">Toggle Recipe Types</a></li>
+				<li role="presentation" class="active">
+					<a href="#ingredients" aria-controls="ingredients" role="tab" data-toggle="tab">Toggle Ingredients</a>
+				</li>
+				<li role="presentation">
+					<a href="#ingredient-labels" aria-controls="ingredient-labels" role="tab" data-toggle="tab">Toggle Ingredient Types</a>
+				</li>
+				<li role="presentation">
+					<a href="#recipe-labels" aria-controls="recipe-labels" role="tab" data-toggle="tab">Toggle Recipe Types</a>
+				</li>
 			</ul>
 
 			<div class="tab-content">
 				<div role="tabpanel" class="tab-pane fade in active" id="ingredients-include">
-					<div class="row">
-						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-							<div class="input-group">
-								<input type="text" class="form-control" id="ingredient-include-0" name="ingredient-include-0" value={0}>
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" tabIndex = "-1" onclick="clearIncluded(0)">X</button>
-								</span>
-							</div>
-						</div>
-						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-							<div class="input-group">
-								<input type="text" class="form-control" id="ingredient-include-1" name="ingredient-include-1" value={1}>
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" tabIndex = "-1" onclick="clearIncluded(1)">X</button>
-								</span>
-							</div>
-						</div>
-						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-							<div class="input-group">
-								<input type="text" class="form-control" id="ingredient-include-2" name="ingredient-include-2" value={2}>
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" tabIndex = "-1" onclick="clearIncluded(2)">X</button>
-								</span>
-							</div>
-						</div>
-						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-							<div class="input-group">
-								<input type="text" class="form-control" id="ingredient-include-3" name="ingredient-include-3" value={3}>
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" tabIndex = "-1" onclick="clearIncluded(3)">X</button>
-								</span>
-							</div>
-						</div>
-						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-							<div class="input-group">
-								<input type="text" class="form-control" id="ingredient-include-4" name="ingredient-include-4" value={4}>
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" tabIndex = "-1" onclick="clearIncluded(4)">X</button>
-								</span>
-							</div>
-						</div>
-						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-							<div class="input-group">
-								<input type="text" class="form-control" id="ingredient-include-5" name="ingredient-include-5" value={5}>
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" tabIndex = "-1" onclick="clearIncluded(5)">X</button>
-								</span>
-							</div>
-						</div>
-						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-							<div class="input-group">
-								<input type="text" class="form-control" id="ingredient-include-6" name="ingredient-include-6" value={6}>
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" tabIndex = "-1" onclick="clearIncluded(6)">X</button>
-								</span>
-							</div>
-						</div>
-						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-							<div class="input-group">
-								<input type="text" class="form-control" id="ingredient-include-7" name="ingredient-include-7" value={7}>
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" tabIndex = "-1" onclick="clearIncluded(7)">X</button>
-								</span>
-							</div>
-						</div>
-						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-							<div class="input-group">
-								<input type="text" class="form-control" id="ingredient-include-8" name="ingredient-include-8" value={8}>
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" tabIndex = "-1" onclick="clearIncluded(8)">X</button>
-								</span>
-							</div>
-						</div>
-						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-							<div class="input-group">
-								<input type="text" class="form-control" id="ingredient-include-9" name="ingredient-include-9" value={9}>
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" tabIndex = "-1" onclick="clearIncluded(9)">X</button>
-								</span>
-							</div>
-						</div>
-						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-							<div class="input-group">
-								<input type="text" class="form-control" id="ingredient-include-10" name="ingredient-include-10" value={10}>
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" tabIndex = "-1" onclick="clearIncluded(10)">X</button>
-								</span>
-							</div>
-						</div>
-						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-							<div class="input-group">
-								<input type="text" class="form-control" id="ingredient-include-11" name="ingredient-include-11" value={11}>
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" tabIndex = "-1" onclick="clearIncluded(11)">X</button>
-								</span>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div role="tabpanel" class="tab-pane fade" id="ingredients-exclude">
-					<div class="row">
-						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-							<div class="input-group">
-								<input type="text" class="form-control" id="ingredient-exclude-0" name="ingredient-exclude-0" value={12}>
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" tabIndex = "-1" onclick="clearExcluded(0)">X</button>
-								</span>
-							</div>
-						</div>
-						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-							<div class="input-group">
-								<input type="text" class="form-control" id="ingredient-exclude-1" name="ingredient-exclude-1" value={13}>
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" tabIndex = "-1" onclick="clearExcluded(1)">X</button>
-								</span>
-							</div>
-						</div>
-						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-							<div class="input-group">
-								<input type="text" class="form-control" id="ingredient-exclude-2" name="ingredient-exclude-2" value={14}>
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" tabIndex = "-1" onclick="clearExcluded(2)">X</button>
-								</span>
-							</div>
-						</div>
-						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-							<div class="input-group">
-								<input type="text" class="form-control" id="ingredient-exclude-3" name="ingredient-exclude-3" value={15}>
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" tabIndex = "-1" onclick="clearExcluded(3)">X</button>
-								</span>
-							</div>
-						</div>
-						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-							<div class="input-group">
-								<input type="text" class="form-control" id="ingredient-exclude-4" name="ingredient-exclude-4" value={16}>
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" tabIndex = "-1" onclick="clearExcluded(4)">X</button>
-								</span>
-							</div>
-						</div>
-						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-							<div class="input-group">
-								<input type="text" class="form-control" id="ingredient-exclude-5" name="ingredient-exclude-5" value={17}>
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" tabIndex = "-1" onclick="clearExcluded(5)">X</button>
-								</span>
-							</div>
-						</div>
-						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-							<div class="input-group">
-								<input type="text" class="form-control" id="ingredient-exclude-6" name="ingredient-exclude-6" value={18}>
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" tabIndex = "-1" onclick="clearExcluded(6)">X</button>
-								</span>
-							</div>
-						</div>
-						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-							<div class="input-group">
-								<input type="text" class="form-control" id="ingredient-exclude-7" name="ingredient-exclude-7" value={19}>
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" tabIndex = "-1" onclick="clearExcluded(7)">X</button>
-								</span>
-							</div>
-						</div>
-						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-							<div class="input-group">
-								<input type="text" class="form-control" id="ingredient-exclude-8" name="ingredient-exclude-8" value={20}>
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" tabIndex = "-1" onclick="clearIncluded(8)">X</button>
-								</span>
-							</div>
-						</div>
-						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-							<div class="input-group">
-								<input type="text" class="form-control" id="ingredient-exclude-9" name="ingredient-exclude-9" value={21}>
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" tabIndex = "-1" onclick="clearIncluded(9)">X</button>
-								</span>
-							</div>
-						</div>
-						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-							<div class="input-group">
-								<input type="text" class="form-control" id="ingredient-exclude-10" name="ingredient-exclude-10" value={22}>
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" tabIndex = "-1" onclick="clearIncluded(10)">X</button>
-								</span>
-							</div>
-						</div>
-						<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-							<div class="input-group">
-								<input type="text" class="form-control" id="ingredient-exclude-11" name="ingredient-exclude-11" value={23}>
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button" tabIndex = "-1" onclick="clearIncluded(11)">X</button>
-								</span>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div role="tabpanel" class="tab-pane fade" id="ingredient-labels">
-					<div class="row">
-						<div class="col-xs-12 col-sm-6 col-md-4">
-							<div class="input-group">
-								<input type="text" class="form-control" disabled aria-describedby="Ingredient label" value="dairy">
-								{24}
-							</div>
-						</div>
-						<div class="col-xs-12 col-sm-6 col-md-4">
-							<div class="input-group">
-								<input type="text" class="form-control" disabled aria-describedby="Ingredient label" value="meat">
-								{24}
-							</div>
-						</div>
-						<div class="col-xs-12 col-sm-6 col-md-4">
-							<div class="input-group">
-								<input type="text" class="form-control" disabled aria-describedby="Ingredient label" value="poultry">
-								{24}
-							</div>
-						</div>
-						<div class="col-xs-12 col-sm-6 col-md-4">
-							<div class="input-group">
-								<input type="text" class="form-control" disabled aria-describedby="Ingredient label" value="seafood">
-								{24}
-							</div>
-						</div>
-						<div class="col-xs-12 col-sm-6 col-md-4">
-							<div class="input-group">
-								<input type="text" class="form-control" disabled aria-describedby="Ingredient label" value="fruit">
-								{24}
-							</div>
-						</div>
-						<div class="col-xs-12 col-sm-6 col-md-4">
-							<div class="input-group">
-								<input type="text" class="form-control" disabled aria-describedby="Ingredient label" value="vegetable">
-								{24}
-							</div>
-						</div>
-					</div>
-				</div>
-				<div role="tabpanel" class="tab-pane fade" id="recipe-labels">
-					<div class="row">
-						<div class="col-xs-12 col-sm-6 col-md-4">
-							<div class="input-group">
-								<input type="text" class="form-control" disabled aria-describedby="Recipe label" value="bread">
-								{24}
-							</div>
-						</div>
-						<div class="col-xs-12 col-sm-6 col-md-4">
-							<div class="input-group">
-								<input type="text" class="form-control" disabled aria-describedby="Recipe label" value="bread">
-								{24}
-							</div>
-						</div>
-						<div class="col-xs-12 col-sm-6 col-md-4">
-							<div class="input-group">
-								<input type="text" class="form-control" disabled aria-describedby="Recipe label" value="bread">
-								{24}
-							</div>
-						</div>
-						<div class="col-xs-12 col-sm-6 col-md-4">
-							<div class="input-group">
-								<input type="text" class="form-control" disabled aria-describedby="Recipe label" value="bread">
-								{24}
-							</div>
-						</div>
-						<div class="col-xs-12 col-sm-6 col-md-4">
-							<div class="input-group">
-								<input type="text" class="form-control" disabled aria-describedby="Recipe label" value="bread">
-								{24}
-							</div>
-						</div>
-						<div class="col-xs-12 col-sm-6 col-md-4">
-							<div class="input-group">
-								<input type="text" class="form-control" disabled aria-describedby="Recipe label" value="bread">
-								{24}
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<h4>Enter recipe name:</h4>
-			<div class="input-group">
-				<input type="text" class="form-control" id="recipe-input" name="recipe-input" value="{25}">
-				<span class="input-group-btn">
-					<button class="btn btn-primary" type="submit">Search</button>
-				</span>
-			</div>
+					<div class="row">""")
 
-			<div class="hidden">
-				<input type="text" id="recipe-selection" name="recipe-selection">
-				<input type="text" id="transformation" name="transformation">
-				
+	for i in range(0, numIngredientInputs):
+		print(getIngredientHTML(i))
+
+	print('</div></div><div role="tabpanel" class="tab-pane fade" id="ingredient-labels"><div class="row">')
+
+	for i in range(0, len(ingredientLabels)):
+		print(getIngredientLabelHTML(i))
+
+	print('</div></div><div role="tabpanel" class="tab-pane fade" id="recipe-labels"><div class="row">')
+
+	for i in range(0, len(recipeLabels)):
+		print(getRecipeLabelHTML(i))
+
+	print("""
 			</div>
-		</form>
-			""".format(includeIngredients[0], includeIngredients[1], includeIngredients[2], includeIngredients[3], \
-						includeIngredients[4], includeIngredients[5], includeIngredients[6], includeIngredients[7], \
-						includeIngredients[8], includeIngredients[9], includeIngredients[10], includeIngredients[11], \
-						excludeIngredients[0], excludeIngredients[1], excludeIngredients[2], excludeIngredients[3], \
-						excludeIngredients[4], excludeIngredients[5], excludeIngredients[6], excludeIngredients[7], \
-						excludeIngredients[8], excludeIngredients[9], excludeIngredients[10], excludeIngredients[11], \
-						labelButtons, searchResult))
+		</div>
+	</div>
+	<h4>Enter recipe name:</h4>
+	<div class="input-group">
+		<input type="text" class="form-control" id="recipe-input" name="recipe-input" value="{0}">
+		<span class="input-group-btn">
+			<button class="btn btn-primary" type="submit">Search</button>
+		</span>
+	</div>
+
+	<div class="hidden">
+		<input type="text" id="recipe-selection" name="recipe-selection">
+		<input type="text" id="transformation" name="transformation">
+	</div>
+</form>
+	""".format(searchResult))
 
 
 
@@ -473,40 +304,9 @@ def formatListOfStringsAsHeader(headerString, stringList):
 
 
 #
-# return list of strings with all "" and duplicates removed
-#
-def cleanList(stringList):
-	index = 0
-	while index < len(stringList):
-		string = stringList[index]
-		if string == "" or stringList.count(string) > 1:
-			stringList.remove(string)
-		else:
-			index+=1
-
-	return stringList
-
-
-
-#
 # print list of all recipes and ingredients
 #
 def displaySearchResults():
-	# remove empty strings from inputs
-	includeIngredientsCleaned = cleanList(includeIngredients)
-	excludeIngredientsCleaned = cleanList(excludeIngredients)
-	includeIngredientLabelsCleaned = cleanList(includeIngredientLabels)
-	excludeIngredientLabelsCleaned = cleanList(excludeIngredientLabels)
-	includeRecipeLabelsCleaned = cleanList(includeRecipeLabels)
-	excludeRecipeLabelsCleaned = cleanList(excludeRecipeLabels)
-
-	index = 0
-	while index < len(includeIngredients):
-		if includeIngredients[index] == "":
-			del includeIngredients[index]
-		else:
-			index+=1
-
 	# initiate query string
 	queryString = "SELECT Name FROM Recipes WHERE Id IN (SELECT Id FROM Recipes WHERE "
 	numParentheses = 1
@@ -526,37 +326,63 @@ def displaySearchResults():
 
 	queryString += "Id "
 
-	for includeIngredient in includeIngredientsCleaned:
-		queryString += "IN (SELECT RecipeId FROM Ingredients WHERE Name LIKE '%{0}%' AND RecipeId ".format(includeIngredient.replace("'", "\'"))
+	# get lists of included and excluded ingredients while appending to query
+	includeIngredients = []
+	excludeIngredients = []
+	for i in range(0, numIngredientInputs):
+		ingredientName = ingredientNames[i]
+		if ingredientName == "":
+			continue
+
+		# add ingredient to list of included/excluded ingredients based on radio button
+		if ingredientRadioOn[i]:
+			includeIngredients.append(ingredientName)
+		else:
+			queryString += "NOT "
+			excludeIngredients.append(ingredientName)
+
+		# add select query for ingredient
+		queryString += "IN (SELECT RecipeId FROM Ingredients WHERE Name LIKE '%{0}%' AND RecipeId ".format(ingredientName.replace("'", "\'"))
 		numParentheses+=1
 
-	for excludeIngredient in excludeIngredientsCleaned:
-		queryString += "NOT IN (SELECT RecipeId FROM Ingredients WHERE Name LIKE '%{0}%' AND RecipeId ".format(excludeIngredient.replace("'", "\'"))
-		numParentheses+=1
+	includeIngredientLabels = []
+	excludeIngredientLabels = []
+	for i in range(0, len(ingredientLabels)):
+		ingredientLabel = ingredientLabels[i]
 
-	for includeIngredientLabel in includeIngredientLabelsCleaned:
+		if ingredientLabelValues[i] == "-":
+			continue
+		elif ingredientLabelValues[i] == "on":
+			includeIngredientLabels.append(ingredientLabel)
+		elif ingredientLabelValues[i] == "off":
+			queryString += "NOT "
+			excludeIngredientLabels.append(ingredientLabel)
+
 		queryString += "IN (SELECT RecipeId FROM Ingredients FULL OUTER JOIN IngredientLabels ON IngredientId = Id \
-				WHERE Label = '{0}' AND RecipeId ".format(includeIngredientLabel)
+				WHERE Label = '{0}' AND RecipeId ".format(ingredientLabel)
 		numParentheses+=1
 
-	for excludeIngredientLabel in excludeIngredientLabelsCleaned:
-		queryString += "NOT IN (SELECT RecipeId FROM Ingredients FULL OUTER JOIN IngredientLabels ON IngredientId = Id \
-				WHERE Label = '{0}' AND RecipeId ".format(includeIngredientLabel)
-		numParentheses+=1
+	includeRecipeLabels = []
+	excludeRecipeLabels = []
+	for i in range(0, len(recipeLabels)):
+		recipeLabel = recipeLabels[i]
 
-	for includeRecipeLabel in includeRecipeLabelsCleaned:
-		queryString += "IN (SELECT RecipeId FROM Labels WHERE Label = '{0}' AND RecipeId ".format(includeRecipeLabel)
-		numParentheses+=1
+		if recipeLabelValues[i] == "-":
+			continue
+		elif recipeLabelValues[i] == "on":
+			includeRecipeLabels.append(recipeLabel)
+		elif recipeLabelValues[i] == "off":
+			queryString += "NOT "
+			excludeRecipeLabels.append(recipeLabel)
 
-	for excludeRecipeLabel in excludeRecipeLabelsCleaned:
-		queryString += "NOT IN (SELECT RecipeId FROM Labels WHERE Label = '{0}' AND RecipeId ".format(excludeRecipeLabel)
+		queryString += "IN (SELECT RecipeId FROM Labels WHERE Label = '{0}' AND RecipeId ".format(recipeLabel)
 		numParentheses+=1
 
 	# find number of characters to remove from query string based on final characters (no filters at all, " WHERE Id ", or " AND RecipeId ")
 	if numParentheses == 1:
 		if searchResult == "":
-			charsToDelete = 46
-			numParentheses = 0
+			# don't print list of every single recipe
+			return
 		else:
 			charsToDelete = 10
 	else:
@@ -564,8 +390,6 @@ def displaySearchResults():
 
 	# delete chars from query string and add parentheses and order clause
 	queryString = queryString[:-1 * charsToDelete] + ")" * numParentheses + " ORDER BY Name ASC"
-
-	print("<b>{0}</b>".format(queryString))
 
 	# open database and get cursor
 	connection = sqlite3.connect('recipes.db')
@@ -579,22 +403,22 @@ def displaySearchResults():
 	connection.close()
 
 	# get included ingredients header string
-	includeIngredientString = formatListOfStringsAsHeader("Containing ", includeIngredientsCleaned)
+	includeIngredientString = formatListOfStringsAsHeader("Containing ", includeIngredients)
 	
 	# get excluded ingredients header string
-	excludeIngredientString = formatListOfStringsAsHeader("Without ", excludeIngredientsCleaned)
+	excludeIngredientString = formatListOfStringsAsHeader("Without ", excludeIngredients)
 
 	# get included ingredient labels header string
-	includeIngredientLabelString = formatListOfStringsAsHeader("Containing ingredient types ", includeIngredientLabelsCleaned)
+	includeIngredientLabelString = formatListOfStringsAsHeader("Containing ingredient types ", includeIngredientLabels)
 	
 	# get excluded ingredient labels header string
-	excludeIngredientLabelString = formatListOfStringsAsHeader("Without ingredient types ", excludeIngredientLabelsCleaned)
+	excludeIngredientLabelString = formatListOfStringsAsHeader("Without ingredient types ", excludeIngredientLabels)
 
 	# get included recipe labels header string
-	includeRecipeLabelString = formatListOfStringsAsHeader("Containing recipe types ", includeRecipeLabelsCleaned)
+	includeRecipeLabelString = formatListOfStringsAsHeader("Containing recipe types ", includeRecipeLabels)
 	
 	# get excluded recipe labels header string
-	excludeRecipeLabelString = formatListOfStringsAsHeader("Without recipe types ", excludeRecipeLabelsCleaned)
+	excludeRecipeLabelString = formatListOfStringsAsHeader("Without recipe types ", excludeRecipeLabels)
 
 	# print recipe names
 	print("""	<div class="row">
@@ -729,20 +553,22 @@ def displayRecipe(recipe):
 
 	# recipe transformations
 	print("""
-			<h2>Transform Recipe</h2>
-			<div class="input-group">
-				<select class="form-control" id="transformation-select" name="transformation-select">
-			""")
+<h2>Transform Recipe</h2>
+<div class="input-group">
+	<select class="form-control" id="transformation-select" name="transformation-select">
+""")
 
 	transformations = ['American', 'French', 'Italian', 'Vegan', 'Vegetarian']
 	for transformation in transformations:
 		print("<option>{0}</option>".format(transformation))
 
-	print("""	</select>
-				<span class="input-group-btn">
-					<button class="btn btn-default" onclick="viewAndTransformRecipe('{0}')">Transform</button>
-				</span>
-			</div>""".format(recipe["name"].replace("'", "\\'")))
+	print("""	
+	</select>
+	<span class="input-group-btn">
+		<button class="btn btn-default" onclick="viewAndTransformRecipe('{0}')">Transform</button>
+	</span>
+</div>
+""".format(recipe["name"].replace("'", "\\'")))
 
 
 
@@ -805,50 +631,24 @@ try:
 	recipeSelection = form.getvalue("recipe-selection", "")
 	transformation = form.getvalue("transformation", "")
 
-	# get ingredients to include
-	includeIngredientFormNames = ["ingredient-include-0", "ingredient-include-1", "ingredient-include-2", "ingredient-include-3", \
-			"ingredient-include-4", "ingredient-include-5", "ingredient-include-6", "ingredient-include-7", \
-			"ingredient-include-8", "ingredient-include-9", "ingredient-include-10", "ingredient-include-11"]
-	includeIngredients = []
-	for includeFormName in includeIngredientFormNames:
-		includeIngredients.append(form.getvalue(includeFormName, ""))
+	# get ingredient strings and whether "on" selected radio button
+	numIngredientInputs = 12
+	ingredientNames = []
+	ingredientRadioOn = []
+	for i in range(0, numIngredientInputs):
+		ingredientFormName = "ingredient-{0}".format(numIngredientInputs)
+		ingredientRadioOn.append(form.getvalue(ingredientFormName, "on") == "on")
+		ingredientNames.append(form.getvalue(ingredientFormName + "-string", ""))
 
-	# get ingredients to exclude
-	excludeIngredientFormNames = ["ingredient-exclude-0", "ingredient-exclude-1", "ingredient-exclude-2", "ingredient-exclude-3", \
-			"ingredient-exclude-4", "ingredient-exclude-5", "ingredient-exclude-6", "ingredient-exclude-7", \
-			"ingredient-exclude-8", "ingredient-exclude-9", "ingredient-exclude-10", "ingredient-exclude-11"]
-	excludeIngredients = []
-	for excludeFormName in excludeIngredientFormNames:
-		excludeIngredients.append(form.getvalue(excludeFormName, ""))
+	# get ingredient label radio button value
+	ingredientLabelValues = []
+	for ingredientLabel in ingredientLabels:
+		ingredientLabelValues.append(form.getvalue("ingredient-label-" + ingredientLabel, "-"))
 
-	# get ingredient labels to include
-	includeIngredientLabelFormNames = ["ingredient-labels-include-0", "ingredient-labels-include-1", "ingredient-labels-include-2", \
-			"ingredient-labels-include-3", "ingredient-labels-include-4", "ingredient-labels-include-5"]
-	includeIngredientLabels = []
-	for includeIngredientLabelFormName in includeIngredientLabelFormNames:
-		includeIngredientLabels.append(form.getvalue(includeIngredientLabelFormName, ""))
-
-	# get ingredient labels to exclude
-	excludeIngredientLabelFormNames = ["ingredient-labels-exclude-0", "ingredient-labels-exclude-1", "ingredient-labels-exclude-2", \
-			"ingredient-labels-exclude-3", "ingredient-labels-exclude-4", "ingredient-labels-exclude-5"]
-	excludeIngredientLabels = []
-	for excludeIngredientLabelFormName in excludeIngredientLabelFormNames:
-		excludeIngredientLabels.append(form.getvalue(excludeIngredientLabelFormName, ""))
-
-	# get recipe labels to include
-	includeRecipeLabelFormNames = ["recipe-labels-include-0", "recipe-labels-include-1", "recipe-labels-include-2", \
-			"recipe-labels-include-3", "recipe-labels-include-4", "recipe-labels-include-5"]
-	includeRecipeLabels = []
-	for includeRecipeLabelFormName in includeRecipeLabelFormNames:
-		includeRecipeLabels.append(form.getvalue(includeRecipeLabelFormName, ""))
-
-	# get recipe labels to exclude
-	excludeRecipeLabelFormNames = ["recipe-labels-exclude-0", "recipe-labels-exclude-1", "recipe-labels-exclude-2", \
-			"recipe-labels-exclude-3", "recipe-labels-exclude-4", "recipe-labels-exclude-5"]
-	excludeRecipeLabels = []
-	for excludeRecipeLabelFormName in excludeRecipeLabelFormNames:
-		excludeRecipeLabels.append(form.getvalue(excludeRecipeLabelFormName, ""))
-
+	# get recipe label radio button value
+	recipeLabelValues = []
+	for recipeLabel in recipeLabels:
+		recipeLabelValues.append(form.getvalue("recipe-label-" + recipeLabel, "-"))
 
 	htmlHeader()
 
@@ -872,8 +672,6 @@ try:
 		displaySearchResults()
 
 	except sqlite3.Error as e:
-		print("<b>Error %s:</b>" % e.args[0])
-	except TypeError as e:
 		print("<b>Error %s:</b>" % e.args[0])
 
 	htmlFooter()
