@@ -92,11 +92,11 @@ spices = ['basil', 'pepper', 'anise', 'caraway', 'cardamom', 'cassava', 'cayenne
 spicy = ['jalapeno', 'Dijon', 'chile', 'chili', 'angelica']
 grains = ['granola', 'oats', 'wheat', 'bran', 'barley', 'cereal', 'rice', 'quinoa', 'kasha', 'millet', 'masa harina',
 		'corn', 'cornmeal', 'popcorn', 'cornstarch', 'tapioca', 'masa']
+drinks = ['coffee', 'tea', 'espresso', 'milk', 'eggnog', 'beverage', 'soda', 'drink', 'epazote', 'lemonade', 'juices',
+		'rosewater']
 cookingLiquids = ['water', 'oil', 'vinegar', 'milk']
 bakingIngredients = ['baking', 'yeast', 'margarine', 'butter', 'eggs', 'flour']
 cookingFats = ['lard', 'shortening', 'butter', 'gelatin', 'lecithin', 'ovalette', 'xanthan']
-drinks = ['coffee', 'tea', 'espresso', 'milk', 'eggnog', 'beverage', 'soda', 'drink', 'epazote', 'lemonade', 'juices',
-		'rosewater']
 extras = ['coloring', 'toppings', 'carnations']
 flavorings = ['pandan', 'mint', 'extract']
 mixtures = ['food', 'mixes']
@@ -111,6 +111,7 @@ def getIngredientLabels(parsedIngredient):
 			labels.add("dairy")
 		if "cheese" == string and "cream" not in parsedIngredient:
 			labels.add("cheese")
+			labels.add("dairy")
 		if inCheckingPlurals(string, meats):
 			labels.add("meat")
 		if inCheckingPlurals(string, poultry):
@@ -138,8 +139,8 @@ def getIngredientLabels(parsedIngredient):
 			labels.add("bread")
 		if inCheckingPlurals(string, alcoholicIngredients):
 			labels.add("alcohol")
-		if inCheckingPlurals(string, spices):
-			labels.add("spice")
+		if inCheckingPlurals(string, spicy):
+			labels.add("spicy")
 		if inCheckingPlurals(string, nuts):
 			labels.add("nut")
 		if inCheckingPlurals(string, cookingLiquids):
@@ -222,28 +223,16 @@ def getRecipeLabels(parsedRecipe):
 			labels.add("bread")
 		if inCheckingPlurals(string, alcoholicIngredients):
 			labels.add("alcohol")
-		if inCheckingPlurals(string, spices):
-			labels.add("spice")
+		if inCheckingPlurals(string, spicy):
+			labels.add("spicy")
 		if inCheckingPlurals(string, nuts):
 			labels.add("nut")
-		if inCheckingPlurals(string, cookingLiquids):
-			labels.add("cooking liquid")
-		if inCheckingPlurals(string, cookingFats):
-			labels.add("cooking fat")
-		if inCheckingPlurals(string, bakingIngredients):
-			labels.add("baking ingredient")
 		if inCheckingPlurals(string, sugars):
 			labels.add("sugar")
 		if inCheckingPlurals(string, grains):
 			labels.add("grain")
 		if inCheckingPlurals(string, drinks):
 			labels.add("drink")
-		if inCheckingPlurals(string, extras):
-			labels.add("recipe extra")
-		if inCheckingPlurals(string, flavorings):
-			labels.add("flavoring")
-		if inCheckingPlurals(string, mixtures):
-			labels.add("mixture")
 
 	return list(labels)
 	

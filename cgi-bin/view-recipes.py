@@ -36,8 +36,12 @@ def getIngredientHTML(index):
 
 
 
+
+
 # all ingredient labels
-ingredientLabels = ["dairy", "cheese", "meat", "seafood", "poultry"]
+ingredientLabels = ["dairy", "cheese", "meat", "seafood", "poultry", "main protein", "vegetable", "fruit",
+		"spice or herb", "pasta", "dip", "sauce", "soup", "bread", "spicy", "alcohol", "drink", "nut", "grain",
+		"recipe extra", "flavoring", "mixture"]
 
 #
 # return HTML string for ingredient label
@@ -76,8 +80,10 @@ def getIngredientLabelHTML(index):
 
 
 
-# all ingredient labels
-recipeLabels = ["dairy", "cheese", "meat", "seafood", "poultry"]
+# all recipe labels
+recipeLabels = ["dairy", "cheese", "meat", "seafood", "poultry", "main protein", "vegetable", "fruit",
+		"spice or herb", "pasta", "dip", "sauce", "soup", "bread", "spicy", "alcohol", "drink", "nut", "grain",
+		"cheese food", "breakfast", "dessert"]
 
 #
 # return HTML string for recipe label
