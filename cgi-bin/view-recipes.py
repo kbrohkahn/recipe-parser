@@ -10,6 +10,7 @@ def getIngredientHTML(index):
 	onSelectionString = ""
 	offSelectionString = ""
 	selectedString = "checked"
+
 	if ingredientRadioOn[index]:
 		onSelectionString = selectedString
 	else:
@@ -19,12 +20,12 @@ def getIngredientHTML(index):
 <div class="col-xs-12 col-sm-6 col-md-4">
 	<div class="input-group">
 		<div class="input-group-addon">
+			<input id="ingredient-{1}-on" type="radio" name="ingredient-{1}" aria-label="Button" class="radio-button-default" value="on" {2}>
 			<label for="ingredient-{1}-on">On</label>
-			<input id="ingredient-{1}-on" type="radio" name="ingredient-{1}" aria-label="Button" value="on" {2}>
 		</div>
 		<div class="input-group-addon">
-			<label for="ingredient-{1}-off">Off</label>
 			<input id="ingredient-{1}-off" type="radio" name="ingredient-{1}" aria-label="Button" value="off" {3}>
+			<label for="ingredient-{1}-off">Off</label>
 		</div>
 		<input type="text" class="form-control" id="ingredient-{1}-string" name="ingredient-{1}-string" value={0}>
 		<span class="input-group-btn">
@@ -33,8 +34,6 @@ def getIngredientHTML(index):
 	</div>
 </div>
 """.format(ingredientNames[index], index, onSelectionString, offSelectionString)
-
-
 
 
 
@@ -51,6 +50,7 @@ def getIngredientLabelHTML(index):
 	onSelectionString = ""
 	offSelectionString = ""
 	selectedString = "checked"
+
 	if ingredientLabelValues[index] == "-":
 		eitherSelectionString = selectedString
 	elif ingredientLabelValues[index] == "on":
@@ -62,16 +62,16 @@ def getIngredientLabelHTML(index):
 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
 	<div class="input-group">
 		<div class="input-group-addon">
+			<input class="radio-button-default" id="ingredient-label-{0}-either" type="radio" name="ingredient-label-{0}" aria-label="Button" value="-" {2}>
 			<label for="ingredient-label-{0}-either">-</label>
-			<input id="ingredient-label-{0}-either" type="radio" name="ingredient-label-{0}" aria-label="Button" value="-" {2}>
 		</div>
 		<div class="input-group-addon">
-			<label for="ingredient-label-{0}-on">On</label>
 			<input id="ingredient-label-{0}-on" type="radio" name="ingredient-label-{0}" aria-label="Button" value="on" {3}>
+			<label for="ingredient-label-{0}-on">On</label>
 		</div>
 		<div class="input-group-addon">
-			<label for="ingredient-label-{0}-off">Off</label>
 			<input id="ingredient-label-{0}-off" type="radio" name="ingredient-label-{0}" aria-label="Button" value="off" {4}>
+			<label for="ingredient-label-{0}-off">Off</label>
 		</div>
 		<input type="text" class="form-control" disabled aria-describedby="{1} ingredient label" value="{1}">
 	</div>
@@ -93,6 +93,7 @@ def getRecipeLabelHTML(index):
 	onSelectionString = ""
 	offSelectionString = ""
 	selectedString = "checked"
+
 	if recipeLabelValues[index] == "-":
 		eitherSelectionString = selectedString
 	elif recipeLabelValues[index] == "on":
@@ -104,16 +105,16 @@ def getRecipeLabelHTML(index):
 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
 	<div class="input-group">
 		<div class="input-group-addon">
+			<input class="radio-button-default" id="recipe-label-{0}-either" type="radio" name="recipe-label-{0}" aria-label="Button" value="-" {2}>
 			<label for="recipe-label-{0}-either">-</label>
-			<input id="recipe-label-{0}-either" type="radio" name="recipe-label-{0}" aria-label="Button" value="-" {2}>
 		</div>
 		<div class="input-group-addon">
-			<label for="recipe-label-{0}-on">On</label>
 			<input id="recipe-label-{0}-on" type="radio" name="recipe-label-{0}" aria-label="Button" value="on" {3}>
+			<label for="recipe-label-{0}-on">On</label>
 		</div>
 		<div class="input-group-addon">
-			<label for="recipe-label-{0}-off">Off</label>
 			<input id="recipe-label-{0}-off" type="radio" name="recipe-label-{0}" aria-label="Button" value="off" {4}>
+			<label for="recipe-label-{0}-off">Off</label>
 		</div>
 		<input type="text" class="form-control" disabled aria-describedby="{1} recipe label" value="{1}">
 	</div>
@@ -176,19 +177,25 @@ def htmlHeader():
 			</div>
 		</div>
 	</div>
-	<div class="input-group">
-		<input type="text" class="form-control" id="recipe-input" name="recipe-input" placeholder="Enter recipe name" value="{0}">
-		<span class="input-group-btn">
-			<button class="btn btn-primary" type="submit">Search</button>
-		</span>
+	<div class="row input-row">
+		<div class="col-sm-10 col-md-11">
+			<div class="input-group">
+				<input type="text" class="form-control" id="recipe-input" name="recipe-input" placeholder="Enter recipe name" value="{0}">
+				<span class="input-group-btn">
+					<button class="btn btn-primary" type="submit">Search</button>
+				</span>
+			</div>
+		</div>
+		<div class="col-sm-2 col-md-1">
+			<button class="btn btn-warning full-width" type="button" onclick='resetAll()'>Reset all</button>
+		</div>
 	</div>
-
 	<div class="hidden">
 		<input type="text" id="recipe-selection" name="recipe-selection">
 		<input type="text" id="transformation" name="transformation">
 	</div>
 </form>
-	""".format(searchResult))
+""".format(searchResult))
 
 
 
@@ -197,7 +204,7 @@ def htmlHeader():
 #
 def htmlFooter():
 	print("""
-		<div class="row">
+		<div class="row footer">
 			<div class="col-xs-12 text-center">
 				All recipes parsed from <a href="http://allrecipes.com/">allrecipes.com</a>
 			</div>
@@ -223,26 +230,26 @@ def recreateDatabase():
 		cursor = connection.cursor()
 
 		cursor.executescript("""
-			DROP TABLE IF EXISTS Recipes;
-			CREATE TABLE Recipes(Id INT, Name TEXT, Servings INT, Calories INT);
+DROP TABLE IF EXISTS Recipes;
+CREATE TABLE Recipes(Id INT, Name TEXT, Servings INT, Calories INT);
 
-			DROP TABLE IF EXISTS Directions;
-			CREATE TABLE Directions(RecipeId INT, Step INT, Direction TEXT);
+DROP TABLE IF EXISTS Directions;
+CREATE TABLE Directions(RecipeId INT, Step INT, Direction TEXT);
 
-			DROP TABLE IF EXISTS Footnotes;
-			CREATE TABLE Footnotes(RecipeId INT, Footnote TEXT);
+DROP TABLE IF EXISTS Footnotes;
+CREATE TABLE Footnotes(RecipeId INT, Footnote TEXT);
 
-			DROP TABLE IF EXISTS Labels;
-			CREATE TABLE Labels(RecipeId INT, Label TEXT);
-		
-			DROP TABLE IF EXISTS Ingredients;
-			CREATE TABLE Ingredients(Id INT, RecipeId INT, Name TEXT, Amount INT, Unit TEXT);
-		
-			DROP TABLE IF EXISTS IngredientDescriptions;
-			CREATE TABLE IngredientDescriptions(IngredientId INT, Description TEXT);
+DROP TABLE IF EXISTS Labels;
+CREATE TABLE Labels(RecipeId INT, Label TEXT);
 
-			DROP TABLE IF EXISTS IngredientLabels;
-			CREATE TABLE IngredientLabels(IngredientId INT, Label TEXT);
+DROP TABLE IF EXISTS Ingredients;
+CREATE TABLE Ingredients(Id INT, RecipeId INT, Name TEXT, Amount INT, Unit TEXT);
+
+DROP TABLE IF EXISTS IngredientDescriptions;
+CREATE TABLE IngredientDescriptions(IngredientId INT, Description TEXT);
+
+DROP TABLE IF EXISTS IngredientLabels;
+CREATE TABLE IngredientLabels(IngredientId INT, Label TEXT);
 		""")
 
 		for recipe in allRecipes:
@@ -303,7 +310,7 @@ def formatListOfStringsAsHeader(headerString, stringList):
 	elif count == 2:
 		# replace last comma with " and"
 		return "<h4" + headerString[:index] + " and" + headerString[index+1:-2] + "</h4>"
-	elif count == 1:
+	else:
 		return "<h4" + headerString + "</h4>"
 
 
@@ -327,7 +334,7 @@ def displaySearchResults():
 
 		# get query "WHERE" clause for each word
 		for word in words:
-			queryString += "Name Like '%{0}%' AND ".format(word.replace("'", "\'"))
+			queryString += "Name Like '%{0}%' AND ".format(word.replace("'", "\\'"))
 
 	queryString += "Id "
 
@@ -347,7 +354,7 @@ def displaySearchResults():
 			excludeIngredients.append(ingredientName)
 
 		# add select query for ingredient
-		queryString += "IN (SELECT RecipeId FROM Ingredients WHERE Name LIKE '%{0}%' AND RecipeId ".format(ingredientName.replace("'", "\'"))
+		queryString += "IN (SELECT RecipeId FROM Ingredients WHERE Name LIKE '%{0}%' AND RecipeId ".format(ingredientName.replace("'", "\\'"))
 		numParentheses+=1
 
 	includeIngredientLabels = []
@@ -389,7 +396,7 @@ def displaySearchResults():
 			# don't print list of every single recipe
 			return
 		else:
-			charsToDelete = 10
+			charsToDelete = 8
 	else:
 		charsToDelete = 14
 
@@ -426,31 +433,31 @@ def displaySearchResults():
 	excludeRecipeLabelString = formatListOfStringsAsHeader("Without recipe types ", excludeRecipeLabels)
 
 	# print recipe names
-	print("""	<div class="row">
-					<div class="col-xs-12">
-						<h1>{0} Recipes</h1>
-						{1}
-						{2}
-						{3}
-						{4}
-						{5}
-						{6}
-						<table class="table table-striped">""".format(searchResult.capitalize(), \
-								includeIngredientString, excludeIngredientString, includeIngredientLabelString, \
-								excludeIngredientLabelString, includeRecipeLabelString, excludeRecipeLabelString))
+	print("""
+<div class="row">
+	<div class="col-xs-12">
+		<h1>{0} Recipes</h1>
+		{1}
+		{2}
+		{3}
+		{4}
+		{5}
+		{6}
+		<table class="table table-striped">
+""".format(searchResult.capitalize(), includeIngredientString, excludeIngredientString, includeIngredientLabelString, \
+				excludeIngredientLabelString, includeRecipeLabelString, excludeRecipeLabelString))
 
 	for recipeName in allRecipes:
 		recipeName = recipeName[0].encode('utf-8');
 		print("""
-				<tr>
-					<td class="center-vertical">{0}</td>
-					<td class="text-right">
-						<button class="btn btn-default" onclick="viewRecipe('{1}')">View Recipe</button>
-					</td>
-				</tr>""".format(recipeName, recipeName.replace("'", "\'")))
-	print("""	</table>
-			</div>
-		</div>""")
+<tr>
+	<td class="center-vertical">{0}</td>
+	<td class="text-right">
+		<button class="btn btn-default" onclick="viewRecipe('{1}')">View Recipe</button>
+	</td>
+</tr>
+""".format(recipeName, recipeName.replace("'", "\'")))
+	print("</table></div></div>")
 
 
 
@@ -513,36 +520,37 @@ def loadRecipe(recipeName):
 def displayRecipe(recipe):
 	# print recipe, servings, and calories
 	print("""
-			<div class="row">
-				<div class="col-xs-12">
-					<h1>%s</h1>
-					<div>Servings: %s</div>
-					<div>Calories per serving: %s</div>
-					<div><a target=blank href='http://allrecipes.com/recipe/%d'>View on allrecipes.com</a></div>
-					<h2>Ingredients</h2>
-					<div class="table-responsive">
-						<table id="ingredients-table" class="table table-striped">
-							<tr>
-								<th>Ingredient</td>
-								<th>#</td>
-								<th>Unit</td>
-								<th>Description</td>
-								<th>Labels</td>
-							</tr>""" % (recipe["name"], recipe["servings"], recipe["calories"], recipe["id"]))
+<div class="row">
+	<div class="col-xs-12">
+		<h1>%s</h1>
+		<div>Servings: %s</div>
+		<div>Calories per serving: %s</div>
+		<div><a target=blank href='http://allrecipes.com/recipe/%d'>View on allrecipes.com</a></div>
+		<h2>Ingredients</h2>
+		<div class="table-responsive">
+			<table id="ingredients-table" class="table table-striped">
+				<tr>
+					<th>Ingredient</td>
+					<th>#</td>
+					<th>Unit</td>
+					<th>Description</td>
+					<th>Labels</td>
+				</tr>""" % (recipe["name"], recipe["servings"], recipe["calories"], recipe["id"]))
 
 	# print list of ingredients
 	for ingredient in recipe["ingredients"]:
 
 		# print ingredient
-		print("""	<tr>
-						<td>{0}</td>
-						<td>{1:10.2f}</td>
-						<td>{2}</td>
-						<td>{3}</td>
-						<td>{4}</td>
-					</tr>""".format(ingredient["ingredient"], ingredient["amount"], ingredient["unit"], \
-						", ".join(ingredient["descriptions"]), ", ".join(ingredient["labels"])))
-	
+		print("""
+<tr>
+	<td>{0}</td>
+	<td>{1:10.2f}</td>
+	<td>{2}</td>
+	<td>{3}</td>
+	<td>{4}</td>
+</tr>
+""".format(ingredient["ingredient"], ingredient["amount"], ingredient["unit"], ", ".join(ingredient["descriptions"]), ", ".join(ingredient["labels"])))
+
 	# print ordered list of directions
 	print("</table></div><h2>Directions</h2><ol>")
 	for direction in recipe["directions"]:

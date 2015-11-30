@@ -1,10 +1,18 @@
-.center-vertical { vertical-align: middle !important; }
+.center-vertical {vertical-align: middle !important;}
+.full-width {width: 100%;}
+h1 {margin-top: 45px; text-align: center;}
+h2 {margin-top: 30px;}
 
-h1 { margin-top: 45px; text-align: center;}
-h2 { margin-top: 30px;}
+.input-row,
+.footer {margin-top: 45px; margin-bottom: 45px;}
 
-.input-group { margin-top: 15px;}
+.input-row > div {margin-top: 15px;}
+
+.tab-pane .input-group {margin-top: 15px;}
 .input-group-addon {border-right: none;}
 .input-group-addon label {margin-bottom: 0;}
 .input-group-addon input[type=checkbox],
-.input-group-addon input[type=radio] { vertical-align: middle;}
+.input-group-addon input[type=radio] {vertical-align: middle;}
+
+input[value=on]:checked ~ label {color:#449d44;}
+input[value=off]:checked ~ label {color:#d9534f;}
