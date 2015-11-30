@@ -9,14 +9,14 @@ import sqlite3
 def getIngredientHTML(index):
 	onSelectionString = ""
 	offSelectionString = ""
-	selectedString = "selected='selected'"
+	selectedString = "checked"
 	if ingredientRadioOn[index]:
 		onSelectionString = selectedString
 	else:
 		offSelectionString = selectedString
 
 	return """
-<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+<div class="col-xs-12 col-sm-6 col-md-4">
 	<div class="input-group">
 		<div class="input-group-addon">
 			<label for="ingredient-{1}-on">On</label>
@@ -46,7 +46,7 @@ def getIngredientLabelHTML(index):
 	eitherSelectionString = ""
 	onSelectionString = ""
 	offSelectionString = ""
-	selectedString = "selected='selected'"
+	selectedString = "checked"
 	if ingredientLabelValues[index] == "-":
 		eitherSelectionString = selectedString
 	elif ingredientLabelValues[index] == "on":
@@ -55,7 +55,7 @@ def getIngredientLabelHTML(index):
 		offSelectionString = selectedString
 
 	return """ 
-<div class="col-xs-12 col-sm-6 col-md-4">
+<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
 	<div class="input-group">
 		<div class="input-group-addon">
 			<label for="ingredient-label-{0}-either">-</label>
@@ -86,7 +86,7 @@ def getRecipeLabelHTML(index):
 	eitherSelectionString = ""
 	onSelectionString = ""
 	offSelectionString = ""
-	selectedString = "selected='selected'"
+	selectedString = "checked"
 	if recipeLabelValues[index] == "-":
 		eitherSelectionString = selectedString
 	elif recipeLabelValues[index] == "on":
@@ -95,19 +95,19 @@ def getRecipeLabelHTML(index):
 		offSelectionString = selectedString
 
 	return """ 
-<div class="col-xs-12 col-sm-6 col-md-4">
+<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
 	<div class="input-group">
 		<div class="input-group-addon">
 			<label for="recipe-label-{0}-either">-</label>
-			<input id="recipe-label-{0}-either" type="radio" name="recipe-label-{0}" aria-label="Button" value="-">
+			<input id="recipe-label-{0}-either" type="radio" name="recipe-label-{0}" aria-label="Button" value="-" {2}>
 		</div>
 		<div class="input-group-addon">
 			<label for="recipe-label-{0}-on">On</label>
-			<input id="recipe-label-{0}-on" type="radio" name="recipe-label-{0}" aria-label="Button" value="on">
+			<input id="recipe-label-{0}-on" type="radio" name="recipe-label-{0}" aria-label="Button" value="on" {3}>
 		</div>
 		<div class="input-group-addon">
 			<label for="recipe-label-{0}-off">Off</label>
-			<input id="recipe-label-{0}-off" type="radio" name="recipe-label-{0}" aria-label="Button" value="off">
+			<input id="recipe-label-{0}-off" type="radio" name="recipe-label-{0}" aria-label="Button" value="off" {4}>
 		</div>
 		<input type="text" class="form-control" disabled aria-describedby="{1} recipe label" value="{1}">
 	</div>
@@ -139,18 +139,18 @@ def htmlHeader():
 		<form role="form" method="post" action="view-recipes.py" id="recipe-search-form">
 			<ul id="ingredient-tabs" class="nav nav-tabs nav-justified" role="tablist">
 				<li role="presentation" class="active">
-					<a href="#ingredients" aria-controls="ingredients" role="tab" data-toggle="tab">Toggle Ingredients</a>
+					<a href="#ingredients" aria-controls="ingredients" role="tab" data-toggle="tab">Ingredients</a>
 				</li>
 				<li role="presentation">
-					<a href="#ingredient-labels" aria-controls="ingredient-labels" role="tab" data-toggle="tab">Toggle Ingredient Types</a>
+					<a href="#ingredient-labels" aria-controls="ingredient-labels" role="tab" data-toggle="tab">Ingredient Types</a>
 				</li>
 				<li role="presentation">
-					<a href="#recipe-labels" aria-controls="recipe-labels" role="tab" data-toggle="tab">Toggle Recipe Types</a>
+					<a href="#recipe-labels" aria-controls="recipe-labels" role="tab" data-toggle="tab">Recipe Types</a>
 				</li>
 			</ul>
 
 			<div class="tab-content">
-				<div role="tabpanel" class="tab-pane fade in active" id="ingredients-include">
+				<div role="tabpanel" class="tab-pane fade in active" id="ingredients">
 					<div class="row">""")
 
 	for i in range(0, numIngredientInputs):
@@ -170,9 +170,8 @@ def htmlHeader():
 			</div>
 		</div>
 	</div>
-	<h4>Enter recipe name:</h4>
 	<div class="input-group">
-		<input type="text" class="form-control" id="recipe-input" name="recipe-input" value="{0}">
+		<input type="text" class="form-control" id="recipe-input" name="recipe-input" placeholder="Enter recipe name" value="{0}">
 		<span class="input-group-btn">
 			<button class="btn btn-primary" type="submit">Search</button>
 		</span>
@@ -358,7 +357,7 @@ def displaySearchResults():
 			queryString += "NOT "
 			excludeIngredientLabels.append(ingredientLabel)
 
-		queryString += "IN (SELECT RecipeId FROM Ingredients FULL OUTER JOIN IngredientLabels ON IngredientId = Id \
+		queryString += "IN (SELECT RecipeId FROM Ingredients CROSS JOIN IngredientLabels ON IngredientId = Id \
 				WHERE Label = '{0}' AND RecipeId ".format(ingredientLabel)
 		numParentheses+=1
 

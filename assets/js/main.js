@@ -1,4 +1,3 @@
-
 function viewRecipe(recipeName) {
 	$("#recipe-selection").val(recipeName)
 	$("#recipe-search-form").submit()
@@ -14,12 +13,8 @@ function viewAndTransformRecipe(recipeName) {
 	$("#recipe-search-form").submit()
 }
 
-function clearIncluded(index) {
-	$("#ingredient-include-" + index).val("")
-}
-
-function clearExcluded(index) {
-	$("#ingredient-exclude-" + index).val("")
+function clearIngredient(index) {
+	$("#ingredient-" + index + "-string").val("")
 }
 
 $(document).ready(function() {
