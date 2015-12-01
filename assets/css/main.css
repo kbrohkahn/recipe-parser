@@ -13,7 +13,18 @@ h2 {margin-top: 30px;}
 .tab-pane .radio-group label {margin-right: 10px;}
 
 label {margin-bottom: 0;color:rgba(85, 85, 85, .5);}
-input[type="checkbox"],
-input[type="radio"][value="on"]:checked ~ label {color:#449d44;}
-input[type="radio"][value="off"]:checked ~ label {color:#d9534f;}
-input[type="radio"][value=""]:checked ~ label {color:#555;}
+
+input[type="radio"][value="on"]:checked ~ label,
+.filter-on {color:#449d44; font-weight: bold;}
+#ingredient-labels .filter-on:before {content: "Has to have ";}
+#recipe-labels .filter-on:before {content: "Has to be ";}
+
+input[type="radio"][value="off"]:checked ~ label,
+.filter-off {color:#d9534f; font-weight: bold;}
+#ingredient-labels .filter-off:before {content: "Cannot have ";}
+#recipe-labels .filter-off:before {content: "Cannot be ";}
+
+input[type="radio"][value=""]:checked ~ label,
+.filter-either {color:#555;}
+#ingredient-labels .filter-either:before {content: "May have ";}
+#recipe-labels .filter-either:before {content: "May be ";}

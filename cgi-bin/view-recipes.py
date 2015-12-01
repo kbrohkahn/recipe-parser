@@ -24,11 +24,11 @@ def getIngredientHTML(index):
 		</span>
 		<input type="text" class="form-control" id="ingredient-{1}-string" name="ingredient-{1}-string" value={0}>
 		<div class="input-group-addon" title="Recipe must include ingredient">
-			<input id="ingredient-{1}-on" type="radio" name="ingredient-{1}" aria-label="Button" class="radio-button-default" value="on" {2}>
+			<input id="ingredient-{1}-on" type="radio" name="ingredient-{1}" class="radio-button-default" value="on" {2}>
 			<label for="ingredient-{1}-on"><i class="fa fa-check-circle fa-lg"></i></label>
 		</div>
 		<div class="input-group-addon" title="Recipe cannot include ingredient">
-			<input id="ingredient-{1}-off" type="radio" name="ingredient-{1}" aria-label="Button" value="off" {3}>
+			<input id="ingredient-{1}-off" type="radio" name="ingredient-{1}" value="off" {3}>
 			<label for="ingredient-{1}-off"><i class="fa fa-ban fa-lg"></i></label>
 		</div>
 	</div>
@@ -51,32 +51,38 @@ def getIngredientLabelHTML(index):
 	offSelectionString = ""
 	selectedString = "checked"
 
+	classString = ""
+
 	if ingredientLabelValues[index] == "":
 		eitherSelectionString = selectedString
+		classString = "filter-either"
 	elif ingredientLabelValues[index] == "on":
 		onSelectionString = selectedString
+		classString = "filter-on"
 	elif ingredientLabelValues[index] == "off":
 		offSelectionString = selectedString
+		classString = "filter-off"
 
 	return """ 
 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
 	<div class="radio-group">
+		<span title="Ingredient type is optional">
+			<input class="radio-button-default" id="ingredient-label-{0}-either" type="radio" name="ingredient-label-{0}" value="" {2}>
+			<label for="ingredient-label-{0}-either"><i class="fa fa-random fa-lg"></i></label>
+		</span>
 		<span title="Recipe must include ingredient type">
-			<input id="ingredient-label-{0}-on" type="radio" name="ingredient-label-{0}" aria-label="Button" value="on" {3}>
+			<input id="ingredient-label-{0}-on" type="radio" name="ingredient-label-{0}" value="on" {3}>
 			<label for="ingredient-label-{0}-on"><i class="fa fa-check-circle fa-lg"></i></label>
 		</span>
 		<span title="Recipe cannot include ingredient type">
-			<input id="ingredient-label-{0}-off" type="radio" name="ingredient-label-{0}" aria-label="Button" value="off" {4}>
+			<input id="ingredient-label-{0}-off" type="radio" name="ingredient-label-{0}" value="off" {4}>
 			<label for="ingredient-label-{0}-off"><i class="fa fa-ban fa-lg"></i></label>
 		</span>
-		<span title="Ingredient type is optional">
-			<input class="radio-button-default" id="ingredient-label-{0}-either" type="radio" name="ingredient-label-{0}" aria-label="Button" value="" {2}>
-			<label for="ingredient-label-{0}-either"><i class="fa fa-random fa-lg"></i></label>
-		</span>
-		<span>{1}</span>
+		<span id="ingredient-label-{0}-string" class="{5}">{1}</span>
 	</div>
 </div>
-""".format(ingredientLabels[index].replace(" ", "-"), ingredientLabels[index], eitherSelectionString, onSelectionString, offSelectionString)
+""".format(ingredientLabels[index].replace(" ", "-"), ingredientLabels[index], \
+		eitherSelectionString, onSelectionString, offSelectionString, classString)
 
 
 
@@ -94,32 +100,38 @@ def getRecipeLabelHTML(index):
 	offSelectionString = ""
 	selectedString = "checked"
 
+	classString = ""
+
 	if recipeLabelValues[index] == "":
 		eitherSelectionString = selectedString
+		classString = "filter-either"
 	elif recipeLabelValues[index] == "on":
 		onSelectionString = selectedString
+		classString = "filter-on"
 	elif recipeLabelValues[index] == "off":
 		offSelectionString = selectedString
+		classString = "filter-off"
 
 	return """ 
 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
 	<div class="radio-group">
+		<span title="Recipe type optional">
+			<input class="radio-button-default" id="recipe-label-{0}-either" type="radio" name="recipe-label-{0}" value="" {2}>
+			<label for="recipe-label-{0}-either"><i class="fa fa-random fa-lg"></i></label>
+		</span>
 		<span title="Recipe must be of type">
-			<input id="recipe-label-{0}-on" type="radio" name="recipe-label-{0}" aria-label="Button" value="on" {3}>
+			<input id="recipe-label-{0}-on" type="radio" name="recipe-label-{0}" value="on" {3}>
 			<label for="recipe-label-{0}-on"><i class="fa fa-check-circle fa-lg"></i></label>
 		</span>
 		<span title="Recipe cannot be of type">
-			<input id="recipe-label-{0}-off" type="radio" name="recipe-label-{0}" aria-label="Button" value="off" {4}>
+			<input id="recipe-label-{0}-off" type="radio" name="recipe-label-{0}" value="off" {4}>
 			<label for="recipe-label-{0}-off"><i class="fa fa-ban fa-lg"></i></label>
 		</span>
-		<span title="Recipe type optional">
-			<input class="radio-button-default" id="recipe-label-{0}-either" type="radio" name="recipe-label-{0}" aria-label="Button" value="" {2}>
-			<label for="recipe-label-{0}-either"><i class="fa fa-random fa-lg"></i></label>
-		</span>
-		<span>{1}</span>
+		<span id="recipe-label-{0}-string" class="{5}">{1}</span>
 	</div>
 </div>
-""".format(recipeLabels[index].replace(" ", "-"), recipeLabels[index], eitherSelectionString, onSelectionString, offSelectionString)
+""".format(recipeLabels[index].replace(" ", "-"), recipeLabels[index], \
+		eitherSelectionString, onSelectionString, offSelectionString, classString)
 
 
 
@@ -180,7 +192,7 @@ def htmlHeader():
 	</div>
 	<div class="input-row">
 		<div class="input-group">
-			<input type="text" class="form-control" id="recipe-input" name="recipe-input" placeholder="Enter recipe name" value="{0}">
+			<input type="text" class="form-control" id="recipe-input" name="recipe-input" placeholder="(Optional) Enter recipe name" value="{0}">
 			<div class="input-group-btn">
 				<button type="submit" class="btn btn-primary">Find recipes</button>
 
@@ -398,7 +410,9 @@ def displaySearchResults():
 	if numParentheses == 1:
 		if searchResult == "":
 			# don't print list of every single recipe
+			print("<b>You must add at least 1 filter or enter a recipe name.</b>")
 			return
+
 		else:
 			charsToDelete = 8
 	else:

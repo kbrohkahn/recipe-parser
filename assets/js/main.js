@@ -33,9 +33,30 @@ function resetFilters() {
 	$("#ingredients input[type='text']").val("")
 }
 
+function changeRadioButton(elementId) {
+	var index = elementId.lastIndexOf("-");
+	if (index == -1) {
+		return;
+	}
+
+	var spanId = "#" + elementId.substring(0, index+1) + "string";
+	var newClass = "filter" + elementId.substring(index);
+	$(spanId).attr("class", newClass)
+}
+
 $(document).ready(function() {
 	$("#ingredient-tabs a").click(function (e) {
 		e.preventDefault()
 		$(this).tab("show")
 	})
+
+	$("#recipe-labels input").click(function() {
+		changeRadioButton($(this).attr('id'))
+	});
+
+	$("#ingredient-labels input").click(function() {
+		changeRadioButton($(this).attr('id'))
+	});
 });
+
+
