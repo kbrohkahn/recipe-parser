@@ -3,6 +3,121 @@ import cgi
 import json
 import sqlite3
 
+
+#
+# print HTML header and beginning of HTML body
+#
+def htmlHeader():
+	print("""Content-type:text/html\n\n
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Recipe Parser</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<link rel="stylesheet" href="../assets/css/font-awesome.min.css">
+	<script type="text/javascript" src="../assets/js/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../assets/js/main.js"></script>
+</head>
+<body>
+	<div class="container-fluid">""")
+
+
+
+#
+# print HTML footer row and close BODY and HTML tags
+#
+def htmlFooter():
+	print("""
+		<div class="row footer">
+			<div class="col-xs-12 text-center">
+				All recipes parsed from <a href="http://allrecipes.com/">allrecipes.com</a>
+			</div>
+		</div>
+	</div>
+</body>
+</html>""")
+
+
+
+#
+# recreate SQLite database from JSON file
+#
+def recreateDatabase():
+	allRecipes = []
+	with open("../recipe-parser/recipes.json") as jsonFile:
+		for line in jsonFile:
+			allRecipes.append(json.loads(line))
+
+	try:
+		# open database and get cursor
+		connection = sqlite3.connect('recipes.db')
+		cursor = connection.cursor()
+
+		cursor.executescript("""
+DROP TABLE IF EXISTS Recipes;
+CREATE TABLE Recipes(Id INT, Name TEXT, Servings INT, Calories INT);
+
+DROP TABLE IF EXISTS Directions;
+CREATE TABLE Directions(RecipeId INT, Step INT, Direction TEXT);
+
+DROP TABLE IF EXISTS Footnotes;
+CREATE TABLE Footnotes(RecipeId INT, Footnote TEXT);
+
+DROP TABLE IF EXISTS Labels;
+CREATE TABLE Labels(RecipeId INT, Label TEXT);
+
+DROP TABLE IF EXISTS Ingredients;
+CREATE TABLE Ingredients(Id INT, RecipeId INT, Name TEXT, Amount INT, Unit TEXT);
+
+DROP TABLE IF EXISTS IngredientDescriptions;
+CREATE TABLE IngredientDescriptions(IngredientId INT, Description TEXT);
+
+DROP TABLE IF EXISTS IngredientLabels;
+CREATE TABLE IngredientLabels(IngredientId INT, Label TEXT);
+		""")
+
+		for recipe in allRecipes:
+			recipeId = recipe["id"]
+			cursor.execute("INSERT INTO Recipes VALUES(?, ?, ?, ?);", (recipeId, recipe["name"], recipe["servings"], recipe["calories"]))
+
+			for direction in recipe["directions"]:
+				cursor.execute("INSERT INTO Directions VALUES(?, ?, ?);", (recipeId, direction["step"], direction["direction"]))
+
+			for footnote in recipe["footnotes"]:
+				cursor.execute("INSERT INTO Footnotes VALUES(?, ?);", (recipeId, footnote))
+
+			for label in recipe["labels"]:
+				cursor.execute("INSERT INTO Labels VALUES(?, ?);", (recipeId, label))
+
+			i=0
+			for ingredient in recipe["ingredients"]:
+				ingredientId = recipeId * 100 + i
+				cursor.execute("INSERT INTO Ingredients VALUES(?, ?, ?, ?, ?);", (ingredientId, recipeId, ingredient["ingredient"],\
+					ingredient["amount"], ingredient["unit"]))
+
+				for ingredientDescription in ingredient["descriptions"]:
+					cursor.execute("INSERT INTO IngredientDescriptions VALUES(?, ?);", (ingredientId, ingredientDescription))
+
+				for ingredientLabel in ingredient["labels"]:
+					cursor.execute("INSERT INTO IngredientLabels VALUES(?, ?);", (ingredientId, ingredientLabel))
+
+				i+=1
+
+		# commit and close connection		
+		connection.commit()
+		connection.close()
+
+	# sqlite error
+	except sqlite3.Error as e:
+		print("Error %s:" % e.args[0])
+
+
+
 #
 # return HTML string for ingredient
 #
@@ -136,42 +251,27 @@ def getRecipeLabelHTML(index):
 
 
 #
-# print HTML header and beginning of HTML body
+# print search form
 #
-def htmlHeader():
-	print("""Content-type:text/html\n\n
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<title>Recipe Parser</title>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="../assets/css/bootstrap.min.css">
-	<link rel="stylesheet" href="../assets/css/main.css">
-	<link rel="stylesheet" href="../assets/css/font-awesome.min.css">
-	<script type="text/javascript" src="../assets/js/jquery-2.1.4.min.js"></script>
-	<script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="../assets/js/main.js"></script>
-</head>
-<body>
-	<div class="container-fluid">
-		<form role="form" method="post" action="view-recipes.py" id="recipe-search-form">
-			<ul id="ingredient-tabs" class="nav nav-tabs nav-justified" role="tablist">
-				<li role="presentation" class="active">
-					<a href="#ingredients" aria-controls="ingredients" role="tab" data-toggle="tab">Ingredients</a>
-				</li>
-				<li role="presentation">
-					<a href="#ingredient-labels" aria-controls="ingredient-labels" role="tab" data-toggle="tab">Ingredient Types</a>
-				</li>
-				<li role="presentation">
-					<a href="#recipe-labels" aria-controls="recipe-labels" role="tab" data-toggle="tab">Recipe Types</a>
-				</li>
-			</ul>
+def displaySearch():
+	print("""
+<h1>New Recipe Search</h1>
+<form role="form" method="post" action="view-recipes.py" id="recipe-search-form">
+	<ul id="ingredient-tabs" class="nav nav-tabs nav-justified" role="tablist">
+		<li role="presentation" class="active">
+			<a href="#ingredients" aria-controls="ingredients" role="tab" data-toggle="tab">Ingredients</a>
+		</li>
+		<li role="presentation">
+			<a href="#ingredient-labels" aria-controls="ingredient-labels" role="tab" data-toggle="tab">Ingredient Types</a>
+		</li>
+		<li role="presentation">
+			<a href="#recipe-labels" aria-controls="recipe-labels" role="tab" data-toggle="tab">Recipe Types</a>
+		</li>
+	</ul>
 
-			<div class="tab-content">
-				<div role="tabpanel" class="tab-pane active" id="ingredients">
-					<div class="row">""")
+	<div class="tab-content">
+		<div role="tabpanel" class="tab-pane active" id="ingredients">
+			<div class="row">""")
 
 	for i in range(0, numIngredientInputs):
 		print(getIngredientHTML(i))
@@ -216,96 +316,6 @@ def htmlHeader():
 
 
 #
-# print HTML footer row and close BODY and HTML tags
-#
-def htmlFooter():
-	print("""
-		<div class="row footer">
-			<div class="col-xs-12 text-center">
-				All recipes parsed from <a href="http://allrecipes.com/">allrecipes.com</a>
-			</div>
-		</div>
-	</div>
-</body>
-</html>""")
-
-
-
-#
-# recreate SQLite database from JSON file
-#
-def recreateDatabase():
-	allRecipes = []
-	with open("../recipe-parser/recipes.json") as jsonFile:
-		for line in jsonFile:
-			allRecipes.append(json.loads(line))
-
-	try:
-		# open database and get cursor
-		connection = sqlite3.connect('recipes.db')
-		cursor = connection.cursor()
-
-		cursor.executescript("""
-DROP TABLE IF EXISTS Recipes;
-CREATE TABLE Recipes(Id INT, Name TEXT, Servings INT, Calories INT);
-
-DROP TABLE IF EXISTS Directions;
-CREATE TABLE Directions(RecipeId INT, Step INT, Direction TEXT);
-
-DROP TABLE IF EXISTS Footnotes;
-CREATE TABLE Footnotes(RecipeId INT, Footnote TEXT);
-
-DROP TABLE IF EXISTS Labels;
-CREATE TABLE Labels(RecipeId INT, Label TEXT);
-
-DROP TABLE IF EXISTS Ingredients;
-CREATE TABLE Ingredients(Id INT, RecipeId INT, Name TEXT, Amount INT, Unit TEXT);
-
-DROP TABLE IF EXISTS IngredientDescriptions;
-CREATE TABLE IngredientDescriptions(IngredientId INT, Description TEXT);
-
-DROP TABLE IF EXISTS IngredientLabels;
-CREATE TABLE IngredientLabels(IngredientId INT, Label TEXT);
-		""")
-
-		for recipe in allRecipes:
-			recipeId = recipe["id"]
-			cursor.execute("INSERT INTO Recipes VALUES(?, ?, ?, ?);", (recipeId, recipe["name"], recipe["servings"], recipe["calories"]))
-
-			for direction in recipe["directions"]:
-				cursor.execute("INSERT INTO Directions VALUES(?, ?, ?);", (recipeId, direction["step"], direction["direction"]))
-
-			for footnote in recipe["footnotes"]:
-				cursor.execute("INSERT INTO Footnotes VALUES(?, ?);", (recipeId, footnote))
-
-			for label in recipe["labels"]:
-				cursor.execute("INSERT INTO Labels VALUES(?, ?);", (recipeId, label))
-
-			i=0
-			for ingredient in recipe["ingredients"]:
-				ingredientId = recipeId * 100 + i
-				cursor.execute("INSERT INTO Ingredients VALUES(?, ?, ?, ?, ?);", (ingredientId, recipeId, ingredient["ingredient"],\
-					ingredient["amount"], ingredient["unit"]))
-
-				for ingredientDescription in ingredient["descriptions"]:
-					cursor.execute("INSERT INTO IngredientDescriptions VALUES(?, ?);", (ingredientId, ingredientDescription))
-
-				for ingredientLabel in ingredient["labels"]:
-					cursor.execute("INSERT INTO IngredientLabels VALUES(?, ?);", (ingredientId, ingredientLabel))
-
-				i+=1
-
-		# commit and close connection		
-		connection.commit()
-		connection.close()
-
-	# sqlite error
-	except sqlite3.Error as e:
-		print("Error %s:" % e.args[0])
-
-
-
-#
 # if string list is empty, return empty string (i.e. don't add a header), otherwise join strings in list with commas, 
 # possibly add " and" after/instead of final comma, and pad with <h4> tag
 #
@@ -322,12 +332,12 @@ def formatListOfStringsAsHeader(headerString, stringList):
 	
 	if count > 2:
 		# insert " and" immediately after last comma
-		return "<h4" + headerString[:index+1] + " and" + headerString[index+1:-2] + "</h4>"
+		return "<h4>" + headerString[:index+1] + " and" + headerString[index+1:-2] + "</h4>"
 	elif count == 2:
 		# replace last comma with " and"
-		return "<h4" + headerString[:index] + " and" + headerString[index+1:-2] + "</h4>"
+		return "<h4>" + headerString[:index] + " and" + headerString[index+1:-2] + "</h4>"
 	else:
-		return "<h4" + headerString + "</h4>"
+		return "<h4>" + headerString + "</h4>"
 
 
 
@@ -350,7 +360,7 @@ def displaySearchResults():
 
 		# get query "WHERE" clause for each word
 		for word in words:
-			queryString += "Name Like '%{0}%' AND ".format(word.replace("'", "\\'"))
+			queryString += "Name Like '%{0}%' AND ".format(word.replace("'", "''"))
 
 	queryString += "Id "
 
@@ -370,7 +380,7 @@ def displaySearchResults():
 			excludeIngredients.append(ingredientName)
 
 		# add select query for ingredient
-		queryString += "IN (SELECT RecipeId FROM Ingredients WHERE Name LIKE '%{0}%' AND RecipeId ".format(ingredientName.replace("'", "\\'"))
+		queryString += "IN (SELECT RecipeId FROM Ingredients WHERE Name LIKE '%{0}%' AND RecipeId ".format(ingredientName.replace("'", "''"))
 		numParentheses+=1
 
 	includeIngredientLabels = []
@@ -420,6 +430,9 @@ def displaySearchResults():
 
 	# delete chars from query string and add parentheses and order clause
 	queryString = queryString[:-1 * charsToDelete] + ")" * numParentheses + " ORDER BY Name ASC"
+	
+	# TODO for debugging SQLite query
+	# print("<b>{0}</b>".format(queryString))
 
 	# open database and get cursor
 	connection = sqlite3.connect('recipes.db')
@@ -432,39 +445,36 @@ def displaySearchResults():
 	# close connection
 	connection.close()
 
-	# get included ingredients header string
-	includeIngredientString = formatListOfStringsAsHeader("Containing ", includeIngredients)
-	
-	# get excluded ingredients header string
-	excludeIngredientString = formatListOfStringsAsHeader("Without ", excludeIngredients)
-
-	# get included ingredient labels header string
-	includeIngredientLabelString = formatListOfStringsAsHeader("Containing ingredient types ", includeIngredientLabels)
-	
-	# get excluded ingredient labels header string
-	excludeIngredientLabelString = formatListOfStringsAsHeader("Without ingredient types ", excludeIngredientLabels)
-
-	# get included recipe labels header string
-	includeRecipeLabelString = formatListOfStringsAsHeader("Containing recipe types ", includeRecipeLabels)
-	
-	# get excluded recipe labels header string
-	excludeRecipeLabelString = formatListOfStringsAsHeader("Without recipe types ", excludeRecipeLabels)
-
 	# print recipe names
 	print("""
 <div class="row">
 	<div class="col-xs-12">
 		<h1>{0} Recipes</h1>
-		{1}
-		{2}
-		{3}
-		{4}
-		{5}
-		{6}
-		<table class="table table-striped">
-""".format(searchResult.capitalize(), includeIngredientString, excludeIngredientString, includeIngredientLabelString, \
-				excludeIngredientLabelString, includeRecipeLabelString, excludeRecipeLabelString))
+		<div class="centered">""").format(searchResult.capitalize())
 
+	# print included ingredients header string
+	print(formatListOfStringsAsHeader("Containing ", includeIngredients))
+	
+	# print excluded ingredients header string
+	print(formatListOfStringsAsHeader("Without ", excludeIngredients))
+
+	# print included ingredient labels header string
+	print(formatListOfStringsAsHeader("Containing ingredient types ", includeIngredientLabels))
+	
+	# print excluded ingredient labels header string
+	print(formatListOfStringsAsHeader("Without ingredient types ", excludeIngredientLabels))
+
+	# print included recipe labels header string
+	print(formatListOfStringsAsHeader("Containing recipe types ", includeRecipeLabels))
+	
+	# print excluded recipe labels header string
+	print(formatListOfStringsAsHeader("Without recipe types ", excludeRecipeLabels))
+
+
+	# print table opening tag
+	print ('</div>`<table class="table table-striped">')
+
+	# print each recipe as table row
 	for recipeName in allRecipes:
 		recipeName = recipeName[0].encode('utf-8');
 		print("""
@@ -474,7 +484,9 @@ def displaySearchResults():
 		<button class="btn btn-default" onclick="viewRecipe('{1}')">View Recipe</button>
 	</td>
 </tr>
-""".format(recipeName, recipeName.replace("'", "\'")))
+""".format(recipeName, recipeName.replace("'", "\\'")))
+
+	# print table closing tag
 	print("</table></div></div>")
 
 
@@ -538,22 +550,24 @@ def loadRecipe(recipeName):
 def displayRecipe(recipe):
 	# print recipe, servings, and calories
 	print("""
-<div class="row">
+<div class="row centered">
 	<div class="col-xs-12">
 		<h1>%s</h1>
 		<div>Servings: %s</div>
 		<div>Calories per serving: %s</div>
 		<div><a target=blank href='http://allrecipes.com/recipe/%d'>View on allrecipes.com</a></div>
-		<h2>Ingredients</h2>
-		<div class="table-responsive">
-			<table id="ingredients-table" class="table table-striped">
-				<tr>
-					<th>Ingredient</td>
-					<th>#</td>
-					<th>Unit</td>
-					<th>Description</td>
-					<th>Labels</td>
-				</tr>""" % (recipe["name"], recipe["servings"], recipe["calories"], recipe["id"]))
+	</div>
+</div>
+<h4>Ingredients</h4>
+<div class="table-responsive">
+	<table id="ingredients-table" class="table table-striped">
+		<tr>
+			<th>Ingredient</td>
+			<th>#</td>
+			<th>Unit</td>
+			<th>Description</td>
+			<th>Labels</td>
+		</tr>""" % (recipe["name"], recipe["servings"], recipe["calories"], recipe["id"]))
 
 	# print list of ingredients
 	for ingredient in recipe["ingredients"]:
@@ -569,35 +583,63 @@ def displayRecipe(recipe):
 </tr>
 """.format(ingredient["ingredient"], ingredient["amount"], ingredient["unit"], ", ".join(ingredient["descriptions"]), ", ".join(ingredient["labels"])))
 
-	# print ordered list of directions
-	print("</table></div><h2>Directions</h2><ol>")
+	# print list of directions
+	print("""
+	</table>
+</div>
+<div class="row">
+	<div class="col-xs-12">
+		<h4>Directions</h4>
+		<ol>""")
+
 	for direction in recipe["directions"]:
 		print("<li>%s</li>" % (direction))
-	print("</ol>")
+	print("""
+		</ol>
+	</div>
+</div>""")
 
 	# iff there is at least one footnote, print list of footnotes
 	if len(recipe["footnotes"]) > 0:
-		print("<h2>Footnotes</h2><ul>")
+		# print row and list opening tags
+		print("""
+<div class="row">
+	<div class="col-xs-12">
+		<h4>Footnotes</h4>
+		<ul>""")
+		
+		# print each footnote as list item
 		for footnote in recipe["footnotes"]:
 			print("<li>{0}</li>".format(footnote[0]))
-		print("</ul>")
+		
+		# print row and list closing tags
+		print("""
+		</ul>
+	</div>
+</div>""")
 
-	# recipe transformations
+	# print recipe transformations row and select opening tags
 	print("""
-<h2>Transform Recipe</h2>
-<div class="input-group">
-	<select class="form-control" id="transformation-select" name="transformation-select">
+<div class="row">
+	<div class="col-xs-12">
+		<h4>Transform Recipe</h4>
+		<div class="input-group">
+			<select class="form-control" id="transformation-select" name="transformation-select">
 """)
 
+	# print each possible transformatin as select option
 	transformations = ['American', 'French', 'Italian', 'Vegan', 'Vegetarian']
 	for transformation in transformations:
 		print("<option>{0}</option>".format(transformation))
 
+	# print recipe transformations row and select closing tags
 	print("""	
-	</select>
-	<span class="input-group-btn">
-		<button class="btn btn-default" onclick="viewAndTransformRecipe('{0}')">Transform</button>
-	</span>
+			</select>
+			<span class="input-group-btn">
+				<button class="btn btn-default" onclick="viewAndTransformRecipe('{0}')">Transform</button>
+			</span>
+		</div>
+	</div>
 </div>
 """.format(recipe["name"].replace("'", "\\'")))
 
@@ -667,7 +709,7 @@ try:
 	ingredientNames = []
 	ingredientRadioOn = []
 	for i in range(0, numIngredientInputs):
-		ingredientFormName = "ingredient-{0}".format(numIngredientInputs)
+		ingredientFormName = "ingredient-{0}".format(i)
 		ingredientRadioOn.append(form.getvalue(ingredientFormName, "on") == "on")
 		ingredientNames.append(form.getvalue(ingredientFormName + "-string", ""))
 
@@ -698,6 +740,9 @@ try:
 					recipe = transformRecipe(recipe, transformation)
 			
 				displayRecipe(recipe)
+
+		# show search 
+		displaySearch()
 
 		# if exists, display recipe form search results
 		displaySearchResults()

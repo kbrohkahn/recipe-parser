@@ -1,5 +1,6 @@
 h1 {margin-top: 45px; text-align: center;}
-h2 {margin-top: 30px;}
+
+.centered {text-align: center;}
 
 .input-row,
 .footer {margin-top: 45px; margin-bottom: 45px;}
