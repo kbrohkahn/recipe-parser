@@ -19,18 +19,18 @@ def getIngredientHTML(index):
 	return """
 <div class="col-xs-12 col-sm-6 col-md-4">
 	<div class="input-group">
-		<div class="input-group-addon">
-			<input id="ingredient-{1}-on" type="radio" name="ingredient-{1}" aria-label="Button" class="radio-button-default" value="on" {2}>
-			<label for="ingredient-{1}-on">On</label>
-		</div>
-		<div class="input-group-addon">
-			<input id="ingredient-{1}-off" type="radio" name="ingredient-{1}" aria-label="Button" value="off" {3}>
-			<label for="ingredient-{1}-off">Off</label>
-		</div>
-		<input type="text" class="form-control" id="ingredient-{1}-string" name="ingredient-{1}-string" value={0}>
 		<span class="input-group-btn">
 			<button class="btn btn-default" type="button" onclick="clearIngredient({1})">X</button>
 		</span>
+		<input type="text" class="form-control" id="ingredient-{1}-string" name="ingredient-{1}-string" value={0}>
+		<div class="input-group-addon" title="Recipe must include ingredient">
+			<input id="ingredient-{1}-on" type="radio" name="ingredient-{1}" aria-label="Button" class="radio-button-default" value="on" {2}>
+			<label for="ingredient-{1}-on"><i class="fa fa-check-circle fa-lg"></i></label>
+		</div>
+		<div class="input-group-addon" title="Recipe cannot include ingredient">
+			<input id="ingredient-{1}-off" type="radio" name="ingredient-{1}" aria-label="Button" value="off" {3}>
+			<label for="ingredient-{1}-off"><i class="fa fa-ban fa-lg"></i></label>
+		</div>
 	</div>
 </div>
 """.format(ingredientNames[index], index, onSelectionString, offSelectionString)
@@ -51,7 +51,7 @@ def getIngredientLabelHTML(index):
 	offSelectionString = ""
 	selectedString = "checked"
 
-	if ingredientLabelValues[index] == "-":
+	if ingredientLabelValues[index] == "":
 		eitherSelectionString = selectedString
 	elif ingredientLabelValues[index] == "on":
 		onSelectionString = selectedString
@@ -60,20 +60,20 @@ def getIngredientLabelHTML(index):
 
 	return """ 
 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-	<div class="input-group">
-		<div class="input-group-addon">
-			<input class="radio-button-default" id="ingredient-label-{0}-either" type="radio" name="ingredient-label-{0}" aria-label="Button" value="-" {2}>
-			<label for="ingredient-label-{0}-either">-</label>
-		</div>
-		<div class="input-group-addon">
+	<div class="radio-group">
+		<span title="Recipe must include ingredient type">
 			<input id="ingredient-label-{0}-on" type="radio" name="ingredient-label-{0}" aria-label="Button" value="on" {3}>
-			<label for="ingredient-label-{0}-on">On</label>
-		</div>
-		<div class="input-group-addon">
+			<label for="ingredient-label-{0}-on"><i class="fa fa-check-circle fa-lg"></i></label>
+		</span>
+		<span title="Recipe cannot include ingredient type">
 			<input id="ingredient-label-{0}-off" type="radio" name="ingredient-label-{0}" aria-label="Button" value="off" {4}>
-			<label for="ingredient-label-{0}-off">Off</label>
-		</div>
-		<input type="text" class="form-control" disabled aria-describedby="{1} ingredient label" value="{1}">
+			<label for="ingredient-label-{0}-off"><i class="fa fa-ban fa-lg"></i></label>
+		</span>
+		<span title="Ingredient type is optional">
+			<input class="radio-button-default" id="ingredient-label-{0}-either" type="radio" name="ingredient-label-{0}" aria-label="Button" value="" {2}>
+			<label for="ingredient-label-{0}-either"><i class="fa fa-random fa-lg"></i></label>
+		</span>
+		<span>{1}</span>
 	</div>
 </div>
 """.format(ingredientLabels[index].replace(" ", "-"), ingredientLabels[index], eitherSelectionString, onSelectionString, offSelectionString)
@@ -94,7 +94,7 @@ def getRecipeLabelHTML(index):
 	offSelectionString = ""
 	selectedString = "checked"
 
-	if recipeLabelValues[index] == "-":
+	if recipeLabelValues[index] == "":
 		eitherSelectionString = selectedString
 	elif recipeLabelValues[index] == "on":
 		onSelectionString = selectedString
@@ -103,20 +103,20 @@ def getRecipeLabelHTML(index):
 
 	return """ 
 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-	<div class="input-group">
-		<div class="input-group-addon">
-			<input class="radio-button-default" id="recipe-label-{0}-either" type="radio" name="recipe-label-{0}" aria-label="Button" value="-" {2}>
-			<label for="recipe-label-{0}-either">-</label>
-		</div>
-		<div class="input-group-addon">
+	<div class="radio-group">
+		<span title="Recipe must be of type">
 			<input id="recipe-label-{0}-on" type="radio" name="recipe-label-{0}" aria-label="Button" value="on" {3}>
-			<label for="recipe-label-{0}-on">On</label>
-		</div>
-		<div class="input-group-addon">
+			<label for="recipe-label-{0}-on"><i class="fa fa-check-circle fa-lg"></i></label>
+		</span>
+		<span title="Recipe cannot be of type">
 			<input id="recipe-label-{0}-off" type="radio" name="recipe-label-{0}" aria-label="Button" value="off" {4}>
-			<label for="recipe-label-{0}-off">Off</label>
-		</div>
-		<input type="text" class="form-control" disabled aria-describedby="{1} recipe label" value="{1}">
+			<label for="recipe-label-{0}-off"><i class="fa fa-ban fa-lg"></i></label>
+		</span>
+		<span title="Recipe type optional">
+			<input class="radio-button-default" id="recipe-label-{0}-either" type="radio" name="recipe-label-{0}" aria-label="Button" value="" {2}>
+			<label for="recipe-label-{0}-either"><i class="fa fa-random fa-lg"></i></label>
+		</span>
+		<span>{1}</span>
 	</div>
 </div>
 """.format(recipeLabels[index].replace(" ", "-"), recipeLabels[index], eitherSelectionString, onSelectionString, offSelectionString)
@@ -135,11 +135,12 @@ def htmlHeader():
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link href="../assets/css/bootstrap.min.css" rel="stylesheet">
-	<link href="../assets/css/main.css" rel="stylesheet">
-	<script src="../assets/js/jquery-2.1.4.min.js" type="text/javascript"></script>
-	<script src="../assets/js/bootstrap.min.js"></script>
-	<script src="../assets/js/main.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<link rel="stylesheet" href="../assets/css/font-awesome.min.css">
+	<script type="text/javascript" src="../assets/js/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../assets/js/main.js"></script>
 </head>
 <body>
 	<div class="container-fluid">
@@ -157,18 +158,18 @@ def htmlHeader():
 			</ul>
 
 			<div class="tab-content">
-				<div role="tabpanel" class="tab-pane fade in active" id="ingredients">
+				<div role="tabpanel" class="tab-pane active" id="ingredients">
 					<div class="row">""")
 
 	for i in range(0, numIngredientInputs):
 		print(getIngredientHTML(i))
 
-	print('</div></div><div role="tabpanel" class="tab-pane fade" id="ingredient-labels"><div class="row">')
+	print('</div></div><div role="tabpanel" class="tab-pane" id="ingredient-labels"><div class="row">')
 
 	for i in range(0, len(ingredientLabels)):
 		print(getIngredientLabelHTML(i))
 
-	print('</div></div><div role="tabpanel" class="tab-pane fade" id="recipe-labels"><div class="row">')
+	print('</div></div><div role="tabpanel" class="tab-pane" id="recipe-labels"><div class="row">')
 
 	for i in range(0, len(recipeLabels)):
 		print(getRecipeLabelHTML(i))
@@ -177,17 +178,20 @@ def htmlHeader():
 			</div>
 		</div>
 	</div>
-	<div class="row input-row">
-		<div class="col-sm-10 col-md-11">
-			<div class="input-group">
-				<input type="text" class="form-control" id="recipe-input" name="recipe-input" placeholder="Enter recipe name" value="{0}">
-				<span class="input-group-btn">
-					<button class="btn btn-primary" type="submit">Search</button>
-				</span>
+	<div class="input-row">
+		<div class="input-group">
+			<input type="text" class="form-control" id="recipe-input" name="recipe-input" placeholder="Enter recipe name" value="{0}">
+			<div class="input-group-btn">
+				<button type="submit" class="btn btn-primary">Find recipes</button>
+
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" 
+						aria-expanded="false">Reset <span class="caret"></span></button>
+				<ul class="dropdown-menu dropdown-menu-right">
+					<li><a href="#" onclick="clearSearch()">Clear Search</a></li>
+					<li><a href="#" onclick="resetFilters()">Reset Filters</a></li>
+					<li><a href="#" onclick="resetAll()">Reset All</a></li>
+				</ul>
 			</div>
-		</div>
-		<div class="col-sm-2 col-md-1">
-			<button class="btn btn-warning full-width" type="button" onclick='resetAll()'>Reset all</button>
 		</div>
 	</div>
 	<div class="hidden">
@@ -362,7 +366,7 @@ def displaySearchResults():
 	for i in range(0, len(ingredientLabels)):
 		ingredientLabel = ingredientLabels[i]
 
-		if ingredientLabelValues[i] == "-":
+		if ingredientLabelValues[i] == "":
 			continue
 		elif ingredientLabelValues[i] == "on":
 			includeIngredientLabels.append(ingredientLabel)
@@ -379,7 +383,7 @@ def displaySearchResults():
 	for i in range(0, len(recipeLabels)):
 		recipeLabel = recipeLabels[i]
 
-		if recipeLabelValues[i] == "-":
+		if recipeLabelValues[i] == "":
 			continue
 		elif recipeLabelValues[i] == "on":
 			includeRecipeLabels.append(recipeLabel)
@@ -451,7 +455,7 @@ def displaySearchResults():
 		recipeName = recipeName[0].encode('utf-8');
 		print("""
 <tr>
-	<td class="center-vertical">{0}</td>
+	<td>{0}</td>
 	<td class="text-right">
 		<button class="btn btn-default" onclick="viewRecipe('{1}')">View Recipe</button>
 	</td>
@@ -656,12 +660,12 @@ try:
 	# get ingredient label radio button value
 	ingredientLabelValues = []
 	for ingredientLabel in ingredientLabels:
-		ingredientLabelValues.append(form.getvalue("ingredient-label-" + ingredientLabel, "-"))
+		ingredientLabelValues.append(form.getvalue("ingredient-label-" + ingredientLabel, ""))
 
 	# get recipe label radio button value
 	recipeLabelValues = []
 	for recipeLabel in recipeLabels:
-		recipeLabelValues.append(form.getvalue("recipe-label-" + recipeLabel, "-"))
+		recipeLabelValues.append(form.getvalue("recipe-label-" + recipeLabel, ""))
 
 	htmlHeader()
 

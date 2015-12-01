@@ -18,6 +18,15 @@ function clearIngredient(index) {
 }
 
 function resetAll() {
+	clearSearch();
+	resetFilters();
+}
+
+function clearSearch() {
+	$("#recipe-input").val("")
+}
+
+function resetFilters() {
 	$("input[type='radio']").prop('checked', false);
 	$(".radio-button-default").prop('checked', 'checked');
 
