@@ -192,7 +192,7 @@ def htmlHeader():
 	</div>
 	<div class="input-row">
 		<div class="input-group">
-			<input type="text" class="form-control" id="recipe-input" name="recipe-input" placeholder="(Optional) Enter recipe name" value="{0}">
+			<input type="text" class="form-control" id="recipe-input" name="recipe-input" placeholder="Enter recipe name (optional)" value="{0}">
 			<div class="input-group-btn">
 				<button type="submit" class="btn btn-primary">Find recipes</button>
 
