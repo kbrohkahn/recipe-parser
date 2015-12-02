@@ -332,10 +332,10 @@ def formatListOfStringsAsHeader(headerString, stringList):
 	
 	if count > 2:
 		# insert " and" immediately after last comma
-		return "<h4>" + headerString[:index+1] + " and" + headerString[index+1:-2] + "</h4>"
+		return "<h4>" + headerString[:index+1] + " and" + headerString[index+1:] + "</h4>"
 	elif count == 2:
 		# replace last comma with " and"
-		return "<h4>" + headerString[:index] + " and" + headerString[index+1:-2] + "</h4>"
+		return "<h4>" + headerString[:index] + " and" + headerString[index+1:] + "</h4>"
 	else:
 		return "<h4>" + headerString + "</h4>"
 
@@ -345,8 +345,45 @@ def formatListOfStringsAsHeader(headerString, stringList):
 # print list of all recipes and ingredients
 #
 def displaySearchResults():
+	# get lists of included and excluded ingredients
+	includeIngredients = []
+	excludeIngredients = []
+	for i in range(0, numIngredientInputs):
+		ingredientName = ingredientNames[i]
+		
+		if ingredientName != "":
+			# add ingredient to list of included/excluded ingredients based on radio button
+			if ingredientRadioOn[i]:
+				includeIngredients.append(ingredientName)
+			else:
+				excludeIngredients.append(ingredientName)
+
+	# get lists of included and excluded ingredient labels
+	includeIngredientLabels = []
+	excludeIngredientLabels = []
+	for i in range(0, len(ingredientLabels)):
+		ingredientLabel = ingredientLabels[i]
+
+		if ingredientLabelValues[i] == "on":
+			includeIngredientLabels.append(ingredientLabel)
+		elif ingredientLabelValues[i] == "off":
+			excludeIngredientLabels.append(ingredientLabel)
+
+	# get lists of included and excluded recipe labels
+	includeRecipeLabels = []
+	excludeRecipeLabels = []
+	for i in range(0, len(recipeLabels)):
+		recipeLabel = recipeLabels[i]
+
+		if recipeLabelValues[i] == "on":
+			includeRecipeLabels.append(recipeLabel)
+		elif recipeLabelValues[i] == "off":
+			excludeRecipeLabels.append(recipeLabel)
+
+
+
 	# initiate query string
-	queryString = "SELECT Name FROM Recipes WHERE Id IN (SELECT Id FROM Recipes WHERE "
+	queryString = "SELECT Name FROM Recipes WHERE "
 	numParentheses = 1
 	
 	# add search input to query string
@@ -362,75 +399,49 @@ def displaySearchResults():
 		for word in words:
 			queryString += "Name Like '%{0}%' AND ".format(word.replace("'", "''"))
 
-	queryString += "Id "
 
-	# get lists of included and excluded ingredients while appending to query
-	includeIngredients = []
-	excludeIngredients = []
-	for i in range(0, numIngredientInputs):
-		ingredientName = ingredientNames[i]
-		if ingredientName == "":
-			continue
+	queryString += "Id IN ( SELECT Id FROM Recipes "
 
-		# add ingredient to list of included/excluded ingredients based on radio button
-		if ingredientRadioOn[i]:
-			includeIngredients.append(ingredientName)
-		else:
-			queryString += "NOT "
-			excludeIngredients.append(ingredientName)
+	# append excluded ingredient labels to query string
+	if len(excludeIngredientLabels) > 0:
+		queryString += "EXCEPT "
+		queryString += "SELECT Ingredients.RecipeId FROM Ingredients CROSS JOIN IngredientLabels \
+				ON IngredientLabels.IngredientId = Ingredients.Id \
+				WHERE IngredientLabels.Label IN ('{0}') ".format("', '".join(excludeIngredientLabels))
 
-		# add select query for ingredient
-		queryString += "IN (SELECT RecipeId FROM Ingredients WHERE Name LIKE '%{0}%' AND RecipeId ".format(ingredientName.replace("'", "''"))
-		numParentheses+=1
+	# append excluded recipe labels to query string
+	if len(excludeRecipeLabels) > 0:
+		queryString += "EXCEPT "
+		queryString += "SELECT Labels.RecipeId FROM Labels \
+				WHERE Labels.Label IN ('{0}') ".format("', '".join(excludeRecipeLabels))
 
-	includeIngredientLabels = []
-	excludeIngredientLabels = []
-	for i in range(0, len(ingredientLabels)):
-		ingredientLabel = ingredientLabels[i]
+	# append excluded ingredients to query string
+	for excludeIngredient in excludeIngredients:
+		queryString += "EXCEPT "
+		queryString += "SELECT Ingredients.RecipeId FROM Ingredients \
+				WHERE Ingredients.Name LIKE '%{0}%' COLLATE NOCASE ".format(excludeIngredient.replace("'", "''"))
 
-		if ingredientLabelValues[i] == "":
-			continue
-		elif ingredientLabelValues[i] == "on":
-			includeIngredientLabels.append(ingredientLabel)
-		elif ingredientLabelValues[i] == "off":
-			queryString += "NOT "
-			excludeIngredientLabels.append(ingredientLabel)
+	# append included ingredient labels to query string
+	for includeIngredientLabel in includeIngredientLabels:
+		queryString += "INTERSECT "
+		queryString += "SELECT Ingredients.RecipeId FROM Ingredients CROSS JOIN IngredientLabels \
+				ON IngredientLabels.IngredientId = Ingredients.Id \
+				WHERE IngredientLabels.Label = '{0}' ".format(includeIngredientLabel)
 
-		queryString += "IN (SELECT RecipeId FROM Ingredients CROSS JOIN IngredientLabels ON IngredientId = Id \
-				WHERE Label = '{0}' AND RecipeId ".format(ingredientLabel)
-		numParentheses+=1
-
-	includeRecipeLabels = []
-	excludeRecipeLabels = []
-	for i in range(0, len(recipeLabels)):
-		recipeLabel = recipeLabels[i]
-
-		if recipeLabelValues[i] == "":
-			continue
-		elif recipeLabelValues[i] == "on":
-			includeRecipeLabels.append(recipeLabel)
-		elif recipeLabelValues[i] == "off":
-			queryString += "NOT "
-			excludeRecipeLabels.append(recipeLabel)
-
-		queryString += "IN (SELECT RecipeId FROM Labels WHERE Label = '{0}' AND RecipeId ".format(recipeLabel)
-		numParentheses+=1
-
-	# find number of characters to remove from query string based on final characters (no filters at all, " WHERE Id ", or " AND RecipeId ")
-	if numParentheses == 1:
-		if searchResult == "":
-			# don't print list of every single recipe
-			print("<b>You must add at least 1 filter or enter a recipe name.</b>")
-			return
-
-		else:
-			charsToDelete = 8
-	else:
-		charsToDelete = 14
-
-	# delete chars from query string and add parentheses and order clause
-	queryString = queryString[:-1 * charsToDelete] + ")" * numParentheses + " ORDER BY Name ASC"
+	# append included recipe labels to query string
+	for includeRecipeLabel in includeRecipeLabels:
+		queryString += "INTERSECT "
+		queryString += "SELECT Labels.RecipeId FROM Labels \
+				WHERE Labels.Label = '{0}' ".format(includeRecipeLabel)
 	
+	# append included ingredients to query string
+	for includeIngredient in includeIngredients:
+		queryString += "INTERSECT "
+		queryString += "SELECT Ingredients.RecipeId FROM Ingredients \
+				WHERE Ingredients.Name LIKE '%{0}%' COLLATE NOCASE ".format(includeIngredient.replace("'", "''"))
+
+	queryString += ") ORDER BY Name ASC"
+
 	# TODO for debugging SQLite query
 	# print("<b>{0}</b>".format(queryString))
 
@@ -716,12 +727,12 @@ try:
 	# get ingredient label radio button value
 	ingredientLabelValues = []
 	for ingredientLabel in ingredientLabels:
-		ingredientLabelValues.append(form.getvalue("ingredient-label-" + ingredientLabel, ""))
+		ingredientLabelValues.append(form.getvalue("ingredient-label-" + ingredientLabel.replace(" ", "-"), ""))
 
 	# get recipe label radio button value
 	recipeLabelValues = []
 	for recipeLabel in recipeLabels:
-		recipeLabelValues.append(form.getvalue("recipe-label-" + recipeLabel, ""))
+		recipeLabelValues.append(form.getvalue("recipe-label-" + recipeLabel.replace(" ", "-"), ""))
 
 	htmlHeader()
 
