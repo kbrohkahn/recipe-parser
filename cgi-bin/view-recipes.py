@@ -3,7 +3,6 @@ import cgi
 import json
 import sqlite3
 
-
 #
 # print HTML header and beginning of HTML body
 #
@@ -33,7 +32,7 @@ def htmlHeader():
 #
 def htmlFooter():
 	print("""
-		<div class="row footer">
+		<div class="row footer large-margin-top">
 			<div class="col-xs-12 text-center">
 				All recipes parsed from <a href="http://allrecipes.com/">allrecipes.com</a>
 			</div>
@@ -78,8 +77,7 @@ DROP TABLE IF EXISTS IngredientDescriptions;
 CREATE TABLE IngredientDescriptions(IngredientId INT, Description TEXT);
 
 DROP TABLE IF EXISTS IngredientLabels;
-CREATE TABLE IngredientLabels(IngredientId INT, Label TEXT);
-		""")
+CREATE TABLE IngredientLabels(IngredientId INT, Label TEXT);""")
 
 		for recipe in allRecipes:
 			recipeId = recipe["id"]
@@ -179,7 +177,7 @@ def getIngredientLabelHTML(index):
 		classString = "filter-off"
 
 	return """ 
-<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+<div class="col-xs-12 col-sm-6 col-md-4">
 	<div class="radio-group">
 		<span title="Ingredient type is optional">
 			<input class="radio-button-default" id="ingredient-label-{0}-either" type="radio" name="ingredient-label-{0}" value="" {2}>
@@ -228,7 +226,7 @@ def getRecipeLabelHTML(index):
 		classString = "filter-off"
 
 	return """ 
-<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+<div class="col-xs-12 col-sm-6 col-md-4">
 	<div class="radio-group">
 		<span title="Recipe type optional">
 			<input class="radio-button-default" id="recipe-label-{0}-either" type="radio" name="recipe-label-{0}" value="" {2}>
@@ -253,9 +251,9 @@ def getRecipeLabelHTML(index):
 #
 # print search form
 #
-def displaySearch():
+def displaySearch(searchString):
 	print("""
-<h1>New Recipe Search</h1>
+<h1 class="large-margin-top">New Recipe Search</h1>
 <form role="form" method="post" action="view-recipes.py" id="recipe-search-form">
 	<ul id="ingredient-tabs" class="nav nav-tabs nav-justified" role="tablist">
 		<li role="presentation" class="active">
@@ -311,7 +309,7 @@ def displaySearch():
 		<input type="text" id="transformation" name="transformation">
 	</div>
 </form>
-""".format(searchResult))
+""".format(searchString))
 
 
 
@@ -344,7 +342,7 @@ def formatListOfStringsAsHeader(headerString, stringList):
 #
 # print list of all recipes and ingredients
 #
-def displaySearchResults():
+def displaySearchResults(searchString):
 	# get lists of included and excluded ingredients
 	includeIngredients = []
 	excludeIngredients = []
@@ -387,9 +385,10 @@ def displaySearchResults():
 	numParentheses = 1
 	
 	# add search input to query string
-	if searchResult != "":
+	words = None
+	if searchString != "":
 		# split search string into words
-		words = searchResult.split(" ")
+		words = searchString.split(" ")
 
 		# remove "", caused by extra spaces
 		while "" in words:
@@ -398,7 +397,6 @@ def displaySearchResults():
 		# get query "WHERE" clause for each word
 		for word in words:
 			queryString += "Name Like '%{0}%' AND ".format(word.replace("'", "''"))
-
 
 	queryString += "Id IN ( SELECT Id FROM Recipes "
 
@@ -456,12 +454,24 @@ def displaySearchResults():
 	# close connection
 	connection.close()
 
+
+
+	# get search result header
+	searchResultString = "All Recipes"
+	if words is not None:
+		searchResultString = ""
+
+		for word in words:
+			searchResultString += word.capitalize() + " "
+
+		searchResultString += "Recipes"
+
 	# print recipe names
 	print("""
-<div class="row">
+<div class="row large-margin-top">
 	<div class="col-xs-12">
-		<h1>{0} Recipes</h1>
-		<div class="centered">""").format(searchResult.capitalize())
+		<h1>{0}</h1>
+		<div class="centered">""").format(searchResultString)
 
 	# print included ingredients header string
 	print(formatListOfStringsAsHeader("Containing ", includeIngredients))
@@ -481,11 +491,11 @@ def displaySearchResults():
 	# print excluded recipe labels header string
 	print(formatListOfStringsAsHeader("Without recipe types ", excludeRecipeLabels))
 
-
 	# print table opening tag
-	print ('</div>`<table class="table table-striped">')
+	print('</div><table class="table table-striped">')
 
 	# print each recipe as table row
+	count=0
 	for recipeName in allRecipes:
 		recipeName = recipeName[0].encode('utf-8');
 		print("""
@@ -496,9 +506,18 @@ def displaySearchResults():
 	</td>
 </tr>
 """.format(recipeName, recipeName.replace("'", "\\'")))
+		count+=1
+
+		# display a max of 1000 recipes
+		if count == 999:
+			break
 
 	# print table closing tag
 	print("</table></div></div>")
+
+	# tell user to narrow search if over 1000 results
+	if count == 999:
+		print("<b>Too many recipes to process, please narrow search.</b>")
 
 
 
@@ -559,14 +578,19 @@ def loadRecipe(recipeName):
 # print single recipe
 #
 def displayRecipe(recipe):
+	transformationString = ""
+	if recipeTransformation != "":
+		transformationString = "<h4>Transformation: {0}</h4>".format(recipeTransformation)
+
 	# print recipe, servings, and calories
 	print("""
 <div class="row centered">
 	<div class="col-xs-12">
-		<h1>%s</h1>
-		<div>Servings: %s</div>
-		<div>Calories per serving: %s</div>
-		<div><a target=blank href='http://allrecipes.com/recipe/%d'>View on allrecipes.com</a></div>
+		<h1>{0}</h1>
+		{4}
+		<div>Servings: {1}</div>
+		<div>Calories per serving: {2}</div>
+		<div><a target=blank href='http://allrecipes.com/recipe/{3}'>View on allrecipes.com</a></div>
 	</div>
 </div>
 <h4>Ingredients</h4>
@@ -578,7 +602,7 @@ def displayRecipe(recipe):
 			<th>Unit</td>
 			<th>Description</td>
 			<th>Labels</td>
-		</tr>""" % (recipe["name"], recipe["servings"], recipe["calories"], recipe["id"]))
+		</tr>""".format(recipe["name"], recipe["servings"], recipe["calories"], recipe["id"], transformationString))
 
 	# print list of ingredients
 	for ingredient in recipe["ingredients"]:
@@ -638,7 +662,10 @@ def displayRecipe(recipe):
 			<select class="form-control" id="transformation-select" name="transformation-select">
 """)
 
-	# print each possible transformatin as select option
+	# print empty value with "None" as option for resetting transformation
+	print("<option value=''>None</option>")
+
+	# print each possible transformation as select option
 	transformations = ['American', 'French', 'Italian', 'Vegan', 'Vegetarian']
 	for transformation in transformations:
 		print("<option>{0}</option>".format(transformation))
@@ -690,30 +717,32 @@ def transformRecipe(recipe, transformation):
 				if "vegetable" in ingredient["labels"]:
 					ingredient["amount"] *= vegetableMultiplier
 
-	if transformation == "Vegan":
-		for ingredient in recipe["ingredients"]:
-			animalProductSubstituted = False
-			originalIngredient = ingredient["ingredient"]
+		if transformation == "Vegan":
+			for ingredient in recipe["ingredients"]:
+				animalProductSubstituted = False
+				originalIngredient = ingredient["ingredient"]
 
-			if ingredient["ingredient"] == "honey":
-				ingredient["ingredient"] = "syrup"
-			elif ingredient["ingredient"] == "eggs":
-				ingredient["ingredient"] = "soy yogurt"
-				ingredient["amount"] /= 4.0
-				ingredient["unit"] = "cups"
+				if ingredient["ingredient"] == "honey":
+					ingredient["ingredient"] = "syrup"
+				elif ingredient["ingredient"] == "eggs":
+					ingredient["ingredient"] = "soy yogurt"
+					ingredient["amount"] /= 4.0
+					ingredient["unit"] = "cups"
 
 	return recipe
 
 
 
+#
 #main program
+#
 try:
 	form = cgi.FieldStorage()
 
 	# get recipe search input, selected recipe, and selected transformation
-	searchResult = form.getvalue("recipe-input", "")
+	searchPhrase = form.getvalue("recipe-input", "")
 	recipeSelection = form.getvalue("recipe-selection", "")
-	transformation = form.getvalue("transformation", "")
+	recipeTransformation = form.getvalue("transformation", "")
 
 	# get ingredient strings and whether "on" selected radio button
 	numIngredientInputs = 12
@@ -747,16 +776,19 @@ try:
 			if recipe is None:
 				print("<b>Error: recipe not found</b>")
 			else:
-				if transformation is not "":
-					recipe = transformRecipe(recipe, transformation)
+				if recipeTransformation is not "":
+					recipe = transformRecipe(recipe, recipeTransformation)
 			
 				displayRecipe(recipe)
 
 		# show search 
-		displaySearch()
+		displaySearch(searchPhrase)
 
+		# print loading results message
+		print('<div class="centered" id="loading-search-results"><b>Loading search results...</b></div>')
+		
 		# if exists, display recipe form search results
-		displaySearchResults()
+		displaySearchResults(searchPhrase)
 
 	except sqlite3.Error as e:
 		print("<b>Error %s:</b>" % e.args[0])

@@ -31,6 +31,9 @@ function resetFilters() {
 	$(".radio-button-default").prop('checked', 'checked');
 
 	$("#ingredients input[type='text']").val("")
+
+	$(".filter-on").attr("class", "filter-either")
+	$(".filter-off").attr("class", "filter-either")
 }
 
 function changeRadioButton(elementId) {
@@ -45,6 +48,8 @@ function changeRadioButton(elementId) {
 }
 
 $(document).ready(function() {
+	$("#loading-search-results").hide();
+
 	$("#ingredient-tabs a").click(function (e) {
 		e.preventDefault()
 		$(this).tab("show")
@@ -58,5 +63,3 @@ $(document).ready(function() {
 		changeRadioButton($(this).attr('id'))
 	});
 });
-
-
