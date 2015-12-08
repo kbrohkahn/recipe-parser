@@ -117,6 +117,7 @@ Kentucky Fruit Filling
 Lady Baltimore Frosting
 Laughing Cow® Light Creamy Swiss wedges
 Locatella cheese
+Louisiana hot sauce
 Louisiana sauce
 Macintosh apples
 Madeira wine
@@ -586,6 +587,7 @@ cannellini beans
 cannelloni noodles
 cannelloni pasta
 cannoli
+cannoli shells
 canola oil
 cantaloupe
 capellini pasta
@@ -778,6 +780,7 @@ cinnamon graham crackers
 cinnamon oil
 cinnamon or to taste
 cinnamon red candies
+cinnamon red hot candies
 cinnamon stick
 cinnamon sticks
 cinnamon sugar
@@ -1281,7 +1284,17 @@ honeycomb tripe
 honeydew melon
 horseradish
 horseradish mustard
+hot Italian turkey sausage
+hot bread roll mix
+hot chicken broth
+hot chili oil
+hot chili paste
+hot chili pepper
+hot chutney
+hot coffee
+hot fudge topping
 hot milk
+hot pepper sauce
 hot water
 huckleberries
 ice
@@ -1734,6 +1747,7 @@ pastrami
 pastry
 pastry cream
 pastry flour
+pastry shells
 pea pods
 peach brandy
 peach flavored Jell-O® mix
@@ -1799,6 +1813,7 @@ pie crust
 pie crust mix
 pie crusts
 pie crusts ready to bake
+pie shell
 pig's ears
 pig's feet
 pig's tail
@@ -2467,7 +2482,10 @@ twist macaroni
 unbaked deep dish pie crust
 unbaked pie
 unbaked pie crusts
+unbaked pie shell
+unbaked pie shells
 unbaked tart
+unbaked tart shells
 unbleached all purpose flour
 unbleached bread flour
 unflavored gelatin

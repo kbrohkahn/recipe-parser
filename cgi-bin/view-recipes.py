@@ -2,6 +2,7 @@
 import cgi
 import json
 import sqlite3
+import random
 
 #
 # print HTML header and beginning of HTML body
@@ -151,9 +152,8 @@ def getIngredientHTML(index):
 
 
 # all ingredient labels
-ingredientLabels = ["dairy", "cheese", "meat", "seafood", "poultry", "main protein", "vegetable", "fruit",
-		"spice or herb", "pasta", "dip", "sauce", "soup", "bread", "spicy", "alcohol", "drink", "nut", "grain",
-		"recipe extra", "flavoring", "mixture"]
+ingredientLabels = ["dairy", "cheese", "meat", "fish", "seafood", "poultry", "main protein", "vegetable", "fruit", "sugar", "spread",
+		"sauce", "soup", "nut", "alcohol", "spice or herb", "spicy", "grain", "pasta", "bread dish", "pasta dish", "drink"]
 
 #
 # return HTML string for ingredient label
@@ -200,9 +200,10 @@ def getIngredientLabelHTML(index):
 
 
 # all recipe labels
-recipeLabels = ["dairy", "cheese", "meat", "seafood", "poultry", "main protein", "vegetable", "fruit",
-		"spice or herb", "pasta", "dip", "sauce", "soup", "bread", "spicy", "alcohol", "drink", "nut", "grain",
-		"cheese food", "breakfast", "dessert"]
+recipeLabels = ingredientLabels
+recipeLabels.append("breakfast")
+recipeLabels.append("dessert")
+recipeLabels.append("bread")
 
 #
 # return HTML string for recipe label
@@ -542,7 +543,11 @@ def loadRecipe(recipeName):
 	recipe["calories"] = recipeArray[3]
 	
 	cursor.execute("SELECT Direction FROM Directions WHERE RecipeId=? ORDER BY Step ASC", (recipe["id"],))
-	recipe["directions"] = cursor.fetchall()
+	directionsArray = cursor.fetchall()
+	recipe["directions"] = []
+
+	for directionTuple in directionsArray:
+		recipe["directions"].append(directionTuple[0])
 
 	cursor.execute("SELECT Footnote FROM Footnotes WHERE RecipeId=?", (recipe["id"],))
 	recipe["footnotes"] = cursor.fetchall()
@@ -666,7 +671,7 @@ def displayRecipe(recipe):
 	print("<option value=''>None</option>")
 
 	# print each possible transformation as select option
-	transformations = ['American', 'French', 'Italian', 'Vegan', 'Vegetarian']
+	transformations = ['American', 'French', 'German', 'Italian', 'Vegan', 'Vegetarian']
 	for transformation in transformations:
 		print("<option>{0}</option>".format(transformation))
 
@@ -684,32 +689,89 @@ def displayRecipe(recipe):
 
 
 #
+# transform amount to cups based on amount and original unit
+#
+def transformToCups(amount, unit):
+	if unit == "cups":
+		return amount
+	elif unit == "quarts":
+		return amount / 16
+	elif unit == "quarts":
+		return amount / 4
+	elif unit == "pints":
+		return amount / 2
+	elif unit == "ounces":
+		return amount * 8
+	elif unit == "tablespoons":
+		return amount * 16
+	elif unit == "teaspoons":
+		return amount * 48
+	else:
+		return amount
+
+
+
+#
+# add ingredient to recipe, used for transformations
+#
+def addIngredientToRecipe(recipe, ingredientName, ingredientLabel):
+	totalLabelQuantity = 0
+	labelCount = 0
+	lastIngredientWithLabel = None
+
+	for ingredient in recipe["ingredients"]:
+		if ingredientLabel in ingredient["labels"]:
+			totalLabelQuantity += transformToCups(ingredient["amount"], ingredient["unit"])
+			labelCount += 1
+			lastIngredientWithLabel = ingredient["ingredient"]
+
+	# if no ingredients have the same label, don't add ingredient
+	if labelCount == 0:
+		return recipe
+
+	newIngredient = {}
+	newIngredient["ingredient"] = ingredientName
+	newIngredient["labels"] = [ingredientLabel]
+	newIngredient["descriptions"] = ["chopped"]
+	newIngredient["amount"] = totalLabelQuantity / labelCount
+	newIngredient["unit"] = "cups"
+
+	recipe["ingredients"].append(newIngredient)
+
+	for description in recipe["descriptions"]:
+		description[0].replace(lastIngredientWithLabel, lastIngredientWithLabel + " and " + ingredientName)
+
+
+
+#
 # function for transforming recipe
 #
 def transformRecipe(recipe, transformation):
+	# transform to vegetarian or vegan
 	if transformation == "Vegetarian" or transformation == "Vegan":
 		decreasedProteins = 0.0
 		for ingredient in recipe["ingredients"]:
-			meatSubstituted = False
 			originalIngredient = ingredient["ingredient"]
+			substitutionMade = True
 
 			if "poulty" in ingredient["labels"]:
-				meatSubstituted = True
 				ingredient["ingredient"] = "tofu"
 			elif "meat" in ingredient["labels"]:
-				meatSubstituted = True
 				ingredient["ingredient"] = "meatty mushrooms"
 			elif "fish" in ingredient["labels"]:
-				meatSubstituted = True
+				ingredient["ingredient"] = "mushrooms"
+			elif "seafood" in ingredient["labels"]:
 				ingredient["ingredient"] = "walnuts"
+			else:
+				substitutionMade = False
 		
-			if meatSubstituted:
+			if substitutionMade:
 				decreasedProteins += 1
 				ingredient["amount"] /= 2.0
 				ingredient["labels"] = ["main protein"]
 
 				for direction in recipe["directions"]:
-					direction = direction[0].replace(originalIngredient, ingredient["ingredient"])
+					direction = direction.replace(originalIngredient, ingredient["ingredient"])
 
 		if decreasedProteins > 0:
 			vegetableMultiplier = 1 + decreasedProteins / 4.0
@@ -717,10 +779,11 @@ def transformRecipe(recipe, transformation):
 				if "vegetable" in ingredient["labels"]:
 					ingredient["amount"] *= vegetableMultiplier
 
+		# transform to only vegan
 		if transformation == "Vegan":
 			for ingredient in recipe["ingredients"]:
-				animalProductSubstituted = False
 				originalIngredient = ingredient["ingredient"]
+				substitutionMade = True
 
 				if ingredient["ingredient"] == "honey":
 					ingredient["ingredient"] = "syrup"
@@ -728,6 +791,136 @@ def transformRecipe(recipe, transformation):
 					ingredient["ingredient"] = "soy yogurt"
 					ingredient["amount"] /= 4.0
 					ingredient["unit"] = "cups"
+				elif ingredient["ingredient"] == "butter":
+					ingredient["ingredient"] = "margarine"
+				elif "dairy" in ingredient["labels"]:
+					ingredient["ingredient"] = "soy " + ingredient["ingredient"]
+					ingredient["labels"].remove("dairy")
+				else:
+					substitutionMade = False
+
+				if substitutionMade:
+					for i in range(0, len(recipe["directions"])):
+						recipe["directions"][i] = recipe["directions"][i].replace(originalIngredient, ingredient["ingredient"])
+
+	# transform to difference cuisine
+	else:
+		popularMeats = []
+		popularPoultry = []
+		popularFish = []
+		popularSeafoods = []
+		popularCheeses = []
+		popularFruits = []
+		popularVegetables = []
+		popularDessertSpices = []
+		popularSpices = []
+
+		if transformation == "German":
+			popularFruits = ["apples", "plums", "strawberries", "cherries"]
+			popularFish = ["trout", "pike", "carp", "tuna", "mackerel", "salmon"]
+		elif transformation == "French":
+			popularSeafoods = ['sardines', 'mussels', 'oysters', 'shrimp', 'calamari']
+			popularFish = ['cod', 'tuna', 'salmon', 'trout', 'herring']
+			popularVegetables = ['green beans', 'carrot', 'leeks',  'turnips', 'eggplants', 'zucchini', 'onions', 'tomatoes', 'mushrooms']
+			popularMeats = ['beef', 'veal', 'pork', 'lamb', 'horse']
+			popularPoultry = ['chicken', 'duck', 'goose']
+			popularFruits = ['oranges', 'tangerines', 'peaches', 'apricots', 'apples', 'pears', 'plums', 'cherries', 'strawberries', 
+					'raspberries', 'blackberries', 'grapes', 'grapefruit', 'currants']		
+		elif transformation == "Italian":
+			popularMeats = ['ham', 'sausage', 'pork', 'salami']
+			popularSeafoods = ['anchovies', 'sardines']
+			popularFish = ['tuna', 'cod']
+			popularVegetables = ['artichokes', 'eggplants', 'zucchinis', 'capers', 'olives', 'peppers', 'potatoes', 'corn']
+		elif transformation == "American - New England":
+			popularSeafoods = ['lobster', 'squid', 'crab', 'shellfish', 'scallops', 'oysters', 'clams']
+			popularFish = ['cod', 'salmon', 'flounder', 'haddock', 'bass', 'bluefish', 'tautog']
+			popularMeats = ['roast beef', 'salami', 'ham', 'moose', 'deer']
+			popularPoultry = ['turkey']
+			popularCheeses = ['cheddar', 'provolone']
+			popularFruits = ['raspberries', 'blueberries', 'cranberries', 'grapes', 'cherries']
+			popularDesertSpices = ['nutmeg', 'ginger', 'cinnamon', 'cloves', 'allspice']
+			popularSpices = ['thyme', 'black pepper', 'sea salt', 'sage']
+
+
+
+		# check if it has must-haves for certain cuisines
+		hasSausage = False
+		hasTomatoes = False
+
+		for ingredient in recipe["ingredients"]:
+			# check if ingredient is a must-have
+			if not hasSausage and (ingredient["ingredient"] == "sausages" or ingredient["ingredient"] == "frankfurters"):
+				hasSausage = True
+			if not hasTomatoes and ingredient["ingredient"] == "tomatoes":
+				hasTomatoes = True
+
+			# set original ingredient and assume substitution will be made
+			originalIngredient = ingredient["ingredient"]
+
+			# check if there is an ingredient can be replaced and something that can replace it
+			# if so, set to random ingredient from popular list, then delete from list so it can't be reused in recipe
+			if "cheese" in ingredient["labels"] and len(popularCheeses) > 0:
+				randIndex = random.randint(0, len(popularCheeses) - 1)
+				ingredient["ingredient"] = popularCheeses[randIndex] + " cheese"
+				del popularCheeses[randIndex]
+			elif "meat" in ingredient["labels"] and len(popularMeats) > 0:
+				# don't replace sausage in German transformations
+				if transformation == "German" and (ingredient["ingredient"] == "sausages" or ingredient["ingredient"] == "frankfurters"):
+					continue
+				randIndex = random.randint(0, len(popularMeats) - 1)
+				ingredient["ingredient"] = popularMeats[randIndex]
+				del popularMeats[randIndex]
+			elif "poulty" in ingredient["labels"] and len(popularPoultry) > 0:
+				randIndex = random.randint(0, len(popularPoultry) - 1)
+				ingredient["ingredient"] = popularPoultry[randIndex]
+				del popularPoultry[randIndex]
+			elif "fish" in ingredient["labels"] and len(popularFish) > 0:
+				randIndex = random.randint(0, len(popularFish) - 1)
+				ingredient["ingredient"] = popularFish[randIndex]
+				del popularFish[randIndex]
+			elif "seafood" in ingredient["labels"] and len(popularSeafoods) > 0:
+				randIndex = random.randint(0, len(popularSeafoods) - 1)
+				ingredient["ingredient"] = popularSeafoods[randIndex]
+				del popularSeafoods[randIndex]
+			elif "fruit" in ingredient["labels"] and len(popularFruits) > 0:
+				randIndex = random.randint(0, len(popularFruits) - 1)
+				ingredient["ingredient"] = popularFruits[randIndex]
+				del popularFruits[randIndex]
+			elif "vegetable" in ingredient["labels"] and len(popularVegetables) > 0:
+				# don't replace tomatoes in Italian transformations
+				if transformation == "Italian" and ingredient["ingredient"] == "tomatoes":
+					continue
+				randIndex = random.randint(0, len(popularVegetables) - 1)
+				ingredient["ingredient"] = popularVegetables[randIndex]
+				del popularVegetables[randIndex]
+			elif "spice or herb" in ingredient["labels"]:
+				if ("dessert" in recipe["labels"] or "sugar" in recipe["labels"]):
+					if len(popularDesertSpices) > 0:
+						randIndex = random.randint(0, len(popularDesertSpices) - 1)
+						ingredient["ingredient"] = popularDesertSpices[randIndex]
+						del popularDesertSpices[randIndex]
+				else:
+					if len(popularSpices) > 0:
+						randIndex = random.randint(0, len(popularSpices) - 1)
+						ingredient["ingredient"] = popularSpices[randIndex]
+						del popularSpices[randIndex]
+
+			# change cooking liquids to olive oil for Italian transformation
+			elif transformation == "Italian" and "cooking liquid" in ingredient["labels"]:
+				ingredient["ingredient"] = "olive oil"
+
+			# no substitution made for this ingredient, so continue
+			else:
+				continue
+
+			# substitute ingredient string in directions
+			for i in range(0, len(recipe["directions"])):
+				recipe["directions"][i] = recipe["directions"][i].replace(originalIngredient, ingredient["ingredient"])
+
+		if transformation == "German" and not hasSausage:
+			addIngredientToRecipe(recipe, "sausages", "meat")
+		if transformation == "Italian" and not hasTomatoes:
+			addIngredientToRecipe(recipe, "tomatoes", "vegetable")
 
 	return recipe
 

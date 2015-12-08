@@ -45,186 +45,203 @@ def inCheckingPlurals(string, pluralList):
 
 
 # arrays for labeling ingredients (categorized for the purpose of cooking, to tomato is veg, not fruit)
-dairyIngredients = ['butter', 'cream', 'cottage', 'milk', 'buttermilk', 'ghee', 'yogurt', 'eggnog',
-		'half-and-half', 'creamy', 'creme', 'creamer']
-meats = ['meats', 'pepperonis', 'porks', 'sausages', 'beefs', 'lambs', 'roast', 'burgers', 'bacon', 'veal', 
-		'meatballs', 'meatloaves', 'livers', 'stroganoff', 'lasagna', 'burritos', 'casserole', 'venison', 'rib', 
-		'sirloin', 'ham', 'chorizo', 'mignon', 'prosciutto', 'mincemeat', 'hero', 'giblets', 'frankfurters', 'dogs',
-		'pig\'s', 'tripe']
-poultry = ['turkeys', 'chickens', 'ducks', 'hens', 'salami', 'bologna', 'bratwursts', 'goose', 'pollo']
-seafoods = ['fishes', 'salmons', 'shrimps', 'calamaris', 'mussels', 'tunas', 'halibuts', 'trouts', 'albacores', 
-		'squids', 'swordfishes', 'anchovies', 'cods', 'flounders', 'mahi', 'basses', 'sharks', 'clams', 'snapper', 
-		'lobsters', 'scallops', 'crabmeat', 'grouper', 'catfish', 'crab', 'oysters', 'crawfish', 'haddock', 'prawns',
-		'monkfish', 'seafood', 'sole']
-mainProteins = ['beans', 'seeds', 'nuts', 'tofu', 'whey', 'chickpeas']
-fruits = ['fruits', 'fruitcakes', 'smoothies', 'slushies', 'peaches', 'pears', 'tangerines', 'cranberries', 'kiwis', 
-		'apples', 'pineapples', 'bananas', 'apricots', 'prunes', 'grapes', 'lemons', 'watermelons', 'blueberries', 
-		'currants', 'cherries', 'coconuts', 'raisins', 'applesauce', 'lemons', 'oranges', 'raspberries', 'mangos', 
-		'strawberries', 'blackberries', 'citrons', 'persimmon', 'citrus', 'yuzu', 'limes', 'kumquats', 'honeydew',
-		'guava', 'figs', 'plums', 'lemonade', 'mincemeat', 'marrons', 'persimmons', 'cantaloupe', 'grapefruit',
-		'gooseberries', 'huckleberries', 'elderberries', 'mulberries', 'nectarines', 'papayas', 'sorrel']
-vegetables = ['lettuce', 'mushrooms', 'coleslaw', 'slaws', 'veggies', 'pumpkins', 'turnips', 'tomatoes', 'potatoes', 
-		'olives', 'pizzas', 'calzones', 'onions', 'peppers', 'carrots', 'peas', 'radishes', 'celery', 'leeks', 
-		'broccoli', 'onions', 'dates', 'pickles', 'chives', 'lentils', 'taros', 'zucchinis',  'beets', 'sauerkraut',
-		'avocados', 'artichokes', 'asparagus', 'mushrooms', 'yams', 'squash', 'parsley', 'spinach', 'kucai',
-		'kohlrabi', 'tomatillo', 'vegetable', 'cucumber', 'kale', 'jicama', 'cabbage', 'galangal', 'cauliflower',
-		'coriander', 'cilantro', 'escarole', 'eggplant', 'shallots', 'chilis', 'cucumbers', 'rutabagas', 'parsnips',
-		'rutabagas', 'endive', 'sprouts', 'arugula', 'bamboo', 'choy', 'eggplants', 'okra', 'vegetables',
-		'watercress', 'tomatillos', 'salad', 'tamarind', 'haystacks']
-pastas = ['noodles', 'linguine', 'pasta', 'spaghetti', 'lasagnas', 'macaroni', 'mac', 'casseroles', 'fettuccine', 
-		'manicotti', 'ziti']
-sugars = ['peppermints', 'honey', 'fructose', 'sugar', 'gumdrops', 'molasses', 'syrup', 'maple', 'sucanat', 'piping',
-		'sprinkles', 'Jell-O®', 'marrons glaces', 'jellybeans', 'marshmallows', 'puff', 'gummi', 'licorice',
-		'caramels', 'sweetener', 'candied', 'glaces', 'frosting', 'icing', 'glaze', 'glycerol', 'butterscotch', 
-		'twinkies', 'puddings', 'glycerin', 'macaroons', 'gingersnaps', 'candy', 'toffee', 'ladyfingers', 'pastry',
-		'pectin', 'marzipan', 'sourball', 'tart', 'pie']
-spreads = ['dips', 'hummus', 'guacamole', 'spreads', 'cannoli', 'paste', 'tahini']
-sauces = ['marinade', 'sauce', 'dressing', 'chutney', 'vinaigrette', 'relish',  'alfredo', 'applesauce', 'mustard',
-		'ketchup', 'butter', 'jam', 'marjoram', 'mayonnaise', 'salsa', 'mirin', 'pesto', 'shoyu', 'tamari']
-soups = ['chowder', 'stew', 'broth', 'soup', 'dashi']
-nuts = ['nuts', 'macadamia', 'almonds', 'walnuts', 'peanuts', 'pecans', 'hazelnuts', 'peanuts', 'cashews',
-		'chestnuts', 'butternuts', 'pistachios', 'candlenuts']
-alcoholicIngredients = ['beer', 'wine', 'rum', 'vodka', 'bourbon', 'whiskey', 'brandy', 'vermouth', 'sherry', 
-		'liquer', 'eggnog', 'kirschwasser', 'kirsch', 'tequila', 'champagne', 'anisette', 'liqueur', 'cognac',
-		'schnapps', 'spritz', 'chambord', 'bitters', 'cacao']
-spices = ['basil', 'pepper', 'anise', 'caraway', 'cardamom', 'cassava', 'cayenne', 'cinnamon', 'fennel', 'flax', 
-		'garlic', 'ginger', 'poppy', 'rhubarb', 'salt', 'chocolate', 'sesame', 'sunflower', 'thyme', 'paprika', 
-		'cocoa', 'vanilla', 'mace', 'nutmeg', 'oregano', 'cumin', 'fennel', 'dill', 'salt', 'allspice', 'anise', 
-		'kalonji', 'arrowroot', 'rosemary', 'parsley', 'coriander', 'cilantro', 'powder', 'seasoning', 'cloves',
-		'savory', 'sage', 'tarragon', 'turmeric', 'poppyseed', 'monosodium', 'peppercorns', 'capers',
-		'pimento', 'watercress', 'saffron', 'herbs', 'pimento', 'spices', 'miso', 'seasoning', 'bay', 'masala']
-spicy = ['dijon', 'angelica', 'horseradish', 'jerk']
-hotPeppers = ['pepperoncini', 'jalapeno']
-grains = ['granola', 'oats', 'wheat', 'bran', 'barley', 'cereal', 'rice', 'quinoa', 'kasha', 'millet', 'masa harina',
-		'corn', 'cornmeal', 'popcorn', 'cornstarch', 'tapioca', 'masa', 'matzo', 'couscous', 'dough', 'bread', 'rolls',
-		'crackers', 'toasts', 'crusts', 'buns', 'sourdough', 'croutons', 'muffins', 'baguette', 'stuffing',
-		'cornbread', 'tortillas', 'hominy', 'pretzels', 'pita', 'pie', 'wontons', 'dumplings', 'shortbread']
-drinks = ['coffee', 'tea', 'espresso', 'milk', 'eggnog', 'beverage', 'soda', 'drink', 'epazote', 'lemonade', 'juices',
-		'rosewater', 'dew', 'cider', 'gin', 'limeade', 'wassail']
-cookingLiquids = ['water', 'oil', 'vinegar', 'milk']
-bakingIngredients = ['baking', 'yeast', 'margarine', 'butter', 'eggs', 'flour', 'ammonia']
-cookingFats = ['lard', 'shortening', 'butter', 'gelatin', 'lecithin', 'ovalette', 'xanthan', 'gravy']
-extras = ['spray', 'coloring', 'toppings', 'carnations', 'ice', 'dust', 'glue', 'flowers', 'lilies']
-flavorings = ['pandan', 'mint', 'extract', 'flavorings']
-mixtures = ['food', 'mixes', 'sandwich']
+dairyIngredients = ['buttermilk', 'cottage', 'cream', 'creamer', 'creamy', 'creme', 'ghee', 'half-and-half', 
+		'milk', 'yogurt']
+meats = ['bacon', 'beefs', 'burgers', 'chorizo', 'dogs', 'frankfurters', 'giblets', 'ham', 'lambs', 'livers', 
+		'meatballs', 'meatloaves', 'meats', 'mignon', 'mincemeat', 'pepperonis', "pig's", 'porks', 
+		'prosciutto', 'ribs', 'roasts', 'sausages', 'sirloin', 'tripe', 'veal', 'venison']
+poultry = ['bologna', 'bratwursts', 'chickens', 'ducks', 'goose', 'hens', 'pollo', 'salami', 'turkey']
+fish = ['albacores', 'bass', 'catfish', 'cods', 'fish', 'flounder', 'grouper', 'haddock', 'halibut', 'mahi',
+		'monkfish', 'salmon', 'shark', 'snapper', 'sole', 'swordfishes', 'trouts', 'tunas' ]
+seafoods = ['anchovies', 'calamaris', 'clams', 'crab', 'crabmeat', 'crawfish', 'lobsters', 'mussels', 
+		'oysters', 'prawns', 'scallops', 'seafood', 'shrimps', 'squids']
+mainProteins = ['beans', 'chickpeas', 'nuts', 'seeds', 'tofu', 'whey']
+fruits = ['apples', 'apricots', 'bananas', 'blackberries', 'blueberries', 'cantaloupe', 'cherries', 'citrons', 
+		'citrus', 'coconuts', 'cranberries', 'currants', 'elderberries', 'figs', 'fruitcakes', 'fruits', 
+		'gooseberries', 'grapefruit', 'grapes', 'guava', 'honeydew', 'huckleberries', 'kiwis','kumquats', 
+		'lemonade', 'lemons', 'limes', 'mangos', 'marrons', 'mincemeat', 'mulberries', 'nectarines', 'oranges', 
+		'papayas', 'peaches', 'pears', 'persimmon', 'persimmons', 'pineapples', 'plums', 'prunes', 'raisins', 
+		'raspberries', 'slushies', 'smoothies', 'sorrel', 'strawberries', 'tangerines', 'watermelons', 'yuzu']
+vegetables = ['artichokes', 'arugula', 'asparagus', 'avocados', 'bamboo', 'beets', 'broccoli', 'cabbage', 
+		'calzones', 'carrots', 'cauliflower', 'celery', 'chilis', 'chives', 'choy', 'cilantro', 'coleslaw', 
+		'coriander', 'cucumber', 'cucumbers', 'dates', 'eggplant', 'eggplants', 'endive', 'escarole', 
+		'galangal', 'haystacks', 'jicama', 'kale', 'kohlrabi', 'kucai', 'leeks', 'lentils', 'lettuce', 
+		'mushrooms', 'okra', 'olives', 'onions', 'parsley', 'parsnips', 'peas', 'peppers', 'pickles', 
+		'pizzas', 'potatoes', 'pumpkins', 'radishes', 'rutabagas', 'salad', 'sauerkraut', 'shallots', 'slaws', 
+		'spinach', 'sprouts', 'squash', 'tamarind', 'taros', 'tomatillo', 'tomatillos', 'tomatoes', 'turnips', 
+		'vegetable', 'vegetables', 'veggies', 'watercress', 'yams', 'zucchinis']
+sugars = ['Jell-O®', 'butterscotch', 'candied', 'candy', 'caramels', 'frosting', 'fructose', 'gingersnaps', 
+		'glaces', 'glaze', 'glycerin', 'glycerol', 'gumdrops', 'gummi', 'honey', 'icing', 'jellybeans', 
+		'ladyfingers', 'licorice', 'macaroons', 'maple', 'marrons glaces', 'marshmallows', 'marzipan', 
+		'molasses', 'pastry', 'pectin', 'peppermints', 'pie', 'piping', 'puddings', 'puff', 'sourball', 
+		'sprinkles', 'sucanat', 'sugar', 'sweetener', 'syrup', 'tarts', 'toffee', 'twinkies']
+spreads = ['cannoli', 'dips', 'guacamole', 'hummus', 'paste', 'spreads', 'tahini']
+sauces = ['alfredo', 'applesauce', 'chutney', 'dressing', 'jam', 'ketchup', 'marinade', 'marjoram', 
+		'mayonnaise', 'mirin', 'mustard', 'pesto', 'relish', 'salsa', 'sauce', 'shoyu', 'tamari', 'vinaigrette']
+soups = ['broth', 'chowder', 'dashi', 'soup', 'stew']
+nuts = ['almonds', 'butternuts', 'candlenuts', 'cashews', 'chestnuts', 'hazelnuts', 'macadamia', 'nuts', 
+		'peanuts', 'pecans', 'pistachios', 'walnuts']
+alcoholicIngredients = ['anisette', 'beer', 'bitters', 'bourbon', 'brandy', 'cacao', 'chambord', 'champagne', 
+		'cognac', 'eggnog', 'kirsch', 'kirschwasser', 'liquer', 'liqueur', 'rum', 'schnapps', 'sherry', 
+		'spritz', 'tequila', 'vermouth', 'vodka', 'whiskey', 'wine']
+spices = ['allspice', 'anise', 'arrowroot', 'basil', 'bay', 'capers', 'caraway', 'cardamom', 'cassava', 
+		'cayenne', 'chocolate', 'cilantro', 'cinnamon', 'cloves', 'cocoa', 'coriander', 'cumin', 'dill', 
+		'fennel', 'flax', 'garlic', 'ginger', 'herbs', 'kalonji', 'mace', 'masala', 'miso', 'monosodium', 
+		'nutmeg', 'oregano', 'paprika', 'parsley', 'pepper', 'peppercorns', 'pimento', 'poppy', 'poppyseed', 
+		'powder','rhubarb', 'rosemary', 'saffron', 'sage', 'salt', 'savory', 'seasoning', 'sesame', 'spices', 
+		'sunflower', 'tarragon', 'thyme', 'turmeric', 'vanilla', 'watercress']
+spicy = ['angelica', 'dijon', 'horseradish', 'jerk']
+hotPeppers = ['jalapeno', 'pepperoncini']
+grains = ['baguette', 'barley', 'bran', 'bread', 'buns', 'cereal', 'corn', 'cornbread', 'cornmeal', 
+		'cornstarch', 'couscous', 'crackers', 'croutons', 'crusts', 'dough', 'granola', 'hominy', 'kasha', 
+		'masa', 'matzo', 'millet', 'muffins', 'oats', 'pita', 'popcorn', 'pretzels', 'quinoa', 'rice', 'rolls', 
+		'shortbread', 'sourdough', 'stuffing', 'tapioca', 'toasts', 'tortillas', 'wheat']
+pastas = ['farfalle', 'fettuccine', 'lasagnas', 'linguine', 'mac', 'macaroni', 'manicotti', 'noodles', 'pasta']
+breadDishes = ['burritos', 'calzones', 'dumplings', 'empanadas', 'fajitas', 'hero', 'pie', 'pinwheels', 'pizzas', 
+		'quesadillas', 'quiches', 'sandwiches', 'tacos', 'tourtiere', 'wontons']
+pastaDishes = ['casseroles', 'curry', 'lasagna', 'marzetti', 'mostaccioli', 'spaghetti', 'stroganoff', 'ziti']
+drinks = ['beverage', 'cider', 'coffee', 'dew™', 'drink', 'eggnog', 'epazote', 'espresso', 'gin', 'juices', 
+		'lemonade', 'limeade', 'milk', 'rosewater', 'soda', 'tea', 'wassail']
+cookingLiquids = ['oil', 'vinegar', 'water']
+bakingIngredients = ['ammonia', 'baking', 'eggs', 'flour', 'margarine', 'yeast']
+cookingFats = ['butter', 'gelatin', 'gravy', 'lard', 'lecithin', 'ovalette', 'shortening', 'xanthan']
+extras = ['carnations', 'coloring', 'dust', 'flowers', 'glue', 'ice', 'lilies', 'spray', 'toppings']
+flavorings = ['extract', 'flavorings', 'mint', 'pandan']
+mixtures = ['food', 'mixes']
 
 # words with succeeding noun ("milk" or "cake")
 nonDairyMilks = ['almond', 'soy', 'coconut']
 cakeTypes = ['pound', 'sponge', 'white', 'yellow']
 
-def getLabelsFromArray(parsedIngredient):
+#
+# returns a list of labels that match word(s) in list of ingredient/recipe words
+#
+def getLabelsFromArray(words):
 	labels = set()
 	
-	for string in parsedIngredient:
-		if inCheckingPlurals(string, dairyIngredients):
+	for word in words:
+		if inCheckingPlurals(word, dairyIngredients):
 			labels.add("dairy")
+			labels.add("fat and vitamins")
 			continue
-		if "cheese" == string and "cream" not in parsedIngredient:
+		if "cheese" == word and "cream" not in words:
 			labels.add("cheese")
 			labels.add("dairy")
 			continue
-		if inCheckingPlurals(string, meats):
+		if inCheckingPlurals(word, meats):
 			labels.add("meat")
 			continue
-		if inCheckingPlurals(string, poultry):
+		if inCheckingPlurals(word, poultry):
 			labels.add("poultry")
 			continue
-		if inCheckingPlurals(string, seafoods):
+		if inCheckingPlurals(word, fish):
+			labels.add("fish")
+			continue
+		if inCheckingPlurals(word, seafoods):
 			labels.add("seafood")
 			continue
-		if inCheckingPlurals(string, mainProteins):
+		if inCheckingPlurals(word, mainProteins):
 			labels.add("main protein")
 			continue
-		if inCheckingPlurals(string, fruits):
+		if inCheckingPlurals(word, fruits):
 			labels.add("fruit")
 			continue
-		if inCheckingPlurals(string, vegetables):
+		if inCheckingPlurals(word, vegetables):
 			labels.add("vegetable")
 			continue
-		if inCheckingPlurals(string, spices):
+		if inCheckingPlurals(word, spices):
 			labels.add("spice or herb")
 			continue
-		if inCheckingPlurals(string, pastas):
-			labels.add("pasta")
-			continue
-		if inCheckingPlurals(string, spreads):
+		if inCheckingPlurals(word, spreads):
 			labels.add("spread")
 			continue
-		if inCheckingPlurals(string, sauces):
+		if inCheckingPlurals(word, sauces):
 			labels.add("sauce")
 			continue
-		if inCheckingPlurals(string, soups):
-			labels.add("cooking liquid")
+		if inCheckingPlurals(word, soups):
 			labels.add("soup")
 			continue
-		if inCheckingPlurals(string, alcoholicIngredients):
+		if inCheckingPlurals(word, alcoholicIngredients):
 			labels.add("alcohol")
 			continue
-		if inCheckingPlurals(string, spicy):
+		if inCheckingPlurals(word, spicy):
 			labels.add("spicy")
 			continue
-		if inCheckingPlurals(string, nuts):
+		if inCheckingPlurals(word, hotPeppers):
+			labels.add("vegetable")
+			labels.add("spicy")
+			continue
+		if inCheckingPlurals(word, nuts):
 			labels.add("nut")
 			continue
-		if inCheckingPlurals(string, cookingLiquids):
+		if inCheckingPlurals(word, cookingLiquids):
 			labels.add("cooking liquid")
 			continue
-		if inCheckingPlurals(string, cookingFats):
+		if inCheckingPlurals(word, cookingFats):
 			labels.add("cooking fat")
 			continue
-		if inCheckingPlurals(string, bakingIngredients):
+		if inCheckingPlurals(word, bakingIngredients):
 			labels.add("baking ingredient")
 			continue
-		if inCheckingPlurals(string, sugars):
+		if inCheckingPlurals(word, sugars):
 			labels.add("sugar")
 			continue
-		if inCheckingPlurals(string, grains):
+		if inCheckingPlurals(word, grains):
 			labels.add("grain")
 			continue
-		if inCheckingPlurals(string, drinks):
+		if inCheckingPlurals(word, pastas):
+			labels.add("pasta")
+			continue
+		if inCheckingPlurals(word, drinks):
 			labels.add("drink")
 			continue
-		if inCheckingPlurals(string, extras):
+		if inCheckingPlurals(word, extras):
 			labels.add("recipe extra")
 			continue
-		if inCheckingPlurals(string, flavorings):
+		if inCheckingPlurals(word, flavorings):
 			labels.add("flavoring")
 			continue
-		if inCheckingPlurals(string, mixtures):
+		if inCheckingPlurals(word, mixtures):
 			labels.add("mixture")
+			continue
+		if inCheckingPlurals(word, breadDishes):
+			labels.add("bread dish")
+			continue
+		if inCheckingPlurals(word, pastaDishes):
+			labels.add("pasta dish")
 			continue
 
 	# check for non dairy milks
-	if "milk" in parsedIngredient:
-		index = parsedIngredient.index("milk")
-		if index > 0 and parsedIngredient[index - 1] in nonDairyMilks:
+	if "milk" in words:
+		index = words.index("milk")
+		if index > 0 and words[index - 1] in nonDairyMilks:
 			labels.remove("dairy")
 
 	# check if "cake" actually is a type of cake
-	if "cake" in parsedIngredient:
-		index = parsedIngredient.index("cake")
-		if index > 0 and parsedIngredient[index - 1] in cakeTypes:
+	if "cake" in words:
+		index = words.index("cake")
+		if index > 0 and words[index - 1] in cakeTypes:
 			labels.add("sugar")
 
 	# check if "non dairy" in parsed ingredient
-	if "dairy" in parsedIngredient and "dairy" in labels:
-		index = parsedIngredient.index("dairy")
-		if index > 0 and parsedIngredient[index - 1] == "non":
+	if "dairy" in words and "dairy" in labels:
+		index = words.index("dairy")
+		if index > 0 and words[index - 1] == "non":
 			labels.remove("dairy")
 	
 	# add "greens" but not "green" as vegetable
-	if "greens" in parsedIngredient:
+	if "greens" in words:
 		labels.add("vegetable")
 
-	# add "steak" as meat only if not used with seafood (ie "salmon steak")
-	if "steak" in parsedIngredient and "seafood" not in labels:
+	# add "steak" as meat only if not used with fish (ie "salmon steak")
+	if "steak" in words and "fish" not in labels:
 		labels.add("meat")
 
 	# chili either a pepper or soup
-	if "chili" in parsedIngredient:
-		index = parsedIngredient.index("chili")
+	if "chili" in words:
+		index = words.index("chili")
 
-		if index+1 < len(parsedIngredient) and parsedIngredient[index+1] == "pepper":
+		if index+1 < len(words) and words[index+1] == "pepper":
 			labels.add("vegetable")
 			labels.add("spicy")
 		else:
@@ -235,41 +252,41 @@ def getLabelsFromArray(parsedIngredient):
 
 
 # arrays for labeling recipes
-cheeseFoods = ['quesadillas', 'quiche', 'lasagna', 'pizzas', 'calzones', 'ziti']
-breakfasts = ['crepes', 'pancakes', 'waffles', 'bagels', 'quiches', 'toast', 'doughnuts', 'muffins', 'eggs', 'croissants']
+breakfasts = ['crepes', 'pancakes', 'waffles',  'eggs', 'beignets', 'doughnuts', 'muffins']
 desserts = ['cookies', 'cakes', 'brownies', 'pies', 'cobblers', 'mousses', 'puffs', 'biscottis', 'wafers', 'splits', 
 		'scones', 'cupcakes', 'puddings', 'snowballs', 'candys', 'cheesecakes', 'wafers', 'macaroons', 'fruitcakes', 
 		'gingerbreads', 'pastries', 'fudges', 'tarts', 'crinkles', 'chews', 'bars', 'squares', 'twists', 'snaps', 
 		'brittles', 'thumbprints',  'babka', 'dessert', 'twinkies', 'cannolis', 'genoise', 'stollen', 'panettone',
-		'tiramisu', 'tuppakaka', 'vasilopita', 'zeppoli', 'sachertorte', 'spudnuts', 'beignets', 'botercake', 'kolaches',
+		'tiramisu', 'tuppakaka', 'vasilopita', 'zeppoli', 'sachertorte', 'spudnuts', 'botercake', 'kolaches',
 		'ponczki', 'popovers', 'pulla', 'injera', 'dulce', 'bibingka', 'fastnachts', 'springerle', 'spritsar', 'spruffoli',
 		'snickerdoodles', 'santa\'s', 'sandtarts', 'sandbakelser', 'rugelach', 'rocky', 'pralines', 'pfeffernusse',
 		'pavlova', 'meringue', 'melting', 'meltaways', 'listy', 'lebkuchen', 'koulourakia', 'hamantashen', 'fudgies',
-		'florentines', 'gods', 'bark', 'buckeyes']
-recipeGrains = ['crackers', 'breads', 'pinwheels', 'empanadas', 'cornbread', 'tortillas', 'buns', 'stuffings', 
-		'crusts', 'doughs', 'sourdoughs', 'rolls', 'pizzas', 'calzones', 'bagels', 'biscuits', 'burritos', 'muffins', 
-		'toast', 'doughnuts', 'muffins', 'loafs', 'loaves', 'gingerbreads', 'crisps', 'challahs', 'tarts',
-		'tacos', 'pastries', 'quesadillas', 'ciabattas', 'sandwich', 'ladyfingers', 'croissants', 'naan',
-		'stollen', 'baguettes', 'brioche', 'panettone', 'taralli', 'beignets', 'baumKuchen', 'lefse', 'bannock', 'paximade',
-		'popovers', 'pulla', 'johnnycakes', 'pan', 'hoska', 'bibingka', 'fastnachts', 'shortbread', 'springerle', 'shells',
-		'kipferl', 'chow', 'pizzelles', 'paella', 'oatmeal', 'mostaccioli', 'farfalle', 'kourabiedes', 'marzetti']
+		'florentines', 'gods', 'bark', 'buckeyes', 'torte', 'ladyfingers', 'baumKuchen', 'kipferl', 'kake', 'mocha']
+breads = ['breads','cornbread', 'tortillas', 'buns', 'stuffings', 
+		'crusts', 'doughs', 'sourdoughs', 'rolls', 'bagels', 'biscuits',  
+		'toast', 'loafs', 'loaves', 'gingerbreads', 'crisps', 'challahs',
+		 'ciabattas', 'croissants', 'naan',
+		'baguettes', 'brioche', 'taralli',  'lefse', 'bannock', 'paximade',
+		'johnnycakes', 'pan', 'hoska', 'shortbread', 'shells',
+		'chow', 'pizzelles', 'paella', 'oatmeal', 'kourabiedes', 'focaccia']
 
 def getRecipeLabels(parsedRecipe):
 	labels = set(getLabelsFromArray(parsedRecipe))
 	
 	for string in parsedRecipe:
-		if inCheckingPlurals(string, cheeseFoods):
-			labels.add("cheese food")
-			continue
 		if inCheckingPlurals(string, breakfasts):
 			labels.add("breakfast")
 			continue
 		if inCheckingPlurals(string, desserts):
 			labels.add("dessert")
 			continue
-		if inCheckingPlurals(string, recipeGrains):
-			labels.add("grain")
+		if inCheckingPlurals(string, breads):
+			labels.add("bread")
 			continue
+
+	# don't use "grain" as "label" if recipe label has "bread"
+	if "bread" in labels and "grain" in labels:
+		labels.remove("grain")
 
 	return list(labels)
 	
@@ -281,8 +298,8 @@ measurementUnits = ['teaspoons','tablespoons','cups','containers','packets','bag
 		'dashes','bunches','recipes','layers','slices','rolls','links','bulbs','stalks','squares','sprigs',
 		'fillets','pieces','legs','thighs','cubes','granules','strips','trays','leaves','loaves','halves']
 
-# strings indicating ingredient as optional
-optionalStrings = ['optional', 'to taste', 'as needed', 'if desired']
+# strings indicating ingredient as optional (currently don't use optional boolean for anything)
+# optionalStrings = ['optional', 'to taste', 'as needed', 'if desired']
 
 # list of adjectives and participles used to describe ingredients
 descriptions = ['baked', 'beaten', 'blanched', 'boiled', 'boiling', 'boned', 'breaded', 'brewed', 'broken', 'chilled',
@@ -340,8 +357,8 @@ while "" in allIngredients:
 unlabeledIngredients = set()
 unlabeledRecipes = set()
 
-# recipes start at id=6663 and end at id=16385
-for recipeId in range(6663, 16385):
+# recipes start at id~6660 and end at id=~27000
+for recipeId in range(6660, 27000):
 	soup = None
 	try:
 		url = "http://allrecipes.com/recipe/{}".format(recipeId)
@@ -358,22 +375,34 @@ for recipeId in range(6663, 16385):
 	except SocketError as e:
 		outputFile.write("{0}: SOCKET ERROR".format(recipeId))
 
-
-
 	if soup:
-		title = soup.find("h1", class_="recipe-summary__h1").text
+		titleSpan = soup.find("h1", class_="recipe-summary__h1")
+		servingSpan = soup.find("span", class_="servings-count")
+		calorieSpan = soup.find("span", class_="calorie-count")
+		directionObjects = soup.find_all("span", class_="recipe-directions__list--item")
+		ingredientObjects = soup.find_all("span", class_="recipe-ingred_txt")
+		footnotesSection = soup.find("section", class_="recipe-footnotes")
+
+		#
+		# get title
+		#
+		title = titleSpan.text
 		title = title.replace("Linguini", "Linguine")
 		title = title.replace("Genoese", "Genoise")
 
-		ingredientObjects = soup.find_all("span", class_="recipe-ingred_txt")
-		directionObjects = soup.find_all("span", class_="recipe-directions__list--item")
-		servingSpan = soup.find("span", class_="servings-count")
-		calorieSpan = soup.find("span", class_="calorie-count")
-		footnotesSection = soup.find("section", class_="recipe-footnotes")
+		#
+		# get directions string, need to replace ingredient strings
+		#
+
+		count = len(directionObjects) - 1 # 1 empty span at end
+		directionsString = directionObjects[0].text
+		for i in range(1, count):
+			directionsString += " " + directionObjects[i].text
 
 		#
 		# get labels
 		#
+
 		parsedTitle = title.lower().split(" ");
 		while "" in parsedTitle:
 			parsedTitle.remove("")
@@ -383,8 +412,9 @@ for recipeId in range(6663, 16385):
 			unlabeledRecipes.add(title)
 
 		#
-		# ingredients
+		# get ingredients
 		#
+
 		count = len(ingredientObjects) - 3 # 2 spans with "Add all" and 1 empty
 		ingredients = []
 		for i in range(0, count):
@@ -431,11 +461,10 @@ for recipeId in range(6663, 16385):
 					parsedIngredient = parsedIngredient[:index]
 					break
 
-
-
 			#
-			# get amount
+			# get ingredient amount
 			#
+
 			ingredient["amount"] = 0
 			while len(parsedIngredient) > 0:
 				# check if current word is number of inches, not amount
@@ -452,10 +481,8 @@ for recipeId in range(6663, 16385):
 				except (SyntaxError, NameError, TypeError):
 					break
 
-
-
 			#
-			# get unit
+			# get ingredient unit
 			#
 
 			# check words for unit
@@ -488,10 +515,8 @@ for recipeId in range(6663, 16385):
 		
 			ingredient["unit"] = unitString
 
-
-
 			#
-			# get descriptions
+			# get ingredient descriptions
 			#
 
 			# remove useless words
@@ -595,7 +620,6 @@ for recipeId in range(6663, 16385):
 			ingredientString = ingredientString.replace("bourbon whiskey", "bourbon")
 			ingredientString = ingredientString.replace("pudding mix", "pudding")
 
-
 			if ingredientString == "":
 				outputFile.write("Bad ingredient string: {0}".format(ingredientObjects[i].text))
 				ingredientString = ingredientObjects[i].text
@@ -610,34 +634,21 @@ for recipeId in range(6663, 16385):
 			ingredient["ingredient"] = ingredientString
 
 			#
-			# get labels
+			# get ingredient labels
 			#
+
 			ingredientString = ingredientString.replace("-flavored", "")
 			ingredientString = ingredientString.lower()
 			ingredient["labels"] = getLabelsFromArray(ingredientString.split(" "))
 
 			if len(ingredient["labels"]) == 0:
 				unlabeledIngredients.add(ingredient["ingredient"])
-
-			#
-			# get whether optional
-			#
-			ingredient["optional"] = False
-			for optionalString in optionalStrings:
-				if optionalString in ingredient["descriptions"]:
-					ingredient["optional"] = True
-					break
 			
 			ingredients.append(ingredient)
 
 		#
 		# get directions
 		#
-		count = len(directionObjects) - 1 # 1 empty span at end
-		directionsString = directionObjects[0].text
-		for i in range(1, count):
-			directionsString += " " + directionObjects[i].text
-		
 		directionsArray = sent_tokenize(directionsString)
 		directions = []
 		for i in range(0, len(directionsArray)):
@@ -672,8 +683,7 @@ for recipeId in range(6663, 16385):
 		else:
 			calories = 0
 
-
-
+		# write ingredient to JSON file
 		jsonFile.write(json.dumps({"id": recipeId,
 				"name": title,
 				"ingredients": ingredients, 
@@ -684,6 +694,7 @@ for recipeId in range(6663, 16385):
 				"calories": calories}))
 		jsonFile.write("\n")
 
+		# write data to files every 10 recipes
 		if recipeId % 10 == 0:
 			unlabeledRecipeFile = open("unlabeledRecipes.txt", "w")
 			unlabeledRecipeFile.truncate()
