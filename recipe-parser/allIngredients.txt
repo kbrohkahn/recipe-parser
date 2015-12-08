@@ -789,7 +789,9 @@ clean new red potatoes
 clear apple cider
 clear imitation vanilla extract
 cling peaches
+clove garlic
 cloves
+cloves garlic
 cocktail rye bread
 cocktail sauce
 cocoa
@@ -1279,6 +1281,8 @@ honeycomb tripe
 honeydew melon
 horseradish
 horseradish mustard
+hot milk
+hot water
 huckleberries
 ice
 ice cubes
