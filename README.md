@@ -1,6 +1,6 @@
 # Recipe Parser
-#### Author: Kevin Broh-Kahn
-#### Language: Python (HTML and CSS used for web application)
+Author: Kevin Broh-Kahn
+Language: Python (HTML and CSS used for web application)
 
 ## Use Online Application
 Click [here](http://kevinbrohkahn.com/cgi-bin/view-recipes.py) to visit the website containing the Recipe Parser application. 

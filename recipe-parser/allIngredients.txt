@@ -203,6 +203,7 @@ artichoke hearts
 artichokes to the heart
 artificial sweetener
 arugula
+asafoetida powder
 asparagus
 asparagus diagonally
 aspartame sweetener
@@ -290,6 +291,7 @@ black bean sauce
 black beans
 black beans drain reserve liquid
 black beans overnight
+black beans undrained
 black cherry flavored Jell-O® mix
 black eyed peas
 black licorice whips
@@ -363,6 +365,7 @@ broiler/fryer chicken
 brown gravy
 brown lentils
 brown miso
+brown mustard seeds
 brown paste food coloring
 brown rice
 brown rice flour
@@ -481,6 +484,7 @@ celery seed
 celery tops
 chai tea
 champagne
+cheese filled tortellini
 cheese flavored butter crackers
 cheese ravioli
 cheese tortellini
@@ -1247,6 +1251,7 @@ mixed beans
 mixed candied fruit
 mixed fruit
 mixed nuts
+mixed peas carrots
 mixed salad greens
 mixed spice
 mixed vegetable flakes
@@ -1641,6 +1646,7 @@ rosewater
 rotini pasta
 round crusty Italian bread
 round red chili pepper or to taste
+round sourdough bread
 round steak
 rubbed sage
 ruby port wine
@@ -1704,6 +1710,7 @@ seedless raspberry jam
 seedless raspberry preserves
 seedless red grapes
 seedless red raspberry jam
+seitan
 self rising corn meal mix
 self rising flour
 semi sweet chocolate
@@ -1832,6 +1839,7 @@ sugar snap peas
 sugar substitute
 sugarless raspberry jam
 sultana raisins
+summer squash
 sun tomatoes
 sun tomatoes rehydrated
 sunflower seed oil
@@ -1999,6 +2007,7 @@ vegetable oil
 vegetable shortening
 vegetable soup mix
 vegetable stock
+vegetarian Worcestershire sauce
 vegetarian refried beans
 venison
 venison stew meat
