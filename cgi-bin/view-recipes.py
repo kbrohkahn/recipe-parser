@@ -152,8 +152,8 @@ def getIngredientHTML(index):
 
 
 # all ingredient labels
-ingredientLabels = ["dairy", "cheese", "meat", "fish", "seafood", "poultry", "main protein", "vegetable", "fruit", "sugar", "spread",
-		"sauce", "soup", "nut", "alcohol", "spice or herb", "spicy", "grain", "pasta", "bread dish", "pasta dish", "drink"]
+ingredientLabels = ["dairy", "cheese", "meat", "fish", "seafood", "poultry", "main protein", "vegetable", "fruit", "sugar", "sauce", "condiment",
+		"soup", "nut", "alcohol", "spice or herb", "spicy", "grain", "pasta", "wrapped meal", "pasta dish", "vegetable dish", "drink"]
 
 #
 # return HTML string for ingredient label
@@ -671,7 +671,8 @@ def displayRecipe(recipe):
 	print("<option value=''>None</option>")
 
 	# print each possible transformation as select option
-	transformations = ['American', 'French', 'German', 'Italian', 'Vegan', 'Vegetarian']
+	transformations = ['American - New England', 'Chinese', 'French', 'German', 'Indian', 'Indonesian', 'Italian', 'Japanese', 
+			'Mexican', 'Spanish', 'Thai', 'Turkish', 'Vegan', 'Vegetarian']
 	for transformation in transformations:
 		print("<option>{0}</option>".format(transformation))
 
@@ -805,6 +806,7 @@ def transformRecipe(recipe, transformation):
 
 	# transform to difference cuisine
 	else:
+		popularDairy = []
 		popularMeats = []
 		popularPoultry = []
 		popularFish = []
@@ -812,26 +814,45 @@ def transformRecipe(recipe, transformation):
 		popularCheeses = []
 		popularFruits = []
 		popularVegetables = []
-		popularDessertSpices = []
 		popularSpices = []
+		popularDessertSpices = []
+		popularGrains = []
+		popularMainProteins = []
+		popularFlavorings = []
+		popularSauces = []
+		popularCondiments = []
+		popularSpicy = []
+		popularNuts = []
+		popularAlcohol = []
+		popularDrinks = []
+		popularPastas = []
+		popularCookingLiquids = []
 
-		if transformation == "German":
-			popularFruits = ["apples", "plums", "strawberries", "cherries"]
-			popularFish = ["trout", "pike", "carp", "tuna", "mackerel", "salmon"]
-		elif transformation == "French":
-			popularSeafoods = ['sardines', 'mussels', 'oysters', 'shrimp', 'calamari']
+		if transformation == 'German':
+			popularFruits = ['apples', 'plums', 'strawberries', 'cherries']
+			popularFish = ['trout', 'pike', 'carp', 'tuna', 'mackerel', 'salmon']
+			popularSpices = [ 'parsley', 'thyme', 'laurel', 'chives', 'black pepper', 'nutmeg', 'caraway', 'basil', 'sage', 'oregano']
+			popularDessertSpices = ['cardamom', 'anise seed', 'cinnamon']
+			popularCondiments = ['mustard', 'horseradish']
+			popularAlcohol = ['beer', 'wine']
+			popularSpicy = ['horseradish']
+		elif transformation == 'French':
+			popularSeafoods = ['sardines', 'mussels', 'oysters', 'shrimp', 'calamari', 'scallops']
 			popularFish = ['cod', 'tuna', 'salmon', 'trout', 'herring']
-			popularVegetables = ['green beans', 'carrot', 'leeks',  'turnips', 'eggplants', 'zucchini', 'onions', 'tomatoes', 'mushrooms']
+			popularVegetables = ['green beans', 'carrots', 'leeks',  'turnips', 'eggplants', 'zucchini', 'onions', 'tomatoes', 'mushrooms']
 			popularMeats = ['beef', 'veal', 'pork', 'lamb', 'horse']
 			popularPoultry = ['chicken', 'duck', 'goose']
 			popularFruits = ['oranges', 'tangerines', 'peaches', 'apricots', 'apples', 'pears', 'plums', 'cherries', 'strawberries', 
 					'raspberries', 'blackberries', 'grapes', 'grapefruit', 'currants']		
-		elif transformation == "Italian":
+			popularSpices = ['tarragon', 'rosemary', 'marjoram', 'lavender', 'thyme', 'fennel', 'sage']
+		elif transformation == 'Italian':
 			popularMeats = ['ham', 'sausage', 'pork', 'salami']
 			popularSeafoods = ['anchovies', 'sardines']
 			popularFish = ['tuna', 'cod']
 			popularVegetables = ['artichokes', 'eggplants', 'zucchinis', 'capers', 'olives', 'peppers', 'potatoes', 'corn']
-		elif transformation == "American - New England":
+			popularPastas = ['penne', 'maccheroni', 'spaghetti', 'linguine', 'fusilli']
+			popularCookingLiquids = ['olive oil']
+		elif transformation == 'American - New England':
 			popularSeafoods = ['lobster', 'squid', 'crab', 'shellfish', 'scallops', 'oysters', 'clams']
 			popularFish = ['cod', 'salmon', 'flounder', 'haddock', 'bass', 'bluefish', 'tautog']
 			popularMeats = ['roast beef', 'salami', 'ham', 'moose', 'deer']
@@ -840,8 +861,105 @@ def transformRecipe(recipe, transformation):
 			popularFruits = ['raspberries', 'blueberries', 'cranberries', 'grapes', 'cherries']
 			popularDesertSpices = ['nutmeg', 'ginger', 'cinnamon', 'cloves', 'allspice']
 			popularSpices = ['thyme', 'black pepper', 'sea salt', 'sage']
-
-
+		elif transformation == 'Indonesian':
+			popularGrains = ['rice', 'noodles']
+			popularVegetables =['cabbage', 'cauliflower', 'potato', 'carrot', 'shallots', 'cucumbers', 'spinach', 'corn', 'scallions']
+			popularSpices = ['garlic', 'black pepper', 'nutmeg', 'clove', 'cinnamon', 'ginger']
+			popularMainProteins = ['tofu']
+			popularPoultry = ['chicken', 'duck', 'pidgeon']
+			popularMeats = ['beef', 'goat', 'venison', 'deer', 'horse']
+			popularPastas = ['rice', 'noodles']
+			popularFish = ['tuna', 'mackerel', 'milkfish', 'snapper', 'swordfish', 'shark', 'stingray']
+			popularSeafoods = ['anchovies', 'squid', 'shrimp', 'crabs', 'mussels']
+			popularSauces = ['shrimp paste', 'peanut sauce', 'soy sauce']
+			popularNuts = ['peanuts']
+			popularDairy = ['coconut milk']
+		elif transformation == 'Chinese':
+			popularGrains = ['rice', 'noodles']
+			popularVegetables = ['cabbage', 'spinach', 'sprouts', 'watercress', 'celery', 'carrots', 'broccoli', 'scallions']
+			popularSpices = ['ginger', 'garlic', ' white pepper', 'peppercorns', 'star anise', 'cinnamon', 'fennel', 'cilantro',
+					'parsley', 'cloves']
+			popularPastas = ['rice', 'noodles']
+			popularMainProteins = ['soybeans', 'tofu']
+			popularSauces = ['soy sauce']
+			popularAlcohol = ['white liquor']
+			popularDrinks = ['herb tea']
+			popularCookingLiquids = ['rice vinegar']
+		elif transformation == 'Indian':
+			popularFruits = ['mango', 'lemon', 'strawberry', 'orange', 'pineapple']
+			popularVegetables = ['peas', 'beans']
+			popularDessertSpices = ['cardamom', 'saffron', 'nutmeg']
+			popularSpices = ['chilli pepper', 'black mustard seed', 'cardamom', 'cumin', 'ginger', 'garlic', 'cardamom', 'cinnamon', 'clove']
+			popularPastas = ['rice']
+			popularMainProteins = ['lentils']
+			popularAlcohol = ['beer', 'rice beer']
+			popularDrinks = ['coffee', 'tea']
+			popularCookingLiquids = ['vegetable oil', 'peanut oil', 'mustard oil', 'coconut oil']
+		elif transformation == 'Japanese':
+			popularMeats = ['albacores', 'bass', 'catfish', 'cods', 'fish', 'flounder', 'grouper', 'haddock', 'halibut', 'mahi',
+					'monkfish', 'salmon', 'shark', 'snapper', 'sole', 'swordfishes', 'trouts', 'tunas', 'bluefish',
+					'bonito', 'rockfish', 'mackerel', 'naruto', 'drum', 'marlin', 'tilapia', 'carp', 'kingfish',
+					'mullets', 'whitefish', 'kippers', 'torsk', 'saltfish']
+			popularPoultry = ['anchovies', 'calamaris', 'clams', 'crabs', 'crabmeat', 'crawfish', 'lobsters', 'mussels', 
+					'oysters', 'prawns', 'scallops', 'seafood', 'shrimps', 'squids', 'snails', 'shellfish', 'caviar']
+			popularVegetables = ['seaweed', 'greens', 'radishes', 'carrots', 'green beans']
+			popularPastas = ['rice', 'noodles']
+			popularSpices = ['miso', 'dashi', 'soy sauce', 'sake', 'mirin', 'vinegar', 'sugar', 'salt']
+			popularSauces = ['soy sauce']
+			popularAlcohol = ['beer', 'sake', 'whiskey']
+			popularDrinks = ['tea']
+			popularCookingLiquids = ['water']
+			popularSpicy = ['wasabi']
+		elif transformation == 'Mexican':
+			popularMeats = ['beef', 'pork', 'goat', 'sheep', 'venison']
+			popularPoultry = ['chicken']
+			popularFruits = ['guava', 'pears', 'sapote', 'mangoes', 'bananas', 'pineapples']
+			popularVegetables = ['corn', 'chile peppers', 'tomatoes', 'squashes', 'avocados']
+			popularSpices = ['chili pepper']
+			popularDessertSpices = ['cocoa']
+			popularGrains = ['tortillas']
+			popularMainProteins = ['beans']
+			popularFlavorings = ['vanilla']
+			popularSpicy = ['chilis']
+			popularAlcohol = ['beer', 'tequila']
+			popularDrinks = ['atole']
+		elif transformation == 'Spanish':
+			popularMeats = ['ham', 'lamb', 'bacon', 'sausages', 'pork', 'veal']
+			popularPoultry = ['goose', 'quail']
+			popularFish = ['bream', 'bonito', 'cod']
+			popularSeafoods = ['sardines', 'herring']
+			popularFruits = ['apples', 'pears', 'peaches', 'oranges', 'apricots']
+			popularVegetables = ['cabbage', 'olives', 'eggplant', 'bell peppers', 'onion', 'tomato']
+			popularSpices = ['garlic', 'salt']
+			popularMainProteins = ['beans']
+			popularSauces = ['romesco', 'aioli', 'bouillabaisse', 'picada']
+			popularCondiments = ['mayonnaise']
+			popularAlcohol = ['anise', 'wine', 'brandy']
+			popularCookingLiquids = ['olive oil']
+		elif transformation == 'Thai':
+			popularMeats = ['pork', 'beef', 'water buffalo']
+			popularPoultry = ['chicken', 'duck']
+			popularFish = ['tilapia', 'catfish']
+			popularSeafoods = ['prawns', 'cockles', 'shellfish']
+			popularFruits = [ 'papayas', 'jackfruit', 'mangoes', 'pineapples', 'apples', 'grapes', 'pears', 'peaches', 'strawberries']
+			popularVegetables = ['corn', 'squash', 'sweet potatoes', 'kale', 'cucumbers', 'tomatoes', 'bamboo', 'sprouts', 'eggplant']
+			popularSpices = ['garlic', 'galangal', 'cilantro', 'lemon grass', 'shallots', 'pepper', 'chilies', 'curry', 'peppercorns']
+			popularSauces = ['shrimp paste', 'fish sauce']
+			popularPastas = ['rice', 'noodles']
+			popularCookingLiquids = ['coconut oil']
+		elif transformation == 'Turkish':
+			popularDairy = ['yogurt']
+			popularMeats = ['lamb', 'beef', 'veal']
+			popularPoultry = ['chicken']
+			popularSeafoods = ['sardines', 'anchovies']
+			popularFruits = ['plums', 'apricots', 'pomegranates', 'pears', 'apples', 'grapes', 'figs']
+			popularVegetables = ['eggplants', 'green peppers', 'onions', 'garlic', 'lentils', 'beans', 'olives', 'tomatoes']
+			popularSpices = ['parsley', 'cumin', 'black pepper', 'paprika', 'mint', 'oregano', 'red pepper', 'allspice', 'thyme', 'salt']
+			popularMainProteins = ['legumes']
+			popularCondiments = ['jam', 'honey']
+			popularNuts = ['pistachios', 'chestnuts', 'almonds', 'hazelnuts', 'walnuts']
+			popularDrinks = ['Turkish tea']
+			popularCookingLiquids = ['olive oil', 'sunflower oil', 'canola oil', 'corn oil']
 
 		# check if it has must-haves for certain cuisines
 		hasSausage = False
@@ -849,7 +967,8 @@ def transformRecipe(recipe, transformation):
 
 		for ingredient in recipe["ingredients"]:
 			# check if ingredient is a must-have
-			if not hasSausage and (ingredient["ingredient"] == "sausages" or ingredient["ingredient"] == "frankfurters"):
+			if not hasSausage and (ingredient["ingredient"] == "sausages" or ingredient["ingredient"] == "frankfurters" or \
+					ingredient["ingredient"] == "kielbasas"):
 				hasSausage = True
 			if not hasTomatoes and ingredient["ingredient"] == "tomatoes":
 				hasTomatoes = True
@@ -870,10 +989,20 @@ def transformRecipe(recipe, transformation):
 				randIndex = random.randint(0, len(popularMeats) - 1)
 				ingredient["ingredient"] = popularMeats[randIndex]
 				del popularMeats[randIndex]
-			elif "poulty" in ingredient["labels"] and len(popularPoultry) > 0:
+
+				# japanese don't eat meat
+				if transformation == 'Japanese':
+					ingredient["ingredient"] = "fish"
+
+			elif "poultry" in ingredient["labels"] and len(popularPoultry) > 0:
 				randIndex = random.randint(0, len(popularPoultry) - 1)
 				ingredient["ingredient"] = popularPoultry[randIndex]
 				del popularPoultry[randIndex]
+
+				# japanese don't eat poultry
+				if transformation == 'Japanese':
+					ingredient["ingredient"] = "seafood"
+
 			elif "fish" in ingredient["labels"] and len(popularFish) > 0:
 				randIndex = random.randint(0, len(popularFish) - 1)
 				ingredient["ingredient"] = popularFish[randIndex]
@@ -882,6 +1011,14 @@ def transformRecipe(recipe, transformation):
 				randIndex = random.randint(0, len(popularSeafoods) - 1)
 				ingredient["ingredient"] = popularSeafoods[randIndex]
 				del popularSeafoods[randIndex]
+			elif "main protein" in ingredient["labels"] and len(popularMainProteins) > 0:
+				randIndex = random.randint(0, len(popularMainProteins) - 1)
+				ingredient["ingredient"] = popularMainProteins[randIndex]
+				del popularMainProteins[randIndex]
+			elif "dairy" in ingredient["labels"] and len(popularDairy) > 0:
+				randIndex = random.randint(0, len(popularDairy) - 1)
+				ingredient["ingredient"] = popularDairy[randIndex]
+				del popularDairy[randIndex]
 			elif "fruit" in ingredient["labels"] and len(popularFruits) > 0:
 				randIndex = random.randint(0, len(popularFruits) - 1)
 				ingredient["ingredient"] = popularFruits[randIndex]
@@ -904,10 +1041,46 @@ def transformRecipe(recipe, transformation):
 						randIndex = random.randint(0, len(popularSpices) - 1)
 						ingredient["ingredient"] = popularSpices[randIndex]
 						del popularSpices[randIndex]
-
-			# change cooking liquids to olive oil for Italian transformation
-			elif transformation == "Italian" and "cooking liquid" in ingredient["labels"]:
-				ingredient["ingredient"] = "olive oil"
+			elif "grain" in ingredient["labels"] and len(popularGrains) > 0:
+				randIndex = random.randint(0, len(popularGrains) - 1)
+				ingredient["ingredient"] = popularGrains[randIndex]
+				del popularGrains[randIndex]
+			elif "nuts" in ingredient["labels"] and len(popularNuts) > 0:
+				randIndex = random.randint(0, len(popularNuts) - 1)
+				ingredient["ingredient"] = popularNuts[randIndex]
+				del popularNuts[randIndex]
+			elif "alcohol" in ingredient["labels"] and len(popularAlcohol) > 0:
+				randIndex = random.randint(0, len(popularAlcohol) - 1)
+				ingredient["ingredient"] = popularAlcohol[randIndex]
+				del popularAlcohol[randIndex]
+			elif "drink" in ingredient["labels"] and len(popularDrinks) > 0:
+				randIndex = random.randint(0, len(popularDrinks) - 1)
+				ingredient["ingredient"] = popularDrinks[randIndex]
+				del popularDrinks[randIndex]
+			elif "pasta" in ingredient["labels"] and len(popularPastas) > 0:
+				randIndex = random.randint(0, len(popularPastas) - 1)
+				ingredient["ingredient"] = popularPastas[randIndex]
+				del popularPastas[randIndex]
+			elif "sauce" in ingredient["labels"] and len(popularSauces) > 0:
+				randIndex = random.randint(0, len(popularSauces) - 1)
+				ingredient["ingredient"] = popularSauces[randIndex]
+				del popularSauces[randIndex]
+			elif "condiment" in ingredient["labels"] and len(popularCondiments) > 0:
+				randIndex = random.randint(0, len(popularCondiments) - 1)
+				ingredient["ingredient"] = popularCondiments[randIndex]
+				del popularCondiments[randIndex]
+			elif "spicy" in ingredient["labels"] and len(popularSpicy) > 0:
+				randIndex = random.randint(0, len(popularSpicy) - 1)
+				ingredient["ingredient"] = popularSpicy[randIndex]
+				del popularSpicy[randIndex]
+			elif "flavoring" in ingredient["labels"] and len(popularFlavorings) > 0:
+				randIndex = random.randint(0, len(popularFlavorings) - 1)
+				ingredient["ingredient"] = popularFlavorings[randIndex]
+				del popularFlavorings[randIndex]
+			elif "cooking liquid" in ingredient["labels"] and len(popularCookingLiquids) > 0:
+				randIndex = random.randint(0, len(popularCookingLiquids) - 1)
+				ingredient["ingredient"] = popularCookingLiquids[randIndex]
+				del popularCookingLiquids[randIndex]
 
 			# no substitution made for this ingredient, so continue
 			else:
