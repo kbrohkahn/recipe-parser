@@ -5,6 +5,7 @@ with open("../templates/navbar.html", "r") as navbar:
 	print navbar.read()
 
 print("""
+<h1>Ratfink</h1>
 <div class="subheader">A combination of poker and bridge that's easy to learn and fun to play</div>
 <div class="badge-container">
 	<a target="blank" href="https://play.google.com/store/apps/details?id=com.play2think.ratfink">

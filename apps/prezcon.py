@@ -5,6 +5,7 @@ with open("../templates/navbar.html", "r") as navbar:
 	print navbar.read()
 
 print("""
+<h1>Prezcon</h1>
 <div class="subheader">The official application of the Prezcon Winter Nationals</div>
 <div class="badge-container">
 	<a target="blank" href="https://play.google.com/store/apps/details?id=com.prezcon.prezcon">

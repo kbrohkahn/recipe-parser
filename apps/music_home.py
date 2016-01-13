@@ -5,6 +5,7 @@ with open("../templates/navbar.html", "r") as navbar:
 	print navbar.read()
 
 print("""
+<h1>Music Home</h1>
 <div class="subheader">Never be forced to power your screen on again</div>
 <div class="badge-container">
 

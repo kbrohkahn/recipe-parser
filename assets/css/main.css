@@ -23,10 +23,14 @@ body {background-color: transparent;}
 div, ul, li, a {box-sizing: border-box;}
 img {max-width: 100%;}
 
+
+/* Various */
 h1 {text-align: center;}
 .large-margin-top {margin-top: 75px;}
 .input-row,
 #footer {margin-top: 45px; margin-bottom: 45px;}
+.table {background: #fff}
+.table>tbody>tr>td {vertical-align: middle;}
 
 .input-row > div {margin-top: 15px;}
 .input-group-addon {border-left: none;}
