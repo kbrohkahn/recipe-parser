@@ -5,46 +5,6 @@ import sqlite3
 import random
 
 #
-# print HTML header and beginning of HTML body
-#
-def htmlHeader():
-	print("""Content-type:text/html\n\n
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<title>Recipe Parser</title>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="../assets/css/bootstrap.min.css">
-	<link rel="stylesheet" href="../assets/css/main.css">
-	<link rel="stylesheet" href="../assets/css/font-awesome.min.css">
-	<script type="text/javascript" src="../assets/js/jquery-2.1.4.min.js"></script>
-	<script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="../assets/js/main.js"></script>
-</head>
-<body>
-	<div class="container-fluid">""")
-
-
-
-#
-# print HTML footer row and close BODY and HTML tags
-#
-def htmlFooter():
-	print("""
-		<div class="row footer large-margin-top">
-			<div class="col-xs-12 text-center">
-				All recipes parsed from <a href="http://allrecipes.com/">allrecipes.com</a>
-			</div>
-		</div>
-	</div>
-</body>
-</html>""")
-
-
-
-#
 # recreate SQLite database from JSON file
 #
 def recreateDatabase():
@@ -472,7 +432,7 @@ def displaySearchResults(searchString):
 <div class="row large-margin-top">
 	<div class="col-xs-12">
 		<h1>{0}</h1>
-		<div class="centered">""").format(searchResultString)
+		<div class="center">""").format(searchResultString)
 
 	# print included ingredients header string
 	print(formatListOfStringsAsHeader("Containing ", includeIngredients))
@@ -589,7 +549,7 @@ def displayRecipe(recipe):
 
 	# print recipe, servings, and calories
 	print("""
-<div class="row centered">
+<div class="row center">
 	<div class="col-xs-12">
 		<h1>{0}</h1>
 		{4}
@@ -1129,7 +1089,10 @@ try:
 	for recipeLabel in recipeLabels:
 		recipeLabelValues.append(form.getvalue("recipe-label-" + recipeLabel.replace(" ", "-"), ""))
 
-	htmlHeader()
+	with open("../templates/header.html", "r") as header:
+		print header.read()
+	with open("../templates/navbar.html", "r") as navbar:
+		print navbar.read()
 
 	try:
 		# TODO only use this when JSON file changes
@@ -1151,14 +1114,22 @@ try:
 		displaySearch(searchPhrase)
 
 		# print loading results message
-		print('<div class="centered" id="loading-search-results"><b>Loading search results...</b></div>')
+		print('<div class="center" id="loading-search-results"><b>Loading search results...</b></div>')
 		
 		# if exists, display recipe form search results
 		displaySearchResults(searchPhrase)
 
+		print("""<div class="row">
+			<div class="col-xs-12 text-center">
+				All recipes parsed from <a href="http://allrecipes.com/">allrecipes.com</a>
+			</div>
+		</div>""")
+
 	except sqlite3.Error as e:
 		print("<b>Error %s:</b>" % e.args[0])
 
-	htmlFooter()
+	with open("../templates/footer.html", "r") as footer:
+		print footer.read()
+
 except:
 	cgi.print_exception()
