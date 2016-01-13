@@ -1,5 +1,0 @@
-# ignore output files
-recipe-parser/recipes.json
-
-# ignore database files
-*.db
