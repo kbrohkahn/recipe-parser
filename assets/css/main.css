@@ -98,15 +98,14 @@ p {line-height: 1.4em; }
 .badge-container img {height: 45px; margin: 16px;}
 
 /* Applications */
-.application-title { text-align: center; }
-.application-title * { display: inline-block; vertical-align: middle; }
-.application-title h1 {margin-left: 15px;}
 .button-description {vertical-align: middle; padding: 1.5em 0;}
 .button-description img {width: 64px; float: left;}
 .button-description div {width: calc(100% - 80px); float: left; padding-left: 16px;}
 .button-description p,
 .button-description h4 {margin: 0;}
 .button-description:after {display: table; content: ''; clear: both;}
+
+.music-home-header:before {content: url("/assets/img/music_home/icon.png");}
 
 .screenshot {width: 23%; margin: 1em 1% 2em; float: left;}
 .screenshot.landscape {width: 48%;}

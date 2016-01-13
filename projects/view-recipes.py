@@ -469,15 +469,15 @@ def displaySearchResults(searchString):
 """.format(recipeName, recipeName.replace("'", "\\'")))
 		count+=1
 
-		# display a max of 1000 recipes
-		if count == 999:
+		# display a max of 100 recipes
+		if count == 99:
 			break
 
 	# print table closing tag
 	print("</table></div></div>")
 
 	# tell user to narrow search if over 1000 results
-	if count == 999:
+	if count == 99:
 		print("<b>Too many recipes to process, please narrow search.</b>")
 
 

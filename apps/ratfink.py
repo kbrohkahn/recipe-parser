@@ -34,11 +34,11 @@ print("""
 		<a href="#galaxy_tab_2_7_screenshots" aria-controls="galaxy_tab_2_7_screenshots" role="tab" data-toggle="tab">Galaxy Tab 2 7.0</a>
 	</li>
 	<li role="presentation">
-		<a href="#galaxy_tab_s_10_screenshots" aria-controls="galaxy_tab_s_10_screenshots" role="tab" data-toggle="tab">Galaxy Tab S 10.1</a>
+		<a href="#galaxy_tab_s_10_screenshots" aria-controls="galaxy_tab_s_10_screenshots" role="tab" data-toggle="tab">Galaxy Tab S 10.5</a>
 	</li>
 </ul>
 <div class="tab-content clearfix">
-	<div role="tabpanel" class="tab-pane" id="droid_maxx_screenshots">
+	<div role="tabpanel" class="tab-pane active" id="droid_maxx_screenshots">
 		<div class="screenshot">
 			<img src="/assets/img/ratfink/droid_maxx/playing.png" alt="Playing">
 			<div>
@@ -82,7 +82,7 @@ print("""
 			</div>
 		</div>
 	</div>
-	<div role="tabpanel" class="tab-pane active" id="galaxy_tab_2_7_screenshots">
+	<div role="tabpanel" class="tab-pane" id="galaxy_tab_2_7_screenshots">
 		<div class="screenshot">
 			<img src="/assets/img/ratfink/galaxy_tab_2_7.0/playing.png" alt="Playing">
 			<div>

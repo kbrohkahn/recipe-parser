@@ -5,7 +5,9 @@ with open("../templates/navbar.html", "r") as navbar:
 	print navbar.read()
 
 print("""
-<h1>Music Home</h1>
+
+<h1 class="music-home-header">Music Home</h1>
+
 <div class="subheader">Never be forced to power your screen on again</div>
 <div class="badge-container">
 
@@ -30,7 +32,7 @@ print("""
 			<li>Amazon Prime Music</li>
 			<li>Poweramp</li>
 			<li>Samsung Music Player</li>
-			<li>Any music app! <em>(<a href="mailto:support@acrilogic.com">contact us</a> to make a request)</em></li>
+			<li>Any music app! <em>(<a href="mailto:kbrohkahn@yahoo.com">email me</a> to make a request)</em></li>
 		</ul>
 	</li>
 	<li>Screen saver that keeps screen on in low power setting without locking device</li>
@@ -50,7 +52,7 @@ print("""
 		<a href="#galaxy_tab_2_7_screenshots" aria-controls="galaxy_tab_2_7_screenshots" role="tab" data-toggle="tab">Galaxy Tab 2 7.0</a>
 	</li>
 	<li role="presentation">
-		<a href="#galaxy_tab_s_10_screenshots" aria-controls="galaxy_tab_s_10_screenshots" role="tab" data-toggle="tab">Galaxy Tab S 10.1</a>
+		<a href="#galaxy_tab_s_10_screenshots" aria-controls="galaxy_tab_s_10_screenshots" role="tab" data-toggle="tab">Galaxy Tab S 10.5</a>
 	</li>
 	<li role="presentation">
 		<a href="#iphone_6s_screenshots" aria-controls="iphone_6s_screenshots" role="tab" data-toggle="tab">iPhone 6s</a>
@@ -63,7 +65,7 @@ print("""
 	</li>
 </ul>
 <div class="tab-content clearfix">
-	<div role="tabpanel" class="tab-pane active" id="droid_maxx_screenshots" style="display: block;">
+	<div role="tabpanel" class="tab-pane active" id="droid_maxx_screenshots">
 		<div class="screenshot">
 			<img src="/assets/img/music_home/droid_maxx/home.png" alt="Home screen">
 			<div>
@@ -141,37 +143,37 @@ print("""
 	</div>
 	<div role="tabpanel" class="tab-pane" id="galaxy_tab_s_10_screenshots">
 		<div class="screenshot landscape">
-			<img src="/assets/img/music_home/galaxy_tab_s_10.1/home.png" alt="Home screen">
+			<img src="/assets/img/music_home/galaxy_tab_s_10.5/home.png" alt="Home screen">
 			<div>
 				<em>Home screen</em>
 			</div>
 		</div>
 		<div class="screenshot landscape">
-			<img src="/assets/img/music_home/galaxy_tab_s_10.1/screensaver.png" alt="Screen saver">
+			<img src="/assets/img/music_home/galaxy_tab_s_10.5/screensaver.png" alt="Screen saver">
 			<div>
 				<em>Screensaver</em>
 			</div>
 		</div>
 		<div class="screenshot landscape">
-			<img src="/assets/img/music_home/galaxy_tab_s_10.1/home_dark_theme.png" alt="Home screen dark">
+			<img src="/assets/img/music_home/galaxy_tab_s_10.5/home_dark_theme.png" alt="Home screen dark">
 			<div>
 				<em>Home screen with dark theme</em>
 			</div>
 		</div>
 		<div class="screenshot landscape">
-			<img src="/assets/img/music_home/galaxy_tab_s_10.1/screensaver_dark_theme.png" alt="Home screen dark">
+			<img src="/assets/img/music_home/galaxy_tab_s_10.5/screensaver_dark_theme.png" alt="Home screen dark">
 			<div>
 				<em>Screensaver with dark theme</em>
 			</div>
 		</div>
 		<div class="screenshot">
-			<img src="/assets/img/music_home/galaxy_tab_s_10.1/home_portrait.png" alt="Home screen portrait">
+			<img src="/assets/img/music_home/galaxy_tab_s_10.5/home_portrait.png" alt="Home screen portrait">
 			<div>
 				<em>Home screen, portrait orientation</em>
 			</div>
 		</div>
 		<div class="screenshot">
-			<img src="/assets/img/music_home/galaxy_tab_s_10.1/home_dark_theme_portrait.png" alt="Home screen dark portrait">
+			<img src="/assets/img/music_home/galaxy_tab_s_10.5/home_dark_theme_portrait.png" alt="Home screen dark portrait">
 			<div>
 				<em>Home screen with dark theme, portrait orientation</em>
 			</div>
